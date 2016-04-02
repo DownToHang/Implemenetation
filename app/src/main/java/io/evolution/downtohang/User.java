@@ -42,6 +42,13 @@ public class User {
         this.username = username;
     }
 
+    //Contructor for Manage Contacts
+    public User(String id, String username, Image profilePic){
+        this.id = id;
+        this.username = username;
+        this.profilePic = profilePic;
+    }
+
     //setters
     public void setId(String id){
         this.id = id;
