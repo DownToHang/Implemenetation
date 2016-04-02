@@ -65,5 +65,6 @@
         android:layout_alignStart="@+id/createAccountCreateAccountButton"
         android:singleLine="true"
         android:maxLength="30"
-        android:paddingBottom="5dp"/>
+        android:paddingBottom="5dp"
+        android:hint="@string/create_account_edit_username_hint"/>
 </RelativeLayout>
