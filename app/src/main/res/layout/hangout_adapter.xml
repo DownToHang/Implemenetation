@@ -23,7 +23,9 @@
         android:layout_toRightOf="@+id/profilePicture_ImageView"
         android:layout_toEndOf="@+id/profilePicture_ImageView"
         android:layout_marginLeft="33dp"
-        android:layout_marginStart="33dp" />
+        android:layout_marginStart="33dp"
+        android:layout_alignParentTop="true"
+        android:gravity="center_vertical" />
 
     <ImageView
         android:layout_width="60dp"
