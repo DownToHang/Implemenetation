@@ -8,9 +8,12 @@ import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class CreateHangoutLayout extends AppCompatActivity {
 
-    String [] usernames = {"Yoonix", "SuperPieGuy", "EZ"};
+    List<User> users = new ArrayList<User>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -19,13 +22,24 @@ public class CreateHangoutLayout extends AppCompatActivity {
 
         //LayoutInflater inflate = (LayoutInflater)context.get
 
+        populateUsers();
         populateListView();
+    }
+
+    private void populateUsers() {
+        users.add(new User("Yoonix"));
+        users.add(new User("SuperPieGuy"));
+        users.add(new User("EZ"));
+        users.add(new User("SombreroCat"));
+        users.add(new User("Deaganthrope"));
+        users.add(new User("RedundantWeedle"));
+        users.add(new User("Megaladon"));
     }
 
     private void populateListView() {
 
         //Build Adapter
-        ArrayAdapter<String> adapter = new MyArrayAdapter();
+        ArrayAdapter<User> adapter = new MyArrayAdapter();
 
         //Configure the ListView
         ListView listView = (ListView) findViewById(R.id.createHangoutListView);
@@ -33,9 +47,9 @@ public class CreateHangoutLayout extends AppCompatActivity {
     }
 
 
-    private class MyArrayAdapter extends ArrayAdapter<String> {
+    private class MyArrayAdapter extends ArrayAdapter<User> {
         public MyArrayAdapter() {
-            super(CreateHangoutLayout.this, R.layout.activity_item_layout, usernames);
+            super(CreateHangoutLayout.this, R.layout.activity_item_layout, users);
         }
 
         @Override
@@ -49,11 +63,11 @@ public class CreateHangoutLayout extends AppCompatActivity {
             }
 
             // username to be displayed
-            String current = usernames[position];
+            User current = users.get(position);
 
             // fill the listView
             TextView usernameDisp = (TextView) findViewById(R.id.usernameDisplay);
-            usernameDisp.setText(current);
+            usernameDisp.setText(current.getUsername());
 
             return itemView;
         }//end of getView

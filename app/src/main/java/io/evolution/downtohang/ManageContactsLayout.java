@@ -32,7 +32,7 @@ public class ManageContactsLayout extends RelativeLayout implements View.OnClick
         super(context);
     }
 
-    public ManageContactsLayout(Context context,){  //Pass database?
+    public ManageContactsLayout(Context context, User user){  //Or Pass database?
         super(context);
 
         //Set context
