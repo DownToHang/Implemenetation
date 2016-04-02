@@ -1,35 +1,78 @@
-<?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent">
-
+<!-- Username Fields -->
     <TextView
+        android:id="@+id/createAccountUsernameLabel"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:padding="10dp"
         android:text="@string/create_account_username_label"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        android:layout_marginTop="40dp"
         android:id="@+id/createAccountUsernameLabel"
         android:layout_marginLeft="30dp"
         android:layout_marginStart="30dp"
         android:layout_marginTop="45dp"
         android:layout_alignParentTop="true"
         android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_marginLeft="15dp"
+        android:layout_marginStart="15dp"/>
+
+    <EditText
+        android:id="@+id/createAccountEditUsername"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:ems="8"
+        android:hint="@string/create_account_edit_username_hint"
+        android:singleLine="true"
+        android:maxLength = "30"
+        android:textSize="20sp"
+        android:layout_alignBottom="@+id/createAccountUsernameLabel"
+        android:layout_toRightOf="@+id/createAccountUsernameLabel"
+        android:layout_marginRight="15dp"
+        android:layout_marginEnd="15dp"/>
         android:layout_alignParentStart="true"/>
 
+    <!-- Error Label for Username -->
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:singleLine="true"
+        android:textSize="16sp"
+        android:textStyle="bold"
+        android:textColor="#cc0000"
+        android:id="@+id/createAccountErrorLabel"
+        android:paddingLeft="12dp"
+        android:layout_below="@+id/createAccountUsernameLabel"
+        android:layout_alignLeft="@+id/createAccountUsernameLabel"
+        android:layout_alignStart="@+id/createAccountUsernameLabel"/>
+
+    <!-- Profile Icon Fields-->
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/create_account_profile_icon_label"
+        android:textSize="20sp"
+        android:textStyle="bold"
         android:id="@+id/createAccountProfileIconLabel"
+        android:padding="10dp"
+        android:layout_below="@+id/createAccountErrorLabel"
         android:layout_below="@+id/createAccountUsernameLabel"
         android:layout_alignLeft="@+id/createAccountUsernameLabel"
+        android:layout_alignStart="@+id/createAccountUsernameLabel"/>
         android:layout_alignStart="@+id/createAccountUsernameLabel"
         android:layout_marginTop="34dp"/>
 
     <ImageView
+        android:layout_width="160dp"
+        android:layout_height="160dp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/createAccountProfileIcon"
         android:src="@mipmap/default_profile_icon"
+        android:layout_below="@+id/createAccountProfileIconLabel"
+        android:scaleType="fitXY"
+        android:layout_centerHorizontal="true"/>
         android:layout_alignTop="@+id/createAccountProfileIconLabel"
         android:layout_alignLeft="@+id/createAccountSelectImageButton"
         android:layout_alignStart="@+id/createAccountSelectImageButton"
@@ -40,18 +83,20 @@
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:text="@string/create_account_select_image_button_text"
         android:id="@+id/createAccountSelectImageButton"
+        android:layout_below="@+id/createAccountProfileIcon"
         android:text="@string/create_account_select_image_button_text"
         android:layout_centerVertical="true"
         android:layout_centerHorizontal="true"/>
 
     <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/create_account_title"
+@@ -84,7 +52,18 @@
         android:id="@+id/createAccountCreateAccountButton"
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
+        android:layout_marginBottom="50dp"/>
+
         android:layout_marginBottom="77dp"/>
 
     <EditText
