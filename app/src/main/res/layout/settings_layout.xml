@@ -9,7 +9,7 @@
             android:layout_height="wrap_content"
             android:textAppearance="?android:attr/textAppearanceLarge"
             android:text="Change Username"
-            android:id="@+id/usernameField"
+            android:id="@+id/textView2"
             android:layout_row="0"
             android:layout_column="0"
             android:gravity="top"
@@ -23,13 +23,13 @@
         android:inputType="textPersonName"
         android:text="Enter Name..."
         android:ems="10"
-        android:id="@+id/usernameEdit"
+        android:id="@+id/editText"
         android:layout_gravity="right"
         android:layout_row="1"
         android:layout_column="0"
         android:layout_alignParentTop="true"
-        android:layout_toRightOf="@+id/usernameField"
-        android:layout_toEndOf="@+id/usernameField"
+        android:layout_toRightOf="@+id/textView2"
+        android:layout_toEndOf="@+id/textView2"
         android:layout_marginLeft="29dp"
         android:layout_marginStart="29dp" />
 
@@ -38,8 +38,8 @@
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceLarge"
         android:text="GPS Location"
-        android:id="@+id/gpsText"
-        android:layout_below="@+id/usernameEdit"
+        android:id="@+id/textView"
+        android:layout_below="@+id/editText"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true" />
 
@@ -48,37 +48,37 @@
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceLarge"
         android:text="Notifications"
-        android:id="@+id/notificationsText"
+        android:id="@+id/textView3"
         android:layout_marginTop="24dp"
-        android:layout_below="@+id/gpsText"
+        android:layout_below="@+id/textView"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true" />
 
     <CheckBox
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/gpsCheckBox"
-        android:layout_alignTop="@+id/gpsText"
-        android:layout_alignLeft="@+id/usernameEdit"
-        android:layout_alignStart="@+id/usernameEdit"
-        android:checked="true" />
+        android:id="@+id/GPScheckBox"
+        android:layout_alignTop="@+id/textView"
+        android:layout_alignLeft="@+id/editText"
+        android:layout_alignStart="@+id/editText"
+        android:checked="false" />
 
     <CheckBox
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/notificationCheckBox"
-        android:checked="true"
-        android:layout_alignBottom="@+id/notificationsText"
-        android:layout_alignLeft="@+id/gpsCheckBox"
-        android:layout_alignStart="@+id/gpsCheckBox" />
+        android:id="@+id/checkBox"
+        android:checked="false"
+        android:layout_alignBottom="@+id/textView3"
+        android:layout_alignLeft="@+id/GPScheckBox"
+        android:layout_alignStart="@+id/GPScheckBox" />
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceLarge"
         android:text="Profile Picture"
-        android:id="@+id/profileText"
-        android:layout_below="@+id/notificationsText"
+        android:id="@+id/textView4"
+        android:layout_below="@+id/textView3"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
         android:layout_marginTop="41dp" />
@@ -86,18 +86,18 @@
     <ImageView
         android:layout_width="100dp"
         android:layout_height="100dp"
-        android:id="@+id/profilePic"
-        android:layout_alignTop="@+id/profileText"
-        android:layout_alignLeft="@+id/notificationCheckBox"
-        android:layout_alignStart="@+id/notificationCheckBox"
+        android:id="@+id/imageView"
+        android:layout_alignTop="@+id/textView4"
+        android:layout_alignLeft="@+id/checkBox"
+        android:layout_alignStart="@+id/checkBox"
         android:src="@mipmap/default_profile_icon" />
 
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Browse"
-        android:id="@+id/browsebutton"
+        android:id="@+id/picbutton"
         android:layout_centerVertical="true"
-        android:layout_alignRight="@+id/profileText"
-        android:layout_alignEnd="@+id/profileText" />
+        android:layout_alignRight="@+id/textView4"
+        android:layout_alignEnd="@+id/textView4" />
 </RelativeLayout>
