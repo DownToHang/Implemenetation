@@ -1,5 +1,8 @@
 package io.evolution.downtohang;
 
+import android.location.Location;
+import android.media.Image;
+
 /**
  * Created by Yoonix on 4/2/2016.
  *
@@ -16,47 +19,60 @@ package io.evolution.downtohang;
  */
 public class User {
 
-    private int     id ;        // id# of user - jyoon
-    private String  username;   // self explanatory -jyoon
-    private String  hangStatus; //name for a hangout if they are in one -jyoon
-    private String  location;   // geolocation for now its a string -jyoon
-    private int     availablity;// available, not available, in a hangout, busy etc. - jyoon
+    private String   id ;        // id# of user
+    private String   username;   // self explanatory
+    private String   hangoutStatus; //name for a hangout if they are in one
+    private Location location;   // geolocation for now its a string
+    private String   availablity;// available, not available, in a hangout, busy etc.
+    private Image    profilePic; // profile picture
 
     public User(){
         //constructor
     }
 
+    //Constructor for Hangout Activity
+    public User(String id, String username, String hangoutStatus){
+        this.id             = id;
+        this.username       = username;
+        this.hangoutStatus  = hangoutStatus;
+    }
+
+    //Constuctor for Create Hangout Activity
+    public User(String username){
+        this.username = username;
+    }
+
     //setters
-    public void setId(int idi){
+    public void setId(String id){
         this.id = id;
     }
     public void setUsername(String username){
         this.username = username;
     }
     public void setHangStatus(String hangStatus){
-        this.hangStatus = hangStatus;
+        this.hangoutStatus = hangStatus;
     }
-    public void setLocation(String location){
+    public void setLocation(Location location){
         this.location = location;
     }
-    public void setAvailablity(int availablity){
+    public void setAvailablity(String availablity){
         this.availablity = availablity;
     }
 
     //getters
-    public int getId(){
+    public String getId(){
         return id;
     }
     public String getUsername(){
         return username;
     }
     public String getHangStatus(){
-        return hangStatus;
+        return hangoutStatus;
     }
-    public String getLocation(){
+    public Location getLocation(){
         return location;
     }
-    public int getAvailablity(){
+    public String getAvailablity(){
         return availablity;
     }
 
