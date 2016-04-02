@@ -5,7 +5,7 @@
     <string name="create_account_username_label">Username:</string>
     <string name="create_account_profile_icon_label">Icon:</string>
     <string name="create_account_select_image_button_text">Select Image</string>
-    <string name="create_acount_edit_username_hint">Username?</string>
+    <string name="create_account_edit_username_hint">Username?</string>
     <string name="leave_button">Leave</string>
-    <string name="manage_contacts_search_user_label">ayy lmao</string>
+    <string name="manage_contacts_search_user_label">Search User:</string>
 </resources>
