@@ -17,7 +17,7 @@ import java.util.List;
 
 /**
  * Created by eliakah on 4/2/2016.
-@@ -21,7 +11,6 @@ import java.util.List;
+ */
 public class HangoutActivity extends Activity {
     private Button leave_Button;
     private ListView hangout_ListView;
@@ -25,7 +25,7 @@ public class HangoutActivity extends Activity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-@@ -29,115 +18,8 @@ public class HangoutActivity extends Activity {
+        super.onCreate(savedInstanceState);
         setContentView(R.layout.hangout);
 
         leave_Button = (Button) findViewById(R.id.leave_Button);
@@ -56,7 +56,7 @@ public class HangoutActivity extends Activity {
             super(HangoutActivity.this, R.layout.hangout_adapter, users);
         }
         @Override
-       public View getView(int position, View convertView, ViewGroup parent){
+        public View getView(int position, View convertView, ViewGroup parent){
             View itemView = convertView;
             //makes sure we have a view to work with , if not we create one
             if(itemView == null){
@@ -65,11 +65,6 @@ public class HangoutActivity extends Activity {
 
             //get the user from list
             User currentUser = users.get(position);
-
-            //fill the viewList
-            //ImageView imageView = (ImageView) itemView.findViewById(R.id.profilePicture_ImageView);
-            //imageView.setImageResource(currentUser.getImagePath());
-
             //username
             TextView usernameView = (TextView) itemView.findViewById(R.id.username_TextView);
             usernameView.setText(currentUser.getUsername());
@@ -78,7 +73,7 @@ public class HangoutActivity extends Activity {
             if(!currentUser.getHangoutStatus().equals("0")) {
                 statusView.setImageResource(R.mipmap.android_check);
             }else{
-                statusView.setImageResource(R.mipmap.android_check);
+                statusView.setImageResource(R.mipmap.android_block);
             }
 
 
@@ -135,5 +130,9 @@ public class HangoutActivity extends Activity {
             this.hangoutStatus = hangoutStatus;
         }
 
-        }
+    }
+
+
+
+
 }
