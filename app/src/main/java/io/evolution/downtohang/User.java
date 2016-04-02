@@ -30,7 +30,7 @@ public class User {
         //constructor
     }
 
-    //Constructor for Hangout Activity
+    //Constructor for Hangout Activity xx
     public User(String id, String username, String hangoutStatus){
         this.id             = id;
         this.username       = username;
