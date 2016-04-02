@@ -64,7 +64,7 @@ public class SettingsActivity extends Activity implements View.OnClickListener{
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (resultCode == RESULT_OK) {
-            switch(requestCode) {
+            switch (requestCode) {
                 case PICK_PROFILE_ICON_IMAGE:
                     Uri newProfileIconImage = data.getData();
                     ImageView profilePic = (ImageView) findViewById(R.id.profilePic);
@@ -73,5 +73,7 @@ public class SettingsActivity extends Activity implements View.OnClickListener{
             }
         }
     }
+
+}
 
 
