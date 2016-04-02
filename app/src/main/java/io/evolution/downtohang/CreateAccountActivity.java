@@ -44,7 +44,7 @@ public class CreateAccountActivity extends Activity
                 setErrorMessage(null);
                 break;
             case R.id.createAccountCreateAccountButton:
-                setErrorMessage(getResources().getString());
+                setErrorMessage(getResources().getString(R.string.error_message_db_failed));
         }
     }
 
