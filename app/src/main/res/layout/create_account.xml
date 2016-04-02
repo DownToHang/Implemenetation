@@ -1,3 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
 <!-- Username Fields -->
     <TextView
         android:id="@+id/createAccountUsernameLabel"
@@ -8,10 +13,6 @@
         android:textSize="20sp"
         android:textStyle="bold"
         android:layout_marginTop="40dp"
-        android:id="@+id/createAccountUsernameLabel"
-        android:layout_marginLeft="30dp"
-        android:layout_marginStart="30dp"
-        android:layout_marginTop="45dp"
         android:layout_alignParentTop="true"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
@@ -31,7 +32,15 @@
         android:layout_toRightOf="@+id/createAccountUsernameLabel"
         android:layout_marginRight="15dp"
         android:layout_marginEnd="15dp"/>
-        android:layout_alignParentStart="true"/>
+
+    <ImageButton
+        android:layout_width="16dp"
+        android:layout_height="16dp"
+        android:src="@mipmap/question_mark_bubble"
+        android:layout_toRightOf="@+id/createAccountEditUsername"
+        android:layout_alignBottom="@+id/createAccountEditUsername"
+        android:layout_marginBottom="20dp"
+        />
 
     <!-- Error Label for Username -->
     <TextView
@@ -57,28 +66,17 @@
         android:id="@+id/createAccountProfileIconLabel"
         android:padding="10dp"
         android:layout_below="@+id/createAccountErrorLabel"
-        android:layout_below="@+id/createAccountUsernameLabel"
         android:layout_alignLeft="@+id/createAccountUsernameLabel"
         android:layout_alignStart="@+id/createAccountUsernameLabel"/>
-        android:layout_alignStart="@+id/createAccountUsernameLabel"
-        android:layout_marginTop="34dp"/>
 
     <ImageView
         android:layout_width="160dp"
         android:layout_height="160dp"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
         android:id="@+id/createAccountProfileIcon"
         android:src="@mipmap/default_profile_icon"
         android:layout_below="@+id/createAccountProfileIconLabel"
         android:scaleType="fitXY"
         android:layout_centerHorizontal="true"/>
-        android:layout_alignTop="@+id/createAccountProfileIconLabel"
-        android:layout_alignLeft="@+id/createAccountSelectImageButton"
-        android:layout_alignStart="@+id/createAccountSelectImageButton"
-        android:layout_above="@+id/createAccountSelectImageButton"
-        android:layout_alignRight="@+id/createAccountSelectImageButton"
-        android:layout_alignEnd="@+id/createAccountSelectImageButton"/>
 
     <Button
         android:layout_width="wrap_content"
@@ -86,29 +84,16 @@
         android:text="@string/create_account_select_image_button_text"
         android:id="@+id/createAccountSelectImageButton"
         android:layout_below="@+id/createAccountProfileIcon"
-        android:text="@string/create_account_select_image_button_text"
-        android:layout_centerVertical="true"
         android:layout_centerHorizontal="true"/>
 
     <Button
-@@ -84,7 +52,18 @@
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/create_account_title"
         android:id="@+id/createAccountCreateAccountButton"
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
         android:layout_marginBottom="50dp"/>
 
-        android:layout_marginBottom="77dp"/>
 
-    <EditText
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/editText"
-        android:ems="10"
-        android:gravity="left"
-        android:layout_above="@+id/createAccountProfileIconLabel"
-        android:layout_alignLeft="@+id/createAccountCreateAccountButton"
-        android:layout_alignStart="@+id/createAccountCreateAccountButton"
-        android:singleLine="true"
-        android:maxLength="30"
-        android:paddingBottom="5dp"/>
 </RelativeLayout>
