@@ -1,3 +1,5 @@
+/*
+
 package io.evolution.downtohang;
 
 import android.content.Context;
@@ -10,9 +12,13 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+
+*/
 /**
  * Created by Patrick on 4/2/2016.
- */
+ *//*
+
+
 public class ManageContactsLayout extends RelativeLayout implements View.OnClickListener{
 
     //Define variables for widgets
@@ -26,7 +32,7 @@ public class ManageContactsLayout extends RelativeLayout implements View.OnClick
         super(context);
     }
 
-    public ManageContactsLayout(Context context, User user){  //Pass database?
+    public ManageContactsLayout(Context context,){  //Pass database?
         super(context);
 
         //Set context
@@ -62,3 +68,5 @@ public class ManageContactsLayout extends RelativeLayout implements View.OnClick
 
 
 }
+
+*/

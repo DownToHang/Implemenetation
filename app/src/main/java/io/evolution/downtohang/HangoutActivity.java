@@ -17,7 +17,7 @@ import java.util.List;
 
 /**
  * Created by eliakah on 4/2/2016.
- */
+@@ -21,7 +11,6 @@ import java.util.List;
 public class HangoutActivity extends Activity {
     private Button leave_Button;
     private ListView hangout_ListView;
@@ -25,7 +25,7 @@ public class HangoutActivity extends Activity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
+@@ -29,115 +18,8 @@ public class HangoutActivity extends Activity {
         setContentView(R.layout.hangout);
 
         leave_Button = (Button) findViewById(R.id.leave_Button);
@@ -136,8 +136,4 @@ public class HangoutActivity extends Activity {
         }
 
         }
-
-
-
-
 }

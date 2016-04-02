@@ -34,8 +34,8 @@
         android:layout_alignParentTop="true" />
 
     <ImageView
-        android:layout_width="60dp"
-        android:layout_height="60dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:id="@+id/manageContactsAdapterUserNameImageView"
         android:layout_alignParentTop="true"
         android:layout_alignParentLeft="true"
