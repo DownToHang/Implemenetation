@@ -2,14 +2,17 @@ package io.evolution.downtohang;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import java.io.IOException;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -122,7 +125,13 @@ public class CreateAccountActivity extends Activity
             switch(requestCode) {
                 case PICK_PROFILE_ICON_IMAGE:
                     Uri newProfileIconImage = data.getData();
-                    profileIcon.setImageURI(newProfileIconImage);
+                    try {
+                        Bitmap bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), newProfileIconImage);
+                        profileIcon.setImageBitmap(bitmap);
+                    }
+                    catch(IOException ie) {
+                        System.out.println("ISSUE!");
+                    }
                     break;
             }
         }
