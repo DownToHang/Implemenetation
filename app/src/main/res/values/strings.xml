@@ -1,11 +1,17 @@
 <resources>
     <string name="app_name">DownToHang</string>
     <string name="action_settings">Settings</string>
+
+    <!-- Create Account Layout-->
     <string name="create_account_title">Create Account</string>
     <string name="create_account_username_label">Username:</string>
     <string name="create_account_profile_icon_label">Icon:</string>
     <string name="create_account_select_image_button_text">Select Image</string>
     <string name="create_account_edit_username_hint">Username?</string>
+
+    <!-- Error Messages -->
+    <string name="error_message_db_failed">Error! Failed to connect to database.</string>
+
     <string name="leave_button">Leave</string>
     <string name="manage_contacts_search_user_label">Search User:</string>
 </resources>
