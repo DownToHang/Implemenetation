@@ -3,46 +3,87 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent">
 
+<!-- Username Fields -->
+    <TextView
+        android:id="@+id/createAccountUsernameLabel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:padding="10dp"
+        android:text="@string/create_account_username_label"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        android:layout_marginTop="40dp"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_marginLeft="15dp"
+        android:layout_marginStart="15dp"/>
+
+    <EditText
+        android:id="@+id/createAccountEditUsername"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:ems="8"
+        android:hint="@string/create_account_edit_username_hint"
+        android:singleLine="true"
+        android:maxLength = "30"
+        android:textSize="20sp"
+        android:layout_alignBottom="@+id/createAccountUsernameLabel"
+        android:layout_toRightOf="@+id/createAccountUsernameLabel"
+        android:layout_marginRight="15dp"
+        android:layout_marginEnd="15dp"/>
+
+    <ImageButton
+        android:layout_width="16dp"
+        android:layout_height="16dp"
+        android:src="@mipmap/question_mark_bubble"
+        android:layout_toRightOf="@+id/createAccountEditUsername"
+        android:layout_alignBottom="@+id/createAccountEditUsername"
+        android:layout_marginBottom="20dp"
+        />
+
+    <!-- Error Label for Username -->
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/create_account_username_label"
-        android:id="@+id/createAccountUsernameLabel"
-        android:layout_marginLeft="30dp"
-        android:layout_marginStart="30dp"
-        android:layout_marginTop="45dp"
-        android:layout_alignParentTop="true"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true"/>
+        android:singleLine="true"
+        android:textSize="16sp"
+        android:textStyle="bold"
+        android:textColor="#cc0000"
+        android:id="@+id/createAccountErrorLabel"
+        android:paddingLeft="12dp"
+        android:layout_below="@+id/createAccountUsernameLabel"
+        android:layout_alignLeft="@+id/createAccountUsernameLabel"
+        android:layout_alignStart="@+id/createAccountUsernameLabel"/>
 
+    <!-- Profile Icon Fields-->
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/create_account_profile_icon_label"
+        android:textSize="20sp"
+        android:textStyle="bold"
         android:id="@+id/createAccountProfileIconLabel"
-        android:layout_below="@+id/createAccountUsernameLabel"
+        android:padding="10dp"
+        android:layout_below="@+id/createAccountErrorLabel"
         android:layout_alignLeft="@+id/createAccountUsernameLabel"
-        android:layout_alignStart="@+id/createAccountUsernameLabel"
-        android:layout_marginTop="34dp"/>
+        android:layout_alignStart="@+id/createAccountUsernameLabel"/>
 
     <ImageView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="160dp"
+        android:layout_height="160dp"
         android:id="@+id/createAccountProfileIcon"
         android:src="@mipmap/default_profile_icon"
-        android:layout_alignTop="@+id/createAccountProfileIconLabel"
-        android:layout_alignLeft="@+id/createAccountSelectImageButton"
-        android:layout_alignStart="@+id/createAccountSelectImageButton"
-        android:layout_above="@+id/createAccountSelectImageButton"
-        android:layout_alignRight="@+id/createAccountSelectImageButton"
-        android:layout_alignEnd="@+id/createAccountSelectImageButton"/>
+        android:layout_below="@+id/createAccountProfileIconLabel"
+        android:scaleType="fitXY"
+        android:layout_centerHorizontal="true"/>
 
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/createAccountSelectImageButton"
         android:text="@string/create_account_select_image_button_text"
-        android:layout_centerVertical="true"
+        android:id="@+id/createAccountSelectImageButton"
+        android:layout_below="@+id/createAccountProfileIcon"
         android:layout_centerHorizontal="true"/>
 
     <Button
@@ -52,19 +93,7 @@
         android:id="@+id/createAccountCreateAccountButton"
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
-        android:layout_marginBottom="77dp"/>
+        android:layout_marginBottom="50dp"/>
 
-    <EditText
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/editText"
-        android:ems="10"
-        android:gravity="left"
-        android:layout_above="@+id/createAccountProfileIconLabel"
-        android:layout_alignLeft="@+id/createAccountCreateAccountButton"
-        android:layout_alignStart="@+id/createAccountCreateAccountButton"
-        android:singleLine="true"
-        android:maxLength="30"
-        android:paddingBottom="5dp"
-        android:hint="@string/create_account_edit_username_hint"/>
+
 </RelativeLayout>
