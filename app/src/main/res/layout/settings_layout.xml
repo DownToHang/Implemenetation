@@ -84,8 +84,8 @@
         android:layout_marginTop="41dp" />
 
     <ImageView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
         android:id="@+id/imageView"
         android:layout_alignTop="@+id/textView4"
         android:layout_alignLeft="@+id/checkBox"
