@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent" android:layout_height="match_parent">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/manage_contacts_search_user_label"
+        android:id="@+id/manageContactsSearchUserLabel"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="71dp"
+        android:textColor="#000000"
+        android:textStyle="bold"
+        android:textSize="24dp" />
+
+    <EditText
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:inputType="textPersonName"
+        android:text="Name"
+        android:ems="10"
+        android:id="@+id/manageContactsSearchUserEditText"
+        android:layout_below="@+id/manageContactsSearchUserLabel"
+        android:layout_centerHorizontal="true" />
+
+    <ListView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/manageContactsSearchedUsersListView"
+        android:layout_below="@+id/manageContactsSearchUserEditText"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="43dp" />
+
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/manageContactsSearchIconImageView"
+        android:src="@mipmap/manage_contacts_search_icon"
+        android:layout_above="@+id/manageContactsSearchedUsersListView"
+        android:layout_toLeftOf="@+id/manageContactsSearchUserEditText"
+        android:layout_toStartOf="@+id/manageContactsSearchUserEditText" />
+</RelativeLayout>
