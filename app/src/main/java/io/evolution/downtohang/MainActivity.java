@@ -28,6 +28,7 @@ public class MainActivity extends AppCompatActivity implements OnClickListener {
     private ArrayList<User> users;
     private ImageButton changeStatusImageButton;
     private ListView usersListView;
+    private Button mainHangoutButton;
 
 
     @Override
@@ -61,6 +62,9 @@ public class MainActivity extends AppCompatActivity implements OnClickListener {
         changeStatusImageButton.setOnClickListener(this);
 
         usersListView = (ListView) findViewById(R.id.usersListView);
+        mainHangoutButton = (Button) findViewById(R.id.mainHangoutButton);
+
+        mainHangoutButton.setOnClickListener(this);
 
         populateList();
         populateListView();
@@ -69,13 +73,13 @@ public class MainActivity extends AppCompatActivity implements OnClickListener {
 
     private void populateList() {
         users = new ArrayList();
-        users.add(new User("0","SuperPieGuy","0","1",null));
+        users.add(new User("0", "SuperPieGuy", "0", "1", null));
         users.add(new User("1","Josh","0","0",null));
-        users.add(new User("2","Bill","0","0",null));
+        users.add(new User("2", "Bill", "0", "0", null));
         users.add(new User("3","SuperPieGuy2","Will","0",null));
         users.add(new User("4","reundantWeEdle420","Will","0",null));
-        users.add(new User("5","Yoonix","0","1",null));
-        users.add(new User("6","SuperPieGuy3","Will","0",null));
+        users.add(new User("5", "Yoonix", "0", "1", null));
+        users.add(new User("6", "SuperPieGuy3", "Will", "0", null));
         users.add(new User("7", "JoshAgain", "0", "0", null));
 
     }
@@ -89,7 +93,19 @@ public class MainActivity extends AppCompatActivity implements OnClickListener {
         switch(v.getId()) {
             case R.id.changeStatusImageButton:
                 changeStatus();
+                break;
+            case R.id.mainHangoutButton:
+                goToHangoutLayout();
+                break;
+            default:
+                break;
         }
+    }
+
+    public void goToHangoutLayout() {
+        Intent intent = new Intent(getApplicationContext(), HangoutActivity.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        getApplicationContext().startActivity(intent);
     }
 
     private void changeStatus() {
