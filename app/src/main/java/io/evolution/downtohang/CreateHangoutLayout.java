@@ -1,26 +1,30 @@
 package io.evolution.downtohang;
 
+import android.content.Context;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
-import android.widget.TextView;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class CreateHangoutLayout extends AppCompatActivity {
+public class CreateHangoutLayout extends AppCompatActivity{
 
     List<User> users = new ArrayList<User>();
+//    private ListView listView;
+    private ListView lv;
+    private Context context;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_create_hangout_layout);
 
-        //LayoutInflater inflate = (LayoutInflater)context.get
+        lv = (ListView) findViewById(R.id.createHangoutListView);
+        context = this;
 
         populateUsers();
         populateListView();
@@ -42,35 +46,33 @@ public class CreateHangoutLayout extends AppCompatActivity {
         ArrayAdapter<User> adapter = new MyArrayAdapter();
 
         //Configure the ListView
-        ListView listView = (ListView) findViewById(R.id.createHangoutListView);
-        listView.setAdapter(adapter);
+//        listView = (ListView) findViewById(R.id.createHangoutListView);
+//        assert listView != null;
+        lv.setAdapter(adapter);
     }
 
-
     private class MyArrayAdapter extends ArrayAdapter<User> {
+
+        private List<User> userList;
+        private Context context;
+
         public MyArrayAdapter() {
             super(CreateHangoutLayout.this, R.layout.activity_item_layout, users);
         }
 
         @Override
         public View getView(int position, View convertView, ViewGroup parent) {
-
-
-            //Makes sure view is created and worked on
-            View itemView = convertView;
-            if(itemView == null){
-                itemView = getLayoutInflater().inflate(R.layout.activity_item_layout, parent, false);
-            }
-
             // username to be displayed
             User current = users.get(position);
 
-            // fill the listView
-            TextView usernameDisp = (TextView) findViewById(R.id.usernameDisplay);
-            usernameDisp.setText(current.getUsername());
+            CreateHangoutListItemLayout item = null;
+            if (convertView == null){
+                item = new CreateHangoutListItemLayout(getContext(), current);
+            }else{
+                item = (CreateHangoutListItemLayout) convertView;
+            }
 
-            return itemView;
+            return item;
         }//end of getView
     }//end of MyArrayListAdapter class
-
-}
+}//end of CreateHangoutActivity
