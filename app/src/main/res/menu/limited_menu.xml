@@ -3,13 +3,14 @@
     xmlns:tools="http://schemas.android.com/tools"
     tools:context="io.evolution.downtohang.MainActivity">
 
-    <item android:id="@+id/menu_settings"
-        android:title="@string/menu_settings"
-        android:icon="@mipmap/menu_settings_icon"
-        app:showAsAction="always" />
+
     <item android:id="@+id/menu_refresh"
         android:title="@string/menu_refresh"
         android:icon="@mipmap/menu_refresh_icon"
+        app:showAsAction="always" />
+    <item android:id="@+id/menu_settings"
+        android:title="@string/menu_settings"
+        android:icon="@mipmap/menu_settings_icon"
         app:showAsAction="always" />
 
 
