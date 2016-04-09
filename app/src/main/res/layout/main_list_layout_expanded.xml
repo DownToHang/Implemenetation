@@ -47,7 +47,8 @@
         android:padding="5dp"
         android:layout_alignParentTop="true"
         android:layout_alignParentRight="true"
-        android:layout_alignParentEnd="true" />
+        android:layout_alignParentEnd="true"
+        android:background="#00000000"/>
 
     <ImageButton
         android:layout_width="50dp"
@@ -58,5 +59,6 @@
         android:layout_toStartOf="@+id/expandedRejectImageButton"
         android:scaleType="fitXY"
         android:src="@mipmap/android_check"
-        android:padding="5dp" />
+        android:padding="5dp"
+        android:background="#00000000"/>
 </RelativeLayout>
