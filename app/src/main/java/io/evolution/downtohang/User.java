@@ -25,6 +25,7 @@ public class User {
     private Location location;   // geolocation for now its a string
     private String   availablity;// available, not available, in a hangout, busy etc.
     private Image    profilePic; // profile picture
+    private boolean  isSelected;
 
     public User(){
         //constructor
@@ -35,6 +36,17 @@ public class User {
         this.id             = id;
         this.username       = username;
         this.hangoutStatus  = hangoutStatus;
+        isSelected = false;
+    }
+
+    //check if the user is selected
+    public boolean isSelected() {
+        return isSelected;
+    }
+
+    //setting if the user is selected or not
+    public void setIsSelected(boolean isSelected) {
+        this.isSelected = isSelected;
     }
 
     //Constuctor for Create Hangout Activity
