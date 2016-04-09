@@ -114,8 +114,11 @@ public class MainListItemLayout extends RelativeLayout implements OnClickListene
 
         expandedLocationLabel = (TextView) findViewById(R.id.expandedLocationLabel);
         expandedAcceptImageButton = (ImageButton) findViewById(R.id.expandedAcceptImageButton);
-        expandedRejectImageButton = (ImageButton) findViewById(R.id.expandedRejectImageButton);
+        expandedAcceptImageButton.setBackgroundColor(0);
         expandedAcceptImageButton.setOnClickListener(this);
+
+        expandedRejectImageButton = (ImageButton) findViewById(R.id.expandedRejectImageButton);
+        expandedRejectImageButton.setBackgroundColor(0);
         expandedRejectImageButton.setOnClickListener(this);
 
         if (expanded) {
@@ -142,18 +145,6 @@ public class MainListItemLayout extends RelativeLayout implements OnClickListene
         changing = true;
         mainListItemCollapsedView.setVisibility(VISIBLE);
         mainListItemExpandedView.setVisibility(View.GONE);
-    }
-
-    public void notChanging() {
-        changing = false;
-    }
-
-    public boolean isChanging() {
-        return changing;
-    }
-
-    public boolean isExpanded() {
-        return expanded;
     }
 
     public void collapseWithAnimation() {
