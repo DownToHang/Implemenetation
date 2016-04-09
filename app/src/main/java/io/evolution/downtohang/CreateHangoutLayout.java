@@ -3,6 +3,7 @@ package io.evolution.downtohang;
 import android.content.Context;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
@@ -69,6 +70,13 @@ public class CreateHangoutLayout extends AppCompatActivity{
         users.add(new User("Deaganthrope"));
         users.add(new User("RedundantWeedle"));
         users.add(new User("Megaladon"));
+        users.add(new User("RedundantWeedle1"));
+        users.add(new User("RedundantWeedle2"));
+        users.add(new User("RedundantWeedle3"));
+        users.add(new User("RedundantWeedle4"));
+        users.add(new User("RedundantWeedle5"));
+        users.add(new User("RedundantWeedle6"));
+
     }
 
     private void populateListView() {
@@ -81,12 +89,22 @@ public class CreateHangoutLayout extends AppCompatActivity{
     }
 
     private class MyArrayAdapter extends ArrayAdapter<User> {
-
-        private List<User> userList;
-        private Context context;
+//
+//        private List<User> userList;
+//        private Context context;
 
         public MyArrayAdapter() {
             super(CreateHangoutLayout.this, R.layout.activity_item_layout, users);
+        }
+
+        @Override
+        public int getViewTypeCount() {
+            return getCount();
+        }
+
+        @Override
+        public int getItemViewType(int position) {
+            return position;
         }
 
         @Override
@@ -103,5 +121,9 @@ public class CreateHangoutLayout extends AppCompatActivity{
 
             return item;
         }//end of getView
+
+
+
+
     }//end of MyArrayListAdapter class
 }//end of CreateHangoutActivity
