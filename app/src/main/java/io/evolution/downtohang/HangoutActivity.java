@@ -38,6 +38,9 @@ public class HangoutActivity extends AppCompatActivity  {
     @Override
     public boolean onOptionsItemSelected(MenuItem item){
         switch(item.getItemId()){
+            case R.id.menu_refresh:
+                Toast.makeText(this, "Refresh Button", Toast.LENGTH_SHORT).show();
+                return true;
 
             case R.id.menu_settings:
                 startActivity(new Intent(getApplicationContext(), SettingsActivity.class));
