@@ -49,6 +49,16 @@ public class User {
         this.profilePic = profilePic;
     }
 
+    public User(String id, String username, String hangoutStatus,
+                String availablity, Image profilePic) {
+        this.id = id;
+        this.username = username;
+        this.hangoutStatus = hangoutStatus;
+        this.availablity = availablity;
+        this.profilePic = profilePic;
+
+    }
+
     //setters
     public void setId(String id){
         this.id = id;

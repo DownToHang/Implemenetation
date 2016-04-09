@@ -90,9 +90,6 @@ public class ManageContactsActivity extends Activity {
             }else{
                 button.setText("REMOVE");
             }
-
-
-
             return itemView;
         }
 
