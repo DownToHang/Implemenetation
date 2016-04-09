@@ -36,7 +36,7 @@
         android:layout_height="fill_parent"
         android:text="HANGOUT"
         android:id="@+id/mainHangoutButton"
-        android:textSize="22dp"
+        android:textSize="24dp"
         android:layout_alignParentRight="true"
         android:layout_alignParentEnd="true"
         android:layout_alignParentLeft="true"
