@@ -1,27 +1,57 @@
 package io.evolution.downtohang;
 
 import android.app.Activity;
+import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.BaseExpandableListAdapter;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.view.View.OnClickListener;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 
-public class MainActivity extends Activity implements OnClickListener {
+public class MainActivity extends AppCompatActivity implements OnClickListener {
 
     private int status = 0;
     private ArrayList<User> users;
     private ImageButton changeStatusImageButton;
     private ListView usersListView;
+
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu){
+        getMenuInflater().inflate(R.menu.menu_main, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item){
+        switch(item.getItemId()){
+            case R.id.menu_add:
+                Toast.makeText(this, "Add Button", Toast.LENGTH_SHORT).show();
+                return true;
+            case R.id.menu_refresh:
+                Toast.makeText(this, "Refresh Button", Toast.LENGTH_SHORT).show();
+                return true;
+            case R.id.menu_settings:
+                startActivity(new Intent(getApplicationContext(), SettingsActivity.class));
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,7 +76,7 @@ public class MainActivity extends Activity implements OnClickListener {
         users.add(new User("4","reundantWeEdle420","Will","0",null));
         users.add(new User("5","Yoonix","0","1",null));
         users.add(new User("6","SuperPieGuy3","Will","0",null));
-        users.add(new User("7","JoshAgain","0","0",null));
+        users.add(new User("7", "JoshAgain", "0", "0", null));
 
     }
 
@@ -77,42 +107,35 @@ public class MainActivity extends Activity implements OnClickListener {
 
     private class MainListAdapter extends ArrayAdapter<User> {
 
+        public int lastExpanded;
+
         public MainListAdapter() {
             super(MainActivity.this, R.layout.main_list_layout, users);
+            this.lastExpanded = -1;
         }
 
         @Override
         public View getView(int position, View convertView, ViewGroup parent){
-            View itemView = convertView;
-            //makes sure we have a view to work with , if not we create one
-            if(itemView == null){
-                itemView = getLayoutInflater().inflate(R.layout.main_list_layout, parent, false);
-            }
-
-           //get the user from list
+            //get the user from list
             User currentUser = users.get(position);
-
-            // status image
-            ImageView userStatusImageView = (ImageView) itemView.findViewById(R.id.userStatusImageView);
-            if(!currentUser.getHangStatus().equals("0")) {
-                userStatusImageView.setImageResource(R.mipmap.orange_circle_icone_6032_128);
+            MainListItemLayout mainListItemLayout = null;
+            if(convertView == null) {
+                mainListItemLayout = new MainListItemLayout(getContext(),currentUser,false);
             }
-            else if(currentUser.getAvailablity().equals("1")) {
-                userStatusImageView.setImageResource(R.mipmap.green_circle_icone_4156_128);
+            else {
+                mainListItemLayout = (MainListItemLayout) convertView;
             }
-            else if(currentUser.getAvailablity().equals("0")) {
-                userStatusImageView.setImageResource(R.mipmap.red_circle_icone_5751_128);
-            }
+            return mainListItemLayout;
+        }
 
+        @Override
+        public int getViewTypeCount() {
+            return getCount();
+        }
 
-            // username
-            TextView usernameLabel = (TextView) itemView.findViewById(R.id.usernameLabel);
-            usernameLabel.setText(currentUser.getUsername());
-
-            ImageButton acceptImageButton = (ImageButton) itemView.findViewById(R.id.acceptImageButton);
-            ImageButton rejectImageButton = (ImageButton) itemView.findViewById(R.id.rejectImageButton);
-
-            return itemView;
+        @Override
+        public int getItemViewType(int position) {
+            return position;
         }
 
     }
