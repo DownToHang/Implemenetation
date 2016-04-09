@@ -4,7 +4,9 @@
               android:layout_height="match_parent"
               android:orientation="vertical">
     <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-                    android:layout_width="match_parent" android:layout_height="457dp">
+                    android:layout_width="match_parent" android:layout_height="457dp"
+        android:layout_marginLeft="0dp"
+        android:layout_marginRight="0dp">
 
         <ImageButton
             android:layout_width="150dp"
@@ -15,7 +17,8 @@
             android:background="#00ffffff"
             android:scaleType="fitXY"
             android:layout_alignParentTop="true"
-            android:layout_centerHorizontal="true"/>
+            android:layout_centerHorizontal="true"
+            android:paddingTop="5dp" />
 
         <ListView
             android:layout_width="wrap_content"
@@ -24,22 +27,26 @@
             android:layout_alignParentLeft="true"
             android:layout_alignParentStart="true"
             android:layout_below="@+id/changeStatusImageButton"
-            />
+            android:layout_alignParentBottom="true" />
 
     </RelativeLayout>
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="192dp">
 
-        <Button
-            android:layout_width="match_parent"
-            android:layout_height="60dp"
-            android:text="HANGOUT"
-            android:id="@+id/mainHangoutButton"
-            android:textSize="22dp"
-            android:layout_alignParentRight="true"
-            android:layout_alignParentEnd="true"
-            android:layout_alignParentLeft="true"
-            android:layout_alignParentStart="true"/>
-    </RelativeLayout>
+    <Button
+        android:layout_width="391dp"
+        android:layout_height="fill_parent"
+        android:text="HANGOUT"
+        android:id="@+id/mainHangoutButton"
+        android:textSize="22dp"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_margin="0dp"
+        android:layout_marginLeft="0dp"
+        android:layout_marginRight="0dp"
+        android:layout_marginTop="0dp"
+        android:layout_marginBottom="0dp"
+        android:layout_gravity="center_horizontal"
+        android:background="#706bef"
+        android:textColor="#ffffff" />
 </LinearLayout>
