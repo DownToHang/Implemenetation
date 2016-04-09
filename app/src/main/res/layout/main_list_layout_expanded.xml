@@ -56,5 +56,6 @@
         android:layout_toLeftOf="@+id/expandedRejectImageButton"
         android:layout_toStartOf="@+id/expandedRejectImageButton"
         android:scaleType="fitXY"
-        android:src="@mipmap/android_check" />
+        android:src="@mipmap/android_check"
+        android:padding="5dp" />
 </RelativeLayout>
