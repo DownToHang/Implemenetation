@@ -2,8 +2,12 @@ package io.evolution.downtohang;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.location.Location;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
@@ -11,6 +15,7 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -18,10 +23,32 @@ import java.util.List;
 /**
  * Created by eliakah on 4/2/2016.
  */
-public class HangoutActivity extends Activity {
+public class HangoutActivity extends AppCompatActivity  {
     private Button leave_Button;
     private ListView hangout_ListView;
     private List<User> users = new ArrayList<User>();
+
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu){
+        getMenuInflater().inflate(R.menu.limited_menu, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item){
+        switch(item.getItemId()){
+
+            case R.id.menu_settings:
+                startActivity(new Intent(getApplicationContext(), SettingsActivity.class));
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+    }
+
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -70,7 +97,7 @@ public class HangoutActivity extends Activity {
             usernameView.setText(currentUser.getUsername());
             //status
             ImageView statusView = (ImageView) itemView.findViewById(R.id.status_ImageView);
-            if(!currentUser.getHangoutStatus().equals("0")) {
+            if(!currentUser.getHangStatus().equals("0")) {
                 statusView.setImageResource(R.mipmap.android_check);
             }else{
                 statusView.setImageResource(R.mipmap.android_block);
@@ -81,57 +108,6 @@ public class HangoutActivity extends Activity {
             return itemView;
         }
     }
-
-
-
-
-
-
-
-
-
-
-
-    //inner class
-    public class User{
-        String id;
-        String username;
-        String hangoutStatus;
-        public User (String id, String username, String hangoutStatus){
-            this.id = id;
-            this.username = username;
-            this.hangoutStatus = hangoutStatus;
-        }
-        public User (){
-
-        }
-
-        public String getId() {
-            return id;
-        }
-
-        public void setId(String id) {
-            this.id = id;
-        }
-
-        public String getUsername() {
-            return username;
-        }
-
-        public void setUsername(String username) {
-            this.username = username;
-        }
-
-        public String getHangoutStatus() {
-            return hangoutStatus;
-        }
-
-        public void setHangoutStatus(String hangoutStatus) {
-            this.hangoutStatus = hangoutStatus;
-        }
-
-    }
-
 
 
 
