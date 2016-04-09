@@ -3,6 +3,7 @@ package io.evolution.downtohang;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.LayoutInflater;
@@ -25,10 +26,13 @@ import java.util.ArrayList;
 public class MainActivity extends AppCompatActivity implements OnClickListener {
 
     private int status = 0;
+    private User you;
     private ArrayList<User> users;
     private ImageButton changeStatusImageButton;
     private ListView usersListView;
     private Button mainHangoutButton;
+
+    private SharedPreferences savedValues;
 
 
     @Override
@@ -41,13 +45,13 @@ public class MainActivity extends AppCompatActivity implements OnClickListener {
     public boolean onOptionsItemSelected(MenuItem item){
         switch(item.getItemId()){
             case R.id.menu_add:
-                Toast.makeText(this, "Add Button", Toast.LENGTH_SHORT).show();
+                goToActivity(ManageContactsActivity.class);
                 return true;
             case R.id.menu_refresh:
                 Toast.makeText(this, "Refresh Button", Toast.LENGTH_SHORT).show();
                 return true;
             case R.id.menu_settings:
-                startActivity(new Intent(getApplicationContext(), SettingsActivity.class));
+                goToActivity(SettingsActivity.class);
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
@@ -57,6 +61,11 @@ public class MainActivity extends AppCompatActivity implements OnClickListener {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        savedValues = getSharedPreferences("Saved Values",MODE_PRIVATE);
+        if(savedValues.getString("youUser",null) == null) {
+            goToActivity(CreateAccountActivity.class);
+            return;
+        }
         setContentView(R.layout.main_layout);
         changeStatusImageButton = (ImageButton) findViewById(R.id.changeStatusImageButton);
         changeStatusImageButton.setOnClickListener(this);
@@ -95,15 +104,15 @@ public class MainActivity extends AppCompatActivity implements OnClickListener {
                 changeStatus();
                 break;
             case R.id.mainHangoutButton:
-                goToHangoutLayout();
+                goToActivity(CreateHangoutLayout.class);
                 break;
             default:
                 break;
         }
     }
 
-    public void goToHangoutLayout() {
-        Intent intent = new Intent(getApplicationContext(), HangoutActivity.class);
+    public void goToActivity(Class c) {
+        Intent intent = new Intent(getApplicationContext(), c);
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         getApplicationContext().startActivity(intent);
     }

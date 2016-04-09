@@ -2,6 +2,7 @@ package io.evolution.downtohang;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
@@ -29,6 +30,8 @@ public class CreateAccountActivity extends Activity
     private Button selectImageButton;
     private Button createAccountButton;
 
+    private SharedPreferences savedValues;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -55,8 +58,13 @@ public class CreateAccountActivity extends Activity
                 break;
             case R.id.createAccountCreateAccountButton:
                 if(createAccount(editUsername.getText().toString())) {
-                    setErrorMessage("Successful!");
-
+                    savedValues = getSharedPreferences("Saved Values",MODE_PRIVATE);
+                    SharedPreferences.Editor editor = savedValues.edit();
+                    editor.putString("youUser",editUsername.getText().toString());
+                    editor.commit();
+                    Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+                    intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                    getApplicationContext().startActivity(intent);
                 }
         }
     }

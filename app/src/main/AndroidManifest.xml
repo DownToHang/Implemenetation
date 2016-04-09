@@ -17,10 +17,19 @@
             </intent-filter>
         </activity>
 
+        <activity android:name=".CreateAccountActivity"
+                  android:label="DownToHang">
+        </activity>
         <activity android:name=".SettingsActivity"
                   android:label="DownToHang">
         </activity>
         <activity android:name=".HangoutActivity"
+                  android:label="DownToHang">
+        </activity>
+        <activity android:name=".CreateHangoutLayout"
+                  android:label="DownToHang">
+        </activity>
+        <activity android:name=".ManageContactsActivity"
                   android:label="DownToHang">
         </activity>
     </application>
