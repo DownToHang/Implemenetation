@@ -7,4 +7,11 @@
         android:title="@string/menu_settings"
         android:icon="@mipmap/menu_settings_icon"
         app:showAsAction="always" />
+    <item android:id="@+id/menu_refresh"
+        android:title="@string/menu_refresh"
+        android:icon="@mipmap/menu_refresh_icon"
+        app:showAsAction="always" />
+
+
+
 </menu>
