@@ -52,6 +52,7 @@ public class SettingsActivity extends Activity implements View.OnClickListener, 
                 goToImageSelect();
             }
         });
+        usernameEdit.setOnEditorActionListener(this);
         //on button click, create intent
     }
 
@@ -62,6 +63,7 @@ public class SettingsActivity extends Activity implements View.OnClickListener, 
 
     @Override
     public boolean onEditorAction(TextView tv, int actionId, KeyEvent event) {
+        System.out.println("Here");
         if(actionId == EditorInfo.IME_ACTION_DONE || actionId == EditorInfo.IME_ACTION_UNSPECIFIED) {
             SharedPreferences.Editor editor = savedValues.edit();
             editor.putString("youUser",usernameEdit.getText().toString());
