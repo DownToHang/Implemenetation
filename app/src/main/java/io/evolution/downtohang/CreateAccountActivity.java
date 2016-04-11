@@ -6,6 +6,7 @@ import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.StrictMode;
 import android.provider.MediaStore;
 import android.view.View;
 import android.widget.Button;
@@ -14,14 +15,16 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import java.io.IOException;
+import java.util.UUID;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import okhttp3.*;
 
 public class CreateAccountActivity extends Activity
     implements View.OnClickListener {
 
     private static final int PICK_PROFILE_ICON_IMAGE = 100;
-
+    private OkHttpClient client;
     private TextView usernameLabel;
     private EditText editUsername;
     private TextView errorLabel;
@@ -34,9 +37,11 @@ public class CreateAccountActivity extends Activity
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
+        StrictMode.setThreadPolicy(policy);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.create_account);
-
+        client = new OkHttpClient();
         // get references to each widget
         usernameLabel = (TextView) findViewById(R.id.createAccountUsernameLabel);
         editUsername = (EditText) findViewById(R.id.createAccountEditUsername);
@@ -58,6 +63,7 @@ public class CreateAccountActivity extends Activity
                 break;
             case R.id.createAccountCreateAccountButton:
                 if(createAccount(editUsername.getText().toString())) {
+
                     savedValues = getSharedPreferences("Saved Values",MODE_PRIVATE);
                     SharedPreferences.Editor editor = savedValues.edit();
                     editor.putString("youUser",editUsername.getText().toString());
@@ -65,6 +71,20 @@ public class CreateAccountActivity extends Activity
                     Intent intent = new Intent(getApplicationContext(), MainActivity.class);
                     intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                     getApplicationContext().startActivity(intent);
+                    try {
+                        MediaType mediaType = MediaType.parse("application/json");
+                        RequestBody body = RequestBody.create(mediaType, "{\"uuid\":\""+ UUID.randomUUID().toString()+"\",\"userName\":\""+editUsername.getText().toString()+"\",\"status\":0,\"hangoutStatus\":0,\"latitude\":39.7104,\"longitude\":-75.1202}");
+                        Request request = new Request.Builder()
+                                .url("http://www.3volution.io:4001/api/Users")
+                                .post(body)
+                                .addHeader("x-ibm-client-id", "default")
+                                .addHeader("x-ibm-client-secret", "SECRET")
+                                .addHeader("content-type", "application/json")
+                                .addHeader("accept", "application/json")
+                                .build();
+
+                        Response response = client.newCall(request).execute();
+                    }catch (IOException e){}
                 }
         }
     }
