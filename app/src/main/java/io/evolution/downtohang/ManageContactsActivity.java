@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Intent;
 import android.media.Image;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -23,7 +24,7 @@ import java.util.List;
 /**
  * Created by Patrick on 4/2/2016.
  */
-public class ManageContactsActivity extends Activity {
+public class ManageContactsActivity extends AppCompatActivity {
 
     private TextView manageContactsSearchUserLabel;
     private EditText manageContactsSearchUserEditText;

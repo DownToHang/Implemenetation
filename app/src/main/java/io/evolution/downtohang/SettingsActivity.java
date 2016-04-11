@@ -10,6 +10,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -26,7 +27,7 @@ import android.widget.Toast;
 /**
  * Created by michael on 4/2/2016.
  */
-public class SettingsActivity extends Activity implements View.OnClickListener, TextView.OnEditorActionListener{
+public class SettingsActivity extends AppCompatActivity implements View.OnClickListener, TextView.OnEditorActionListener{
 
     private static final int PICK_PROFILE_ICON_IMAGE = 100;
     public ImageView profilePic;
