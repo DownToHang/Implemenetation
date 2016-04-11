@@ -11,6 +11,8 @@ import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.KeyEvent;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
 import android.widget.Button;
@@ -18,6 +20,7 @@ import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 
 /**
@@ -30,6 +33,29 @@ public class SettingsActivity extends Activity implements View.OnClickListener, 
     private EditText usernameEdit;
 
     private SharedPreferences savedValues;
+
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu){
+        getMenuInflater().inflate(R.menu.limited_menu, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item){
+        switch(item.getItemId()){
+            case R.id.menu_refresh:
+                Toast.makeText(this, "Refresh Button", Toast.LENGTH_SHORT).show();
+                return true;
+
+            case R.id.menu_settings:
+                startActivity(new Intent(getApplicationContext(), SettingsActivity.class));
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+    }
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
