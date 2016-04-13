@@ -38,24 +38,10 @@ public class SettingsActivity extends AppCompatActivity implements View.OnClickL
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu){
-        getMenuInflater().inflate(R.menu.limited_menu, menu);
+        getMenuInflater().inflate(R.menu.zero_menu, menu);
         return true;
     }
 
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item){
-        switch(item.getItemId()){
-            case R.id.menu_refresh:
-                Toast.makeText(this, "Refresh Button", Toast.LENGTH_SHORT).show();
-                return true;
-
-            case R.id.menu_settings:
-                startActivity(new Intent(getApplicationContext(), SettingsActivity.class));
-                return true;
-            default:
-                return super.onOptionsItemSelected(item);
-        }
-    }
 
 
     @Override
