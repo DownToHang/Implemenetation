@@ -110,7 +110,13 @@ public class ManageContactsActivity extends AppCompatActivity {
             //username
             TextView usernameView = (TextView) itemView.findViewById(R.id.manageContactsAdapterUserNameLabel);
             usernameView.setText(currentUser.getUsername());
-            //status
+
+            /*Button checks user status and displays cooresponding button text:
+            User is a friend:       Button text = "Remove"
+            User is not a friend:   Button text = "Add"
+            User has received invite but has not acted: Button text = "Pending"
+             */
+
             Button button = (Button) itemView.findViewById(R.id.manageContactsAdapterActionButton);
             if(!currentUser.getHangStatus().equals("0")) {
                 button.setText("ADD");
