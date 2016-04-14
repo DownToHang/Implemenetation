@@ -56,7 +56,7 @@ public class SettingsActivity extends AppCompatActivity implements View.OnClickL
 
         usernameEdit = (EditText) findViewById(R.id.usernameEdit);
         savedValues = getSharedPreferences("Saved Values",MODE_PRIVATE);
-        usernameEdit.setText(savedValues.getString("youUser", ""));
+        usernameEdit.setText(savedValues.getString("yourName", ""));
 
 
         browseButton.setOnClickListener( new View.OnClickListener(){
