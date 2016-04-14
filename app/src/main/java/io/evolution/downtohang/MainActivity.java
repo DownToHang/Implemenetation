@@ -62,10 +62,11 @@ public class MainActivity extends AppCompatActivity implements OnClickListener {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         savedValues = getSharedPreferences("Saved Values",MODE_PRIVATE);
-        if(savedValues.getString("youUser",null) == null) {
+        if(savedValues.getString("yourName",null) == null) {
             goToActivity(CreateAccountActivity.class);
             return;
         }
+        generateYou();
         setContentView(R.layout.main_layout);
         changeStatusImageButton = (ImageButton) findViewById(R.id.changeStatusImageButton);
         changeStatusImageButton.setOnClickListener(this);
@@ -79,17 +80,27 @@ public class MainActivity extends AppCompatActivity implements OnClickListener {
         populateListView();
     }
 
+    public void generateYou() {
+        String uuid = savedValues.getString("yourUUID",null);
+        String username = savedValues.getString("yourName",null);
+        String status = savedValues.getString("yourStatus",null);
+        String hangoutStatus = savedValues.getString("yourHangoutStatus",null);
+        String latitude = savedValues.getString("yourLat",null);
+        String longitude = savedValues.getString("yourLong",null);
+        you = new User(uuid,username,hangoutStatus,status);
+    }
+
 
     private void populateList() {
         users = new ArrayList();
-        users.add(new User("0", "SuperPieGuy", "0", "1", null));
-        users.add(new User("1","Josh","0","0",null));
-        users.add(new User("2", "Bill", "0", "0", null));
-        users.add(new User("3","SuperPieGuy2","Will","0",null));
-        users.add(new User("4","reundantWeEdle420","Will","0",null));
-        users.add(new User("5", "Yoonix", "0", "1", null));
-        users.add(new User("6", "SuperPieGuy3", "Will", "0", null));
-        users.add(new User("7", "JoshAgain", "0", "0", null));
+        users.add(new User("0", "SuperPieGuy", "0", "1"));
+        users.add(new User("1","Josh","0","0"));
+        users.add(new User("2", "Bill", "0", "0"));
+        users.add(new User("3","SuperPieGuy2","Will","0"));
+        users.add(new User("4","reundantWeEdle420","Will","0"));
+        users.add(new User("5", "Yoonix", "0", "1"));
+        users.add(new User("6", "SuperPieGuy3", "Will", "0"));
+        users.add(new User("7", "JoshAgain", "0", "0"));
 
     }
 

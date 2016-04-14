@@ -23,8 +23,7 @@ public class User {
     private String   username;   // self explanatory
     private String   hangoutStatus; //name for a hangout if they are in one
     private Location location;   // geolocation for now its a string
-    private String   availablity;// available, not available, in a hangout, busy etc.
-    private Image    profilePic; // profile picture
+    private String   availability;// available, not available, in a hangout, busy etc.
     private boolean  isSelected;
 
     public User(){
@@ -58,17 +57,14 @@ public class User {
     public User(String id, String username, Image profilePic){
         this.id = id;
         this.username = username;
-        this.profilePic = profilePic;
     }
 
     public User(String id, String username, String hangoutStatus,
-                String availablity, Image profilePic) {
+                String availability) {
         this.id = id;
         this.username = username;
         this.hangoutStatus = hangoutStatus;
-        this.availablity = availablity;
-        this.profilePic = profilePic;
-
+        this.availability = availability;
     }
 
     //setters
@@ -84,8 +80,8 @@ public class User {
     public void setLocation(Location location){
         this.location = location;
     }
-    public void setAvailablity(String availablity){
-        this.availablity = availablity;
+    public void setAvailability(String availability){
+        this.availability = availability;
     }
 
     //getters
@@ -101,8 +97,8 @@ public class User {
     public Location getLocation(){
         return location;
     }
-    public String getAvailablity(){
-        return availablity;
+    public String getAvailability(){
+        return availability;
     }
 
 }
