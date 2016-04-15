@@ -6,29 +6,16 @@ import android.os.Bundle;
 
 class AppLocationListener implements LocationListener {
 
-    private double latitude;
-    private double longitude;
+    private Location location;
 
-    public AppLocationListener(double startLat, double startLong) {
-        latitude = startLat;
-        longitude = startLong;
-    }
-
-
-    public double getLatitude() {
-        return latitude;
-    }
-
-    public double getLongitude() {
-        return longitude;
+    public Location getLocation() {
+        return location;
     }
 
     @Override
     public void onLocationChanged(Location location) {
-        System.out.println("New Lat Long!");
         if(location != null) {
-            latitude = location.getLongitude();
-            longitude = location.getLatitude();
+            this.location = location;
         }
     }
 
@@ -39,10 +26,12 @@ class AppLocationListener implements LocationListener {
 
     @Override
     public void onProviderEnabled(String provider) {
-
+        System.out.println("AppLocationListener Enabled!");
     }
 
     @Override
     public void onProviderDisabled(String provider) {
+        System.out.println("AppLocationListener Disabled!");
     }
+
 }

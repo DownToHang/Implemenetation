@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
+import android.location.Criteria;
 import android.location.Location;
 import android.location.LocationManager;
 import android.net.ConnectivityManager;
@@ -30,13 +31,17 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import okhttp3.*;
 
+/**
+ * The create account activity. Users create an account and are added to
+ * the database.
+ */
 public class CreateAccountActivity extends AppCompatActivity
     implements View.OnClickListener {
 
     private final int REQUEST_LOCATION_PERMISSION_UPDATE_LOCATION = 1;
 
     private static final int PICK_PROFILE_ICON_IMAGE = 100;
-    private OkHttpClient client;
+
     private TextView usernameLabel;
     private EditText editUsername;
     private TextView errorLabel;
@@ -47,6 +52,7 @@ public class CreateAccountActivity extends AppCompatActivity
 
     private AppLocationListener locationListener;
     private LocationManager locationManager;
+    private OkHttpClient client;
 
     private String uuid;
     private String username;
@@ -57,14 +63,22 @@ public class CreateAccountActivity extends AppCompatActivity
 
     private SharedPreferences savedValues;
 
+    /**
+     * Create the Activity
+     * @param savedInstanceState the applications current saved state.
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.create_account);
 
-        locationManager= (LocationManager)getSystemService(Context.LOCATION_SERVICE);
+        locationManager = (LocationManager)getSystemService(Context.LOCATION_SERVICE);
+        locationListener = new AppLocationListener();
+        String bestProvider = locationManager.getBestProvider(new Criteria(),true);
+        System.out.println(bestProvider);
 
         client = new OkHttpClient();
+
         // get references to each widget
         usernameLabel = (TextView) findViewById(R.id.createAccountUsernameLabel);
         editUsername = (EditText) findViewById(R.id.createAccountEditUsername);
@@ -80,21 +94,52 @@ public class CreateAccountActivity extends AppCompatActivity
 
         if(ContextCompat.checkSelfPermission(this,Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_DENIED) {
             ActivityCompat.requestPermissions(this,
-                    new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
+                    new String[]{Manifest.permission.ACCESS_FINE_LOCATION,Manifest.permission.ACCESS_COARSE_LOCATION},
                     REQUEST_LOCATION_PERMISSION_UPDATE_LOCATION);
         }
         else {
-            Location lastKnownLocation = locationManager.getLastKnownLocation(locationManager.GPS_PROVIDER);
-            locationListener = new AppLocationListener(lastKnownLocation.getLatitude(),
-                    lastKnownLocation.getLongitude());
-            String toastMsg = "Lat: " + locationListener.getLatitude() + " Long: " +
-                    locationListener.getLongitude();
-            Toast.makeText(getApplicationContext(),toastMsg,Toast.LENGTH_LONG).show();
             locationManager.requestLocationUpdates(locationManager.GPS_PROVIDER, 200, 1,
                     locationListener);
+            //testLocationListener();
         }
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        try {
+            locationManager.removeUpdates(locationListener);
+        }
+        catch(SecurityException se) {
+            System.err.print("No permissions to remove!");
+        }
+
+    }
+
+    /**
+     * Testing for location listener set up
+     */
+    public void testLocationListener() {
+        String lat = "No location available";
+        String lon = "No location available";
+        Location current = locationListener.getLocation();
+        if(current != null) {
+            lat = Double.toString(current.getLatitude());
+            lon = Double.toString(current.getLongitude());
+        }
+        String toastMsg = "Lat: " + lat+ " Long: " + lon;
+        Toast.makeText(getApplicationContext(),toastMsg,Toast.LENGTH_LONG).show();
+    }
+
+    /**
+     * Handle click events for a view.
+     * @param v a view
+     */
     public void onClick(View v) {
         switch(v.getId()) {
             case R.id.createAccountSelectImageButton:
@@ -106,6 +151,7 @@ public class CreateAccountActivity extends AppCompatActivity
     }
 
     /**
+     * Go to the main activity.
      */
     public void goToMainActivity() {
         savedValues = getSharedPreferences("Saved Values",MODE_PRIVATE);
@@ -120,6 +166,7 @@ public class CreateAccountActivity extends AppCompatActivity
         Intent intent = new Intent(getApplicationContext(), MainActivity.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         getApplicationContext().startActivity(intent);
+        finish();
     }
 
     /**
@@ -142,13 +189,27 @@ public class CreateAccountActivity extends AppCompatActivity
             uuid = UUID.randomUUID().toString();
             status = "0";
             hangoutStatus = "0";
-            latitude = Double.toString(locationListener.getLatitude());
-            longitude =  Double.toString(locationListener.getLongitude());
+            Location currentLocation = locationListener.getLocation();
+            if(currentLocation != null) {
+                latitude = Double.toString(currentLocation.getLatitude());
+                longitude =  Double.toString(currentLocation.getLongitude());
+            }
+            else {
+                latitude = longitude = "N/A";
+            }
             new AddUserToServerDB().execute();
         }
     }
 
 
+    /**
+     * Perform some action after the user has denied or accepted
+     * a request to use a permission.
+     * @param requestCode the code of the request
+     * @param permissions the list of permissions being to be granted
+     * @param grantResults array corresponding to permissions determining whether
+     *                     the permission was granted or denied.
+     */
     @Override
     public void onRequestPermissionsResult(int requestCode,
                                            String permissions[], int[] grantResults) {
@@ -158,20 +219,11 @@ public class CreateAccountActivity extends AppCompatActivity
                 if (grantResults.length > 0
                         && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                     if(ContextCompat.checkSelfPermission(this,Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
-                        Location lastKnownLocation = locationManager.getLastKnownLocation(locationManager.GPS_PROVIDER);
-                        locationListener = new AppLocationListener(lastKnownLocation.getLatitude(),
-                                lastKnownLocation.getLongitude());
-                        String toastMsg = "Lat: " + locationListener.getLatitude() + " Long: " +
-                                locationListener.getLongitude();
-                        Toast.makeText(getApplicationContext(),toastMsg,Toast.LENGTH_LONG).show();
+                        locationManager.requestLocationUpdates(locationManager.GPS_PROVIDER, 200, 1,
+                                locationListener);
                     }
                 }
-                else {
-                    locationListener = new AppLocationListener(0,0);
-                    String toastMsg = "Lat: " + locationListener.getLatitude() + " Long: " +
-                            locationListener.getLongitude();
-                    Toast.makeText(getApplicationContext(),toastMsg,Toast.LENGTH_LONG).show();
-                }
+                //testLocationListener();
                 return;
             }
         }
@@ -212,13 +264,20 @@ public class CreateAccountActivity extends AppCompatActivity
      * Go to gallery via an intent.
      */
     public void goToImageSelect() {
-        Intent intent = new Intent();
+        testLocationListener();
+        /*Intent intent = new Intent();
         intent.setType("image/*");
         intent.setAction(Intent.ACTION_GET_CONTENT);
         startActivityForResult(Intent.createChooser(intent, "Select Picture"),
-                PICK_PROFILE_ICON_IMAGE);
+                PICK_PROFILE_ICON_IMAGE);*/
     }
 
+    /**
+     * Handle data sent back from another intent
+     * @param requestCode the request code, specified by user.
+     * @param resultCode the result code, determines if everything went okay.
+     * @param data the data from the intent.
+     */
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -242,6 +301,14 @@ public class CreateAccountActivity extends AppCompatActivity
     // ----- Asynchronous Task Classes -----
     class AddUserToServerDB extends AsyncTask<Void, Void, String> {
 
+        /**
+         * Task to perform in the background
+         * @param params a list of void parameters
+         * @return Three possible types of strings:
+         *          "200" if the request went through.
+         *          The message of the response if the HTTP code was not 200.
+         *          "failed" if the request failed.
+         */
         @Override
         protected String doInBackground(Void... params ) {
             // params must be in a particular order.
@@ -277,6 +344,10 @@ public class CreateAccountActivity extends AppCompatActivity
             }
         }
 
+        /**
+         * Actions to perform after the asynchronous request
+         * @param message the message returned by the request
+         */
         @Override
         protected void onPostExecute(String message) {
             if(message.equals("200")) {
@@ -293,4 +364,3 @@ public class CreateAccountActivity extends AppCompatActivity
         }
     }
 }
-
