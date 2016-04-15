@@ -69,11 +69,13 @@ public class CreateHangoutLayout extends AppCompatActivity{
         hangoutButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // must update local database and yourself, first thing
+                /* must refresh local database and yourself, first thing */
+                db.updateFriends(onlineUsers); //updates friends to current
 
-                // change leader hangoutStatus to leader's own uuid
-
-                // change members' hangoutStatus to leader's uuid
+                /* change leader hangoutStatus to leader's own uuid */
+                //MainActivity.you.setHangStatus(MainActivity.you.getId);
+                //MainActivity.you.setStatus(0);//flag that means in hangout(yellow)
+                //update you (leader) in online database
 
                 ArrayList<User> selectedUsers = new ArrayList<User>();
                 for(User u: onlineUsers){
@@ -82,6 +84,9 @@ public class CreateHangoutLayout extends AppCompatActivity{
                         selectedUsers.add(u);
                     }//end if
                 }//end for
+
+                /* change members' hangoutStatus to leader's uuid */
+
 
                 //this is to test if selected users are correctly selected
                 //this code will be replaced by a new intent passing in a list of user id's
@@ -106,7 +111,6 @@ public class CreateHangoutLayout extends AppCompatActivity{
     }
 
     private void populateListView() {
-
         //Build Adapter
         ArrayAdapter<User> adapter = new MyArrayAdapter();
 
@@ -141,7 +145,6 @@ public class CreateHangoutLayout extends AppCompatActivity{
             }else{
                 item = (CreateHangoutListItemLayout) convertView;
             }
-
             return item;
         }//end of getView
 
