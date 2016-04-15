@@ -38,8 +38,8 @@ public class CreateHangoutListItemLayout extends RelativeLayout implements andro
     @Override
     public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
         user.setIsSelected(isChecked);
-
-        Toast.makeText(context,"Clicked on User :" + user.getUsername()
-                + ". State is :" + isChecked, Toast.LENGTH_SHORT).show();
+        //Toast to test if it registers being checked
+//        Toast.makeText(context,"Clicked on User :" + user.getUsername()
+//                + ". State is :" + isChecked, Toast.LENGTH_SHORT).show();
     }
 }
