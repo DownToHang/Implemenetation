@@ -55,9 +55,7 @@ public class ManageContactsActivity extends AppCompatActivity {
                 populateList();
                 return true;
 
-            case R.id.menu_settings:
-                startActivity(new Intent(getApplicationContext(), SettingsActivity.class));
-                return true;
+
             default:
                 return super.onOptionsItemSelected(item);
         }
