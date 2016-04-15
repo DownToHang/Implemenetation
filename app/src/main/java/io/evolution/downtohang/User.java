@@ -25,6 +25,10 @@ public class User {
     private Location location;   // geolocation for now its a string
     private Integer   status;// available, not available, in a hangout, busy etc.
     private boolean  isSelected;
+
+    private double Latitude;
+    private double Longitude;
+
     public User(){
         //constructor
     }
@@ -36,10 +40,21 @@ public class User {
         this.status = status;
         this.hangoutStatus = hangoutStatus;
         location = new Location("");
+        Latitude = latitude;
+        Longitude = longitude;
         location.setLatitude(latitude);
         location.setLongitude(longitude);
     }
 
+    //returns latitude
+    public double getLat() {
+        return Latitude;
+    }
+
+    //returns longitude
+    public double getLong() {
+        return Longitude;
+    }
 
     //Constructor for Hangout Activity
     public User(String id, String username, String hangoutStatus){

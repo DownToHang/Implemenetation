@@ -12,13 +12,18 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import java.text.DecimalFormat;
+
 /**
  * Created by Bill Ezekiel on 3/7/2016.
  */
 public class MainListItemLayout extends RelativeLayout implements OnClickListener {
 
-    private static final String BUSY = "0",NO_HANGOUT = "0";
-    private static final String AVAILABLE = "1";
+
+    private User you;
+
+    private final String BUSY = "0",NO_HANGOUT = "0";
+    private final String AVAILABLE = "1";
 
     // Collapsed View
     private RelativeLayout mainListItemExpandedView;
@@ -41,11 +46,13 @@ public class MainListItemLayout extends RelativeLayout implements OnClickListene
     private User user;
     private boolean changing;
 
-    public MainListItemLayout(Context context, User user, boolean expanded) {
+    public MainListItemLayout(Context context, User user, boolean expanded, User appUser) {
         super(context);
         this.user = user;
         this.expanded = expanded;
         changing = false;
+
+        this.you = appUser;
 
         LayoutInflater inflater = (LayoutInflater)
                 context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
@@ -117,10 +124,44 @@ public class MainListItemLayout extends RelativeLayout implements OnClickListene
         expandedRejectImageButton.setBackgroundColor(0);
         expandedRejectImageButton.setOnClickListener(this);
 
+
+
         StringBuilder locationStringBuilder = new StringBuilder();
+
+        Location youLocation = you.getLocation();
+
         Location userLocation = user.getLocation();
-        locationStringBuilder.append("Lat: ").append(userLocation.getLatitude()).append("\n")
-                .append("Long: ").append(userLocation.getLongitude());
+
+        float[] resultArray = new float[1];
+
+        youLocation.distanceBetween(you.getLat(), you.getLong(), user.getLat(), user.getLong(), resultArray);
+
+        double distanceFeet = resultArray[0] * 3.28084;
+
+        DecimalFormat df = new DecimalFormat("#.##");
+
+
+        //displays how far away your contacts are from you in feet/miles
+        if (distanceFeet < 5280) {
+            locationStringBuilder.append("Is ")
+                    .append(df.format(distanceFeet))
+                    .append(" feet away.")
+                    .append("\n");
+        }
+        else {
+            locationStringBuilder.append("Is ")
+                    .append(df.format(distanceFeet/5280))
+                    .append(" miles away.")
+                    .append("\n");
+        }
+
+
+        //Location userLocation = user.getLocation();
+
+
+
+//        locationStringBuilder.append("Lat: ").append(userLocation.getLatitude()).append("\n")
+//                .append("Long: ").append(userLocation.getLongitude());
         expandedLocationLabel.setText(locationStringBuilder.toString());
 
         if (expanded) {
@@ -131,9 +172,6 @@ public class MainListItemLayout extends RelativeLayout implements OnClickListene
         }
     }
 
-    public MainListItemLayout(Context context,User user) {
-        this(context, user, false);
-    }
 
     public void expand() {
         expanded = true;
