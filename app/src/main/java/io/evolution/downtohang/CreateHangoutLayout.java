@@ -2,6 +2,8 @@ package io.evolution.downtohang;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.RecyclerView;
@@ -14,8 +16,15 @@ import android.widget.Button;
 import android.widget.ListView;
 import android.widget.Toast;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+
+import okhttp3.MediaType;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.RequestBody;
+import okhttp3.Response;
 
 public class CreateHangoutLayout extends AppCompatActivity{
 
@@ -24,6 +33,14 @@ public class CreateHangoutLayout extends AppCompatActivity{
     private ListView lv;
     private Context context;
     private Button hangoutButton;
+
+    private OkHttpClient client;
+
+    private String uuidLeader;
+    private String selectedUuid;
+
+    private SharedPreferences savedValues;
+    private User you;
 
 
     @Override
@@ -52,6 +69,8 @@ public class CreateHangoutLayout extends AppCompatActivity{
         context = this;
         db = new LocalDB(context);
         hangoutButton = (Button) findViewById(R.id.hangoutButton);
+        client = new OkHttpClient();
+        uuidLeader = you.getHangStatus();
 
         //populates list of users
         populateUsers();
@@ -59,6 +78,17 @@ public class CreateHangoutLayout extends AppCompatActivity{
         populateListView();
         //sets the onClickListener for the "Lets Hang!" button
         setOnClickListener();
+    }
+
+    public void generateYou() {
+        String uuid = savedValues.getString("yourUUID",null);
+        String username = savedValues.getString("yourName",null);
+        String status = savedValues.getString("yourStatus",null);
+        String hangoutStatus = savedValues.getString("yourHangoutStatus",null);
+        String latitude = savedValues.getString("yourLat",null);
+        String longitude = savedValues.getString("yourLong",null);
+        assert status != null;
+        you = new User(uuid,username,hangoutStatus,Integer.parseInt(status));
     }
 
     private void setOnClickListener() {
@@ -69,9 +99,12 @@ public class CreateHangoutLayout extends AppCompatActivity{
                 db.updateFriends(onlineUsers); //updates friends to current
 
                 /* change leader hangoutStatus to leader's own uuid */
-                //MainActivity.you.setHangStatus(MainActivity.you.getId);
-                //MainActivity.you.setStatus(0);//flag that means in hangout(yellow)
+                you.setHangStatus(uuidLeader);
+                you.setStatus(0);
+
                 //update you (leader) in online database
+                selectedUuid = you.getUUID();
+                new UpdateUserHangStatus().execute();
 
                 ArrayList<User> selectedUsers = new ArrayList<User>();
                 for(User u: onlineUsers){
@@ -81,18 +114,13 @@ public class CreateHangoutLayout extends AppCompatActivity{
                     }//end if
                 }//end for
 
-                /* change members' hangoutStatus to leader's uuid */
-
-
-                //this is to test if selected users are correctly selected
-                //this code will be replaced by a new intent passing in a list of user id's
-                String toastMsg = "You have Selected: \n";
+                /* change members' hangoutStatus to leader's uuid and set status to 0 */
                 for (User x: selectedUsers){
-                    toastMsg = toastMsg + x.getUsername()+"\n";
-
+                    selectedUuid = x.getUUID();
+                    x.setStatus(0);
+                    x.setHangStatus(uuidLeader);
+                    new  UpdateUserHangStatus().execute();
                 }
-
-                Toast.makeText(context, toastMsg, Toast.LENGTH_SHORT).show();
             }//end onClick
         });
     }
@@ -148,4 +176,74 @@ public class CreateHangoutLayout extends AppCompatActivity{
 
 
     }//end of MyArrayListAdapter class
+
+    /**
+     * Go to the main activity.
+     */
+    public void goToMainActivity() {
+        savedValues = getSharedPreferences("Saved Values", MODE_PRIVATE);
+        SharedPreferences.Editor editor = savedValues.edit();
+        editor.putString("yourStatus", "0");
+        editor.putString("yourHangoutStatus", uuidLeader);
+        editor.commit();
+        Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        getApplicationContext().startActivity(intent);
+        finish();
+    }
+
+    /*-----------------------------Asynchronus Task-----------------------------*/
+    class UpdateUserHangStatus extends AsyncTask<Void, Void, String>{
+
+        @Override
+        protected String doInBackground(Void... params) {
+            try {
+                MediaType mediaType = MediaType.parse("application/json");
+                RequestBody body = RequestBody.create(mediaType, "{"+
+                                    "\"hangoutStatus\":" + uuidLeader +
+                                    "\"status\":0}");
+                Request request = new Request.Builder()
+                        .url("http://www.3volution.io:4001/api/Users/update?where={\"uuid\": \"" + selectedUuid + "\"}")
+                        .post(body)
+                        .addHeader("x-ibm-client-id", "default")
+                        .addHeader("x-ibm-client-secret", "SECRET")
+                        .addHeader("content-type", "application/json")
+                        .addHeader("accept", "application/json")
+                        .build();
+
+                Response response = client.newCall(request).execute();
+                if(response.code() == 200) {
+                    return "200";
+                }
+                else {
+                    return response.message();
+                }
+            }catch (IOException e) {
+                System.err.println(e);
+                return "failed";
+            }
+
+        }
+
+        /**
+         * Actions to perform after the asynchronous request
+         * @param message the message returned by the request
+         */
+        @Override
+        protected void onPostExecute(String message) {
+            if(message.equals("200")) {
+                // success, do what you need to.
+                goToMainActivity();
+            }
+            else if(message.equals("failed")) {
+                //error
+                System.err.println("error");
+            }
+            else {
+                // HTTP Error Message
+                System.err.println("HTTP Error Message");
+            }
+        }
+    }
+
 }//end of CreateHangoutActivity
