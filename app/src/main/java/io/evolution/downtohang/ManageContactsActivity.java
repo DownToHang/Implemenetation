@@ -198,7 +198,7 @@ public class ManageContactsActivity extends AppCompatActivity {
                                 o.getDouble("longitude")));
                     }
                 }catch (JSONException e){}
-
+//
             }
             else if(message.equals("failed")) {
 
