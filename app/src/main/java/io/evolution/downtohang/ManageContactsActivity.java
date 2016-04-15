@@ -54,7 +54,7 @@ public class ManageContactsActivity extends AppCompatActivity implements View.On
         switch(item.getItemId()){
             case R.id.menu_refresh:
                 Toast.makeText(this, "Refresh Button", Toast.LENGTH_SHORT).show();
-                populateList();
+
                 return true;
 
 
@@ -94,6 +94,7 @@ public class ManageContactsActivity extends AppCompatActivity implements View.On
         switch (v.getId()) {
             case R.id.manageContactsSearchButton:
                 Toast.makeText(this, "Search Button", Toast.LENGTH_SHORT).show();
+                populateList();
                 break;
         }
     }
