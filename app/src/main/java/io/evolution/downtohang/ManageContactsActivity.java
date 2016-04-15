@@ -30,6 +30,7 @@ public class ManageContactsActivity extends AppCompatActivity {
     private EditText manageContactsSearchUserEditText;
     private ImageView manageContactsSearchIconImageView;
     private ListView manageContactsSearchedUsersListView;
+    private LocalDB db;
     private List<User> users = new ArrayList<User>();
 
 
@@ -65,6 +66,9 @@ public class ManageContactsActivity extends AppCompatActivity {
         manageContactsSearchIconImageView = (ImageView) findViewById(R.id.manageContactsSearchIconImageView);
         manageContactsSearchedUsersListView = (ListView) findViewById(R.id.manageContactsSearchedUsersListView);
 
+        //DB
+        db = new LocalDB(this);
+
         populateList();
         populateListView();
     }
@@ -92,7 +96,7 @@ public class ManageContactsActivity extends AppCompatActivity {
         manageContactsSearchedUsersListView.setAdapter(adapter);
     }
 
-    private class MyListAdapter extends ArrayAdapter<User>{
+    private class MyListAdapter extends ArrayAdapter<User> implements View.OnClickListener{
 
         public MyListAdapter() {
             super(ManageContactsActivity.this, R.layout.manage_contacts_adapter, users);
@@ -111,12 +115,10 @@ public class ManageContactsActivity extends AppCompatActivity {
             TextView usernameView = (TextView) itemView.findViewById(R.id.manageContactsAdapterUserNameLabel);
             usernameView.setText(currentUser.getUsername());
 
-            /*Button checks user status and displays cooresponding button text:
+            /*Button checks user status and displays corresponding button text:
             User is a friend:       Button text = "Remove"
             User is not a friend:   Button text = "Add"
-            User has received invite but has not acted: Button text = "Pending"
-             */
-
+            User has received invite but has not acted: Button text = "Pending"  */
             Button button = (Button) itemView.findViewById(R.id.manageContactsAdapterActionButton);
             if(!currentUser.getHangStatus().equals("0")) {
                 button.setText("ADD");
@@ -124,6 +126,14 @@ public class ManageContactsActivity extends AppCompatActivity {
                 button.setText("REMOVE");
             }
             return itemView;
+        }
+
+        @Override
+        public void onClick(View v){
+            switch(v.getId()){
+                case R.id.manageContactsAdapterActionButton:
+
+            }
         }
 
     }
