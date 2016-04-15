@@ -25,6 +25,7 @@ public class MainActivity extends AppCompatActivity implements OnClickListener {
     private ImageButton changeStatusImageButton;
     private ListView usersListView;
     private Button mainHangoutButton;
+    private LocalDB db;
 
     private SharedPreferences savedValues;
 
@@ -71,8 +72,8 @@ public class MainActivity extends AppCompatActivity implements OnClickListener {
         mainHangoutButton = (Button) findViewById(R.id.mainHangoutButton);
 
         mainHangoutButton.setOnClickListener(this);
+        db = new LocalDB(this);
 
-        populateList();
         populateListView();
     }
 
@@ -104,6 +105,7 @@ public class MainActivity extends AppCompatActivity implements OnClickListener {
      * Populate the list view with users who are friends.
      */
     private void populateListView() {
+        users = db.getAllUsers();
         ArrayAdapter<User> adapter = new MainListAdapter();
         usersListView.setAdapter(adapter);
     }
