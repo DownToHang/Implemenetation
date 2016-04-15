@@ -3,6 +3,7 @@ package io.evolution.downtohang;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.location.Location;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -115,6 +116,12 @@ public class MainListItemLayout extends RelativeLayout implements OnClickListene
         expandedRejectImageButton = (ImageButton) findViewById(R.id.expandedRejectImageButton);
         expandedRejectImageButton.setBackgroundColor(0);
         expandedRejectImageButton.setOnClickListener(this);
+
+        StringBuilder locationStringBuilder = new StringBuilder();
+        Location userLocation = user.getLocation();
+        locationStringBuilder.append("Lat: ").append(userLocation.getLatitude()).append("\n")
+                .append("Long: ").append(userLocation.getLongitude());
+        expandedLocationLabel.setText(locationStringBuilder.toString());
 
         if (expanded) {
             expand();
