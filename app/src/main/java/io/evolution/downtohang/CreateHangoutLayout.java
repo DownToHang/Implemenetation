@@ -19,7 +19,8 @@ import java.util.List;
 
 public class CreateHangoutLayout extends AppCompatActivity{
 
-    List<User> users = new ArrayList<User>();
+    List<User> onlineUsers = new ArrayList<User>();
+    private LocalDB db;
     private ListView lv;
     private Context context;
     private Button hangoutButton;
@@ -53,13 +54,14 @@ public class CreateHangoutLayout extends AppCompatActivity{
 
         lv = (ListView) findViewById(R.id.createHangoutListView);
         context = this;
+        db = new LocalDB(context);
         hangoutButton = (Button) findViewById(R.id.hangoutButton);
 
         //populates list of users
         populateUsers();
         //populates the listView with items
         populateListView();
-        //sets the onClickListerner for the "Lets Hang!" button
+        //sets the onClickListener for the "Lets Hang!" button
         setOnClickListener();
     }
 
@@ -67,8 +69,14 @@ public class CreateHangoutLayout extends AppCompatActivity{
         hangoutButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                // must update local database and yourself, first thing
+
+                // change leader hangoutStatus to leader's own uuid
+
+                // change members' hangoutStatus to leader's uuid
+
                 ArrayList<User> selectedUsers = new ArrayList<User>();
-                for(User u: users){
+                for(User u: onlineUsers){
                     boolean selected = u.isSelected();
                     if(selected){
                         selectedUsers.add(u);
@@ -80,6 +88,7 @@ public class CreateHangoutLayout extends AppCompatActivity{
                 String toastMsg = "You have Selected: \n";
                 for (User x: selectedUsers){
                     toastMsg = toastMsg + x.getUsername()+"\n";
+
                 }
 
                 Toast.makeText(context, toastMsg, Toast.LENGTH_SHORT).show();
@@ -88,20 +97,12 @@ public class CreateHangoutLayout extends AppCompatActivity{
     }
 
     private void populateUsers() {
-        users.add(new User("Yoonix"));
-        users.add(new User("SuperPieGuy"));
-        users.add(new User("EZ"));
-        users.add(new User("SombreroCat"));
-        users.add(new User("Deaganthrope"));
-        users.add(new User("RedundantWeedle"));
-        users.add(new User("Megaladon"));
-        users.add(new User("RedundantWeedle1"));
-        users.add(new User("RedundantWeedle2"));
-        users.add(new User("RedundantWeedle3"));
-        users.add(new User("RedundantWeedle4"));
-        users.add(new User("RedundantWeedle5"));
-        users.add(new User("RedundantWeedle6"));
-
+        ArrayList<User> users = db.getAllUsers();
+        for(User u: users){
+            if(u.getStatus() == 1){
+                onlineUsers.add(u);
+            }//end if
+        }//end for
     }
 
     private void populateListView() {
@@ -114,12 +115,9 @@ public class CreateHangoutLayout extends AppCompatActivity{
     }
 
     private class MyArrayAdapter extends ArrayAdapter<User> {
-//
-//        private List<User> userList;
-//        private Context context;
 
         public MyArrayAdapter() {
-            super(CreateHangoutLayout.this, R.layout.activity_item_layout, users);
+            super(CreateHangoutLayout.this, R.layout.activity_item_layout, onlineUsers);
         }
 
         @Override
@@ -135,7 +133,7 @@ public class CreateHangoutLayout extends AppCompatActivity{
         @Override
         public View getView(int position, View convertView, ViewGroup parent) {
             // username to be displayed
-            User current = users.get(position);
+            User current = onlineUsers.get(position);
 
             CreateHangoutListItemLayout item = null;
             if (convertView == null){
