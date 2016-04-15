@@ -86,18 +86,29 @@ public class MainActivity extends AppCompatActivity implements OnClickListener {
     @Override
     protected void onResume() {
         super.onResume();
+        savedValues = getSharedPreferences("Saved Values", MODE_PRIVATE);
+        if (savedValues.getString("yourName", null) == null) {
+            // end main, need to create an account first.
+            goToActivity(CreateAccountActivity.class);
+            finish();
+            return;
+        }
         generateYou();
     }
 
     @Override
     protected void onStop() {
         super.onStop();
-        updateYou(you.getStatus(),you.getHangStatus(),you.getLat(),you.getLong());
+        if(you != null) {
+            updateYou(you.getStatus(),you.getHangStatus(),you.getLat(),you.getLong());
+        }
     }
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        updateYou(0,you.getHangStatus(),you.getLat(),you.getLong());
+        if(you != null) {
+            updateYou(0,you.getHangStatus(),you.getLat(),you.getLong());
+        }
     }
 
     public void generateYou() {
