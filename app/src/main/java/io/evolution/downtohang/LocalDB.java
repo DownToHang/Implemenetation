@@ -49,7 +49,7 @@ public class LocalDB {
                     STATUS + TEXT_TYPE + COMMA_SEP +
                     HANGOUT_STATUS + TEXT_TYPE + COMMA_SEP +
                     LATITUDE + REAL_TYPE + COMMA_SEP +
-                    LONGITUDE + REAL_TYPE + COMMA_SEP +
+                    LONGITUDE + REAL_TYPE +
                     ");";
 
     public static final String DROP_FRIENDS_TABLE = "DROP TABLE IF EXISTS " + FRIENDS_TABLE;
@@ -62,6 +62,10 @@ public class LocalDB {
         @Override
         public void onCreate(SQLiteDatabase db) {
             db.execSQL(CREATE_FRIENDS_TABLE);
+
+            db.execSQL("INSERT INTO friends VALUES (\"000-00\",\"SuperPieGuy\",\"1\",\"0\",80,-180)");
+            db.execSQL("INSERT INTO friends VALUES (\"111-1\",\"RWeedle\",\"0\",\"0\",0,0)");
+            db.execSQL("INSERT INTO friends VALUES (\"222-22\",\"Yoonix\",\"0\",\"Mike\",0,0)");
         }
 
         @Override
