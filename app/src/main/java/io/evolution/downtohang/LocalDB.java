@@ -52,7 +52,7 @@ public class LocalDB {
                     LONGITUDE + REAL_TYPE + COMMA_SEP +
                     ");";
 
-    public static final String DROP_TIP_TABLE = "DROP TABLE IF EXISTS " + FRIENDS_TABLE;
+    public static final String DROP_FRIENDS_TABLE = "DROP TABLE IF EXISTS " + FRIENDS_TABLE;
 
     private static class DBHelper extends SQLiteOpenHelper {
         public DBHelper(Context context, String name, SQLiteDatabase.CursorFactory factory, int version) {
@@ -62,17 +62,13 @@ public class LocalDB {
         @Override
         public void onCreate(SQLiteDatabase db) {
             db.execSQL(CREATE_FRIENDS_TABLE);
-
-            // insert default values
-            db.execSQL("INSERT INTO tip VALUES (1,0,40.60,.15)");
-            db.execSQL("INSERT INTO tip VALUES (2,0,37.50,.10)");
         }
 
         @Override
         public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-            Log.d("TipDB","Upgrading db from version " + oldVersion + " to " + newVersion);
+            Log.d("FriendDB","Upgrading db from version " + oldVersion + " to " + newVersion);
 
-            db.execSQL(LocalDB.DROP_TIP_TABLE);
+            db.execSQL(LocalDB.DROP_FRIENDS_TABLE);
             onCreate(db);
         }
     }
@@ -122,7 +118,7 @@ public class LocalDB {
         }
         else {
             try {
-                User tip = new User(
+                User user = new User(
                         cursor.getString(UUID_COL),
                         cursor.getString(USERNAME_COL),
                         cursor.getString(STATUS_COL),
@@ -130,7 +126,7 @@ public class LocalDB {
                         cursor.getDouble(LATITUDE_COL),
                         cursor.getDouble(LONGITUDE_COL)
                 );
-                return tip;
+                return user;
             }
             catch(Exception e) {
                 return null;
@@ -148,7 +144,7 @@ public class LocalDB {
         cv.put(LATITUDE,userLocation.getLatitude());
         cv.put(LONGITUDE,userLocation.getLongitude());
         this.openWriteableDB();
-        long rowID = db.insert(FRIENDS_TABLE, null,cv);
+        db.insert(FRIENDS_TABLE, null,cv);
         this.closeDB();
         return true;
     }
