@@ -70,6 +70,9 @@ public class CreateHangoutLayout extends AppCompatActivity{
         db = new LocalDB(context);
         hangoutButton = (Button) findViewById(R.id.hangoutButton);
         client = new OkHttpClient();
+        savedValues = getSharedPreferences("Shared Values", MODE_PRIVATE);
+
+        generateYou();
         uuidLeader = you.getHangStatus();
 
         //populates list of users
@@ -83,12 +86,11 @@ public class CreateHangoutLayout extends AppCompatActivity{
     public void generateYou() {
         String uuid = savedValues.getString("yourUUID",null);
         String username = savedValues.getString("yourName",null);
-        String status = savedValues.getString("yourStatus",null);
+        int status = savedValues.getInt("yourStatus",-1);
         String hangoutStatus = savedValues.getString("yourHangoutStatus",null);
         String latitude = savedValues.getString("yourLat",null);
         String longitude = savedValues.getString("yourLong",null);
-        assert status != null;
-        you = new User(uuid,username,hangoutStatus,Integer.parseInt(status));
+        you = new User(uuid,username,hangoutStatus,status);
     }
 
     private void setOnClickListener() {
@@ -184,7 +186,7 @@ public class CreateHangoutLayout extends AppCompatActivity{
     public void goToMainActivity() {
         savedValues = getSharedPreferences("Saved Values", MODE_PRIVATE);
         SharedPreferences.Editor editor = savedValues.edit();
-        editor.putString("yourStatus", "0");
+        editor.putInt("yourStatus", 0);
         editor.putString("yourHangoutStatus", uuidLeader);
         editor.commit();
         Intent intent = new Intent(getApplicationContext(), MainActivity.class);
@@ -202,7 +204,7 @@ public class CreateHangoutLayout extends AppCompatActivity{
                 MediaType mediaType = MediaType.parse("application/json");
                 RequestBody body = RequestBody.create(mediaType, "{"+
                                     "\"hangoutStatus\":" + uuidLeader +
-                                    "\"status\":0}");
+                                    ",\"status\":0}");
                 Request request = new Request.Builder()
                         .url("http://www.3volution.io:4001/api/Users/update?where={\"uuid\": \"" + selectedUuid + "\"}")
                         .post(body)
@@ -235,6 +237,7 @@ public class CreateHangoutLayout extends AppCompatActivity{
             if(message.equals("200")) {
                 // success, do what you need to.
                 goToMainActivity();
+                System.out.println("Success");
             }
             else if(message.equals("failed")) {
                 //error
