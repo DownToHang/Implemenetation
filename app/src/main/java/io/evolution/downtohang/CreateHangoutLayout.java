@@ -38,10 +38,6 @@ public class CreateHangoutLayout extends AppCompatActivity{
             case R.id.menu_refresh:
                 Toast.makeText(this, "Refresh Button", Toast.LENGTH_SHORT).show();
                 return true;
-
-            case R.id.menu_settings:
-                startActivity(new Intent(getApplicationContext(), SettingsActivity.class));
-                return true;
             default:
                 return super.onOptionsItemSelected(item);
         }
