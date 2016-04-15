@@ -19,20 +19,31 @@ import android.media.Image;
  */
 public class User {
 
-    private String   id ;        // id# of user
+    private String   uuid ;        // id# of user
     private String   username;   // self explanatory
     private String   hangoutStatus; //name for a hangout if they are in one
     private Location location;   // geolocation for now its a string
-    private String   availability;// available, not available, in a hangout, busy etc.
+    private String   status;// available, not available, in a hangout, busy etc.
     private boolean  isSelected;
-
     public User(){
         //constructor
     }
 
+    public User(String uuid, String username, String status, String hangoutStatus, double latitude,
+                double longitude) {
+        this.uuid = uuid;
+        this.username = username;
+        this.status = status;
+        this.hangoutStatus = hangoutStatus;
+        location = new Location("");
+        location.setLatitude(latitude);
+        location.setLongitude(longitude);
+    }
+
+
     //Constructor for Hangout Activity
     public User(String id, String username, String hangoutStatus){
-        this.id             = id;
+        this.uuid             = id;
         this.username       = username;
         this.hangoutStatus  = hangoutStatus;
         isSelected = false;
@@ -55,21 +66,21 @@ public class User {
 
     //Contructor for Manage Contacts
     public User(String id, String username, Image profilePic){
-        this.id = id;
+        this.uuid = id;
         this.username = username;
     }
 
     public User(String id, String username, String hangoutStatus,
                 String availability) {
-        this.id = id;
+        this.uuid = id;
         this.username = username;
         this.hangoutStatus = hangoutStatus;
-        this.availability = availability;
+        this.status = availability;
     }
 
     //setters
     public void setId(String id){
-        this.id = id;
+        this.uuid = id;
     }
     public void setUsername(String username){
         this.username = username;
@@ -81,12 +92,12 @@ public class User {
         this.location = location;
     }
     public void setAvailability(String availability){
-        this.availability = availability;
+        this.status = availability;
     }
 
     //getters
-    public String getId(){
-        return id;
+    public String getUUID(){
+        return uuid;
     }
     public String getUsername(){
         return username;
@@ -97,8 +108,8 @@ public class User {
     public Location getLocation(){
         return location;
     }
-    public String getAvailability(){
-        return availability;
+    public String getStatus(){
+        return status;
     }
 
 }

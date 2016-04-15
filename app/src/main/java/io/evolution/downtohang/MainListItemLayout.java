@@ -10,11 +10,6 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.Button;
-
-import io.evolution.downtohang.MainActivity;
-import io.evolution.downtohang.R;
-import io.evolution.downtohang.User;
 
 /**
  * Created by Bill Ezekiel on 3/7/2016.
@@ -67,10 +62,10 @@ public class MainListItemLayout extends RelativeLayout implements OnClickListene
         if(!user.getHangStatus().equals(NO_HANGOUT)) {
             userStatusImageView.setImageResource(R.mipmap.orange_circle_icone_6032_128);
         }
-        else if(user.getAvailability().equals(AVAILABLE)) {
+        else if(user.getStatus().equals(AVAILABLE)) {
             userStatusImageView.setImageResource(R.mipmap.green_circle_icone_4156_128);
         }
-        else if(user.getAvailability().equals(BUSY)) {
+        else if(user.getStatus().equals(BUSY)) {
             userStatusImageView.setImageResource(R.mipmap.red_circle_icone_5751_128);
         }
         /*else if(pending friend use blue) {
@@ -98,10 +93,10 @@ public class MainListItemLayout extends RelativeLayout implements OnClickListene
         if(!user.getHangStatus().equals(NO_HANGOUT)) {
             userIconImageView.setImageResource(R.mipmap.orange_trans);
         }
-        else if(user.getAvailability().equals(AVAILABLE)) {
+        else if(user.getStatus().equals(AVAILABLE)) {
             userIconImageView.setImageResource(R.mipmap.green_trans);
         }
-        else if(user.getAvailability().equals(BUSY)) {
+        else if(user.getStatus().equals(BUSY)) {
             userIconImageView.setImageResource(R.mipmap.red_trans);
         }
         /*else if(pending friend use blue) {
