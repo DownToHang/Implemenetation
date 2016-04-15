@@ -47,7 +47,7 @@ public class CreateAccountActivity extends AppCompatActivity
     private TextView errorLabel;
     private TextView profileIconLabel;
     private ImageView profileIcon;
-    private Button selectImageButton;
+
     private Button createAccountButton;
 
     private AppLocationListener locationListener;
@@ -83,13 +83,10 @@ public class CreateAccountActivity extends AppCompatActivity
         usernameLabel = (TextView) findViewById(R.id.createAccountUsernameLabel);
         editUsername = (EditText) findViewById(R.id.createAccountEditUsername);
         errorLabel = (TextView) findViewById(R.id.createAccountErrorLabel);
-        profileIconLabel = (TextView) findViewById(R.id.createAccountProfileIconLabel);
         profileIcon = (ImageView) findViewById(R.id.createAccountProfileIcon);
-        selectImageButton = (Button) findViewById(R.id.createAccountSelectImageButton);
         createAccountButton = (Button) findViewById(R.id.createAccountCreateAccountButton);
 
         // set click listeners
-        selectImageButton.setOnClickListener(this);
         createAccountButton.setOnClickListener(this);
 
         if(ContextCompat.checkSelfPermission(this,Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_DENIED) {
@@ -142,9 +139,6 @@ public class CreateAccountActivity extends AppCompatActivity
      */
     public void onClick(View v) {
         switch(v.getId()) {
-            case R.id.createAccountSelectImageButton:
-                goToImageSelect();
-                break;
             case R.id.createAccountCreateAccountButton:
                createAccount();
         }

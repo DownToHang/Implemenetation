@@ -17,6 +17,10 @@ import android.view.View.OnClickListener;
 import android.widget.ListView;
 import android.widget.Toast;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.io.IOException;
 import java.util.ArrayList;
 
@@ -31,9 +35,9 @@ public class MainActivity extends AppCompatActivity implements OnClickListener {
     private Button mainHangoutButton;
     private LocalDB db;
     private OkHttpClient client;
-
+    private ArrayList<User> allUsers;
     private SharedPreferences savedValues;
-
+    private String resp;
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -79,7 +83,8 @@ public class MainActivity extends AppCompatActivity implements OnClickListener {
 
         mainHangoutButton.setOnClickListener(this);
         db = new LocalDB(this);
-
+        allUsers = new ArrayList<>();
+        new getUsersFromDB().execute();
         populateListView();
     }
 
@@ -293,4 +298,83 @@ public class MainActivity extends AppCompatActivity implements OnClickListener {
             }
         }
     }
+    // ----- Asynchronous Task Classes -----
+    class getUsersFromDB extends AsyncTask<Void, Void, String> {
+
+        /**
+         * Task to perform in the background
+         * @param params a list of void parameters
+         * @return Three possible types of strings:
+         *          "200" if the request went through.
+         *          The message of the response if the HTTP code was not 200.
+         *          "failed" if the request failed.
+         */
+        Response response;
+
+        @Override
+        protected String doInBackground(Void... params ) {
+            // params must be in a particular order.
+            try {
+                Request request = new Request.Builder()
+                        .url("http://www.3volution.io:4001/api/Users")
+                        .get()
+                        .addHeader("x-ibm-client-id", "default")
+                        .addHeader("x-ibm-client-secret", "SECRET")
+                        .addHeader("content-type", "application/json")
+                        .addHeader("accept", "application/json")
+                        .build();
+
+                this.response = client.newCall(request).execute();
+                if(response.code() == 200) {
+                    resp = response.body().string();
+                    return "200";
+                }
+                else {
+                    return response.message();
+                }
+            }
+            catch (IOException e) {
+                System.err.println(e);
+                return "failed";
+            }
+        }
+
+        /**
+         * Actions to perform after the asynchronous request
+         * @param message the message returned by the request
+         */
+        @Override
+        protected void onPostExecute(String message) {
+            if(message.equals("200")) {
+                // success, do what you need to.
+                try {
+                    JSONArray userJSONArray = new JSONArray(resp);
+                    for (int i = 0; i < userJSONArray.length(); i++) {
+                        JSONObject o = userJSONArray.getJSONObject(i);
+                        User u = new User(o.getString("uuid"),
+                                o.getString("userName"),
+                                o.getInt("status"),
+                                o.getString("hangoutStatus"),
+                                o.getDouble("latitude"),
+                                o.getDouble("longitude"));
+                        allUsers.add(u);
+                        db.addFriend(u);
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+//
+            }
+            else if(message.equals("failed")) {
+
+            }
+            else {
+                // HTTP Error Message
+
+            }
+            System.out.println("done");
+        }
+    }
+
+
 }
