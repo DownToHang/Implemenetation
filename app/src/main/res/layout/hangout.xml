@@ -38,7 +38,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:id="@+id/leaderHangoutAddButton"
-            android:layout_weight="0.98"
+            android:layout_weight="1.16"
             android:text="Add"
             android:background="#2fff00"
             android:textSize="24dp" />
