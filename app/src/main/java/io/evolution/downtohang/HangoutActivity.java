@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.location.Location;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
@@ -17,8 +18,16 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+
+import okhttp3.Request;
+import okhttp3.Response;
 
 /**
  * Created by eliakah on 4/2/2016.
@@ -27,6 +36,8 @@ public class HangoutActivity extends AppCompatActivity  {
     private Button leave_Button;
     private ListView hangout_ListView;
     private List<User> users = new ArrayList<User>();
+    private LocalDB db;
+    private Context context;
 
 
     @Override
@@ -53,6 +64,8 @@ public class HangoutActivity extends AppCompatActivity  {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.hangout);
+        context = this;
+        db = new LocalDB(context);
 
         leave_Button = (Button) findViewById(R.id.leave_Button);
         populateList();
@@ -107,7 +120,5 @@ public class HangoutActivity extends AppCompatActivity  {
             return itemView;
         }
     }
-
-
 
 }
