@@ -74,6 +74,7 @@ public class HangoutActivity extends AppCompatActivity  {
         setContentView(R.layout.hangout);
         context = this;
         db = new LocalDB(context);
+        client = new OkHttpClient();
 
 
         savedValues = getSharedPreferences("Saved Values",MODE_PRIVATE);
@@ -85,8 +86,6 @@ public class HangoutActivity extends AppCompatActivity  {
         }
 
         leave_Button = (Button) findViewById(R.id.leave_Button);
-        populateList();
-        populateListView();
 
         generateYou();
         new GetUsersFromDB().execute() ;
@@ -180,7 +179,7 @@ public class HangoutActivity extends AppCompatActivity  {
             // params must be in a particular order.
             try {
                 Request request = new Request.Builder()
-                        .url("http://www.3volution.io:4001/api/Users?filter={\"where\":{\"userName\":\""+"Bob"+"\"}}")
+                        .url("http://www.3volution.io:4001/api/Users?filter={\"where\":{\"hangoutStatus\":\""+you.getHangStatus()+"\"}}")
                         .get()
                         .addHeader("x-ibm-client-id", "default")
                         .addHeader("x-ibm-client-secret", "SECRET")
@@ -215,7 +214,7 @@ public class HangoutActivity extends AppCompatActivity  {
                     JSONArray userJSONArray = new JSONArray(resp);
                     for (int i = 0; i < userJSONArray.length(); i++) {
                         JSONObject o = userJSONArray.getJSONObject(i);
-                        usersFound.add(new User(o.getString("uuid"),
+                        users.add(new User(o.getString("uuid"),
                                 o.getString("userName"),
                                 o.getInt("status"),
                                 o.getString("hangoutStatus"),
@@ -223,7 +222,7 @@ public class HangoutActivity extends AppCompatActivity  {
                                 o.getDouble("longitude")));
                     }
 
-                    populateList();
+                    //populateList();
                     populateListView();
 
                 } catch (JSONException e) {
