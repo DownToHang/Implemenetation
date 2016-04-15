@@ -23,13 +23,13 @@ public class User {
     private String   username;   // self explanatory
     private String   hangoutStatus; //name for a hangout if they are in one
     private Location location;   // geolocation for now its a string
-    private String   status;// available, not available, in a hangout, busy etc.
+    private Integer   status;// available, not available, in a hangout, busy etc.
     private boolean  isSelected;
     public User(){
         //constructor
     }
 
-    public User(String uuid, String username, String status, String hangoutStatus, double latitude,
+    public User(String uuid, String username, Integer status, String hangoutStatus, double latitude,
                 double longitude) {
         this.uuid = uuid;
         this.username = username;
@@ -108,7 +108,7 @@ public class User {
     public Location getLocation(){
         return location;
     }
-    public String getStatus(){
+    public Integer getStatus(){
         return status;
     }
 
