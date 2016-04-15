@@ -65,6 +65,7 @@
         android:id="@+id/createAccountCreateAccountButton"
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
+        android:focusable="false"
         android:layout_marginBottom="50dp"/>
 
     <TextView
