@@ -28,4 +28,26 @@
         android:background="#706bef"
         android:textColor="#ffffff"
         android:textSize="24dp"/>
+
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/leaderHangoutAddButton"
+            android:layout_weight="0.98"
+            android:text="Add" />
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Disband"
+            android:id="@+id/leaderHangoutDisbandButton"
+            android:layout_gravity="right"
+            android:layout_weight="0.98" />
+    </LinearLayout>
+
 </LinearLayout>
