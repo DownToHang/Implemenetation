@@ -179,7 +179,8 @@ public class LocalDB {
         this.openReadableDB();
         // WHERE
         String uuid = user.getUUID();
-        String where = UUID + "=" + uuid;
+        String where = UUID + "=?";
+        String[] whereArgs = {uuid};
         // SET
         ContentValues cv = new ContentValues();
         cv.put(USERNAME,user.getUsername());
@@ -187,7 +188,7 @@ public class LocalDB {
         cv.put(HANGOUT_STATUS,user.getHangStatus());
         cv.put(LATITUDE,user.getLat());
         cv.put(LONGITUDE,user.getLong());
-        db.update(FRIENDS_TABLE,cv,where,null);
+        db.update(FRIENDS_TABLE,cv,where,whereArgs);
         this.closeDB();
         return true;
     }
