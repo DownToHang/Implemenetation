@@ -195,7 +195,8 @@ public class CreateAccountActivity extends AppCompatActivity
                 longitude =  Double.toString(currentLocation.getLongitude());
             }
             else {
-                latitude = longitude = "N/A";
+                latitude = "39.7104";
+                longitude = "-75.1202";
             }
             new AddUserToServerDB().execute();
         }
