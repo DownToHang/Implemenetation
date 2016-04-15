@@ -176,8 +176,7 @@ public class LocalDB {
     public boolean updateFriend(User user) {
         // WHERE
         String uuid = user.getUUID();
-        String where = UUID + "= ?";
-        String[] whereArgs = { uuid };
+        String where = UUID + "=" + uuid;
         // SET
         ContentValues cv = new ContentValues();
         cv.put(USERNAME,user.getUsername());
@@ -185,7 +184,7 @@ public class LocalDB {
         cv.put(HANGOUT_STATUS,user.getHangStatus());
         cv.put(LATITUDE,user.getLat());
         cv.put(LONGITUDE,user.getLong());
-        db.update(FRIENDS_TABLE,cv,where,whereArgs);
+        db.update(FRIENDS_TABLE,cv,where,null);
         return true;
     }
 }
