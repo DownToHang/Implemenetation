@@ -60,10 +60,6 @@ public class ManageContactsActivity extends AppCompatActivity {
             case R.id.menu_refresh:
                 Toast.makeText(this, "Refresh Button", Toast.LENGTH_SHORT).show();
                 return true;
-
-            case R.id.menu_settings:
-                startActivity(new Intent(getApplicationContext(), SettingsActivity.class));
-                return true;
             default:
                 return super.onOptionsItemSelected(item);
         }
@@ -85,11 +81,7 @@ public class ManageContactsActivity extends AppCompatActivity {
     }
 
     @Override
-    public void onResume(){
-        super.onResume();
-        //do stuff
-    }
-
+    public void onResume(){super.onResume();}
 
     private void populateList() {
         userToSearch = manageContactsSearchUserEditText.toString();
@@ -122,7 +114,7 @@ public class ManageContactsActivity extends AppCompatActivity {
             TextView usernameView = (TextView) itemView.findViewById(R.id.manageContactsAdapterUserNameLabel);
             usernameView.setText(currentUser.getUsername());
 
-            /*Button checks user status and displays cooresponding button text:
+            /*Button checks user status and displays corresponding button text:
             User is a friend:       Button text = "Remove"
             User is not a friend:   Button text = "Add"
             User has received invite but has not acted: Button text = "Pending"
@@ -198,7 +190,7 @@ public class ManageContactsActivity extends AppCompatActivity {
                                 o.getDouble("longitude")));
                     }
                 }catch (JSONException e){}
-//
+
             }
             else if(message.equals("failed")) {
 
