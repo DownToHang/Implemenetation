@@ -22,12 +22,11 @@ public class User {
     private String   uuid ;        // id# of user
     private String   username;   // self explanatory
     private String   hangoutStatus; //name for a hangout if they are in one
-    private Location location;   // geolocation for now its a string
     private Integer   status;// available, not available, in a hangout, busy etc.
     private boolean  isSelected;
 
-    private double Latitude;
-    private double Longitude;
+    private double latitude;
+    private double longitude;
 
     public User(){
         //constructor
@@ -39,21 +38,33 @@ public class User {
         this.username = username;
         this.status = status;
         this.hangoutStatus = hangoutStatus;
-        location = new Location("");
-        Latitude = latitude;
-        Longitude = longitude;
-        location.setLatitude(latitude);
-        location.setLongitude(longitude);
+        this.latitude = latitude;
+        this.longitude = longitude;
     }
 
     //returns latitude
     public double getLat() {
-        return Latitude;
+        return latitude;
     }
 
     //returns longitude
     public double getLong() {
-        return Longitude;
+        return longitude;
+    }
+
+    public void setLatitude(double l) {
+        latitude = l;
+    }
+
+    public void setLongitude(double l) {
+        longitude = l;
+    }
+
+    public Location getLocation() {
+        Location l = new Location("");
+        l.setLatitude(latitude);
+        l.setLongitude(longitude);
+        return l;
     }
 
     //Constructor for Hangout Activity
@@ -103,9 +114,6 @@ public class User {
     public void setHangStatus(String hangStatus){
         this.hangoutStatus = hangStatus;
     }
-    public void setLocation(Location location){
-        this.location = location;
-    }
     public void setStatus(Integer availability){
         this.status = availability;
     }
@@ -119,9 +127,6 @@ public class User {
     }
     public String getHangStatus(){
         return hangoutStatus;
-    }
-    public Location getLocation(){
-        return location;
     }
     public Integer getStatus(){
         return status;

@@ -152,7 +152,7 @@ public class ManageContactsActivity extends AppCompatActivity {
             // params must be in a particular order.
             try {
                 Request request = new Request.Builder()
-                        .url("http://www.3volution.io:4001/api/Users?filter={\"where\":{\"userName\":\"bob\"}}")
+                        .url("http://www.3volution.io:4001/api/Users?filter={\"where\":{\"userName\":\""+userToSearch+"\"}}")
                         .get()
                         .addHeader("x-ibm-client-id", "default")
                         .addHeader("x-ibm-client-secret", "SECRET")
