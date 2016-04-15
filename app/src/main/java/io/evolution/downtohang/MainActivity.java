@@ -45,9 +45,6 @@ public class MainActivity extends AppCompatActivity implements OnClickListener {
             case R.id.menu_refresh:
                 Toast.makeText(this, "Refresh Button", Toast.LENGTH_SHORT).show();
                 return true;
-            case R.id.menu_settings:
-                goToActivity(SettingsActivity.class);
-                return true;
             default:
                 return super.onOptionsItemSelected(item);
         }

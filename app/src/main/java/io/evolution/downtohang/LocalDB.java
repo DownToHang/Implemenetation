@@ -125,7 +125,7 @@ public class LocalDB {
                 User user = new User(
                         cursor.getString(UUID_COL),
                         cursor.getString(USERNAME_COL),
-                        cursor.getString(STATUS_COL),
+                        cursor.getInt(STATUS_COL),
                         cursor.getString(HANGOUT_STATUS_COL),
                         cursor.getDouble(LATITUDE_COL),
                         cursor.getDouble(LONGITUDE_COL)
