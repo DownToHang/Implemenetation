@@ -65,7 +65,7 @@ public class LocalDB {
 
             db.execSQL("INSERT INTO friends VALUES (\"000-00\",\"SuperPieGuy\",\"1\",\"0\",80,-180)");
             db.execSQL("INSERT INTO friends VALUES (\"111-1\",\"RWeedle\",\"0\",\"0\",0,0)");
-            db.execSQL("INSERT INTO friends VALUES (\"222-22\",\"Yoonix\",\"0\",\"Mike\",0,0)");
+            db.execSQL("INSERT INTO friends VALUES (\"222-22\",\"Yoonix\",\"0\",\"Mike\",1,0)");
         }
 
         @Override
