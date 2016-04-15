@@ -101,8 +101,7 @@ public class CreateHangoutLayout extends AppCompatActivity{
                 /* change leader hangoutStatus to leader's own uuid */
                 you.setHangStatus(uuidLeader);
                 you.setStatus(0);
-
-                //update you (leader) in online database
+                /* update you (leader) in online database */
                 selectedUuid = you.getUUID();
                 new UpdateUserHangStatus().execute();
 
@@ -117,8 +116,10 @@ public class CreateHangoutLayout extends AppCompatActivity{
                 /* change members' hangoutStatus to leader's uuid and set status to 0 */
                 for (User x: selectedUsers){
                     selectedUuid = x.getUUID();
+                    //updates local database
                     x.setStatus(0);
                     x.setHangStatus(uuidLeader);
+                    //updates online database
                     new  UpdateUserHangStatus().execute();
                 }
             }//end onClick
