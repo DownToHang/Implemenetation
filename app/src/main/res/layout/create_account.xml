@@ -48,34 +48,15 @@
         android:layout_alignStart="@+id/createAccountUsernameLabel"/>
 
     <!-- Profile Icon Fields-->
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/create_account_profile_icon_label"
-        android:textSize="20sp"
-        android:textStyle="bold"
-        android:id="@+id/createAccountProfileIconLabel"
-        android:padding="10dp"
-        android:layout_below="@+id/createAccountErrorLabel"
-        android:layout_alignLeft="@+id/createAccountUsernameLabel"
-        android:layout_alignStart="@+id/createAccountUsernameLabel"/>
 
     <ImageView
         android:layout_width="160dp"
         android:layout_height="160dp"
         android:id="@+id/createAccountProfileIcon"
         android:src="@mipmap/default_profile_icon"
-        android:layout_below="@+id/createAccountProfileIconLabel"
         android:scaleType="fitXY"
-        android:layout_centerHorizontal="true"/>
-
-    <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/create_account_select_image_button_text"
-        android:id="@+id/createAccountSelectImageButton"
-        android:layout_below="@+id/createAccountProfileIcon"
-        android:layout_centerHorizontal="true"/>
+        android:layout_above="@+id/createAccountCreateAccountButton"
+        android:layout_centerHorizontal="true" />
 
     <Button
         android:layout_width="wrap_content"
@@ -85,6 +66,16 @@
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
         android:layout_marginBottom="50dp"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:text="DOWN2HANG"
+        android:id="@+id/textView2"
+        android:layout_above="@+id/createAccountProfileIcon"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="42dp" />
 
 
 </RelativeLayout>

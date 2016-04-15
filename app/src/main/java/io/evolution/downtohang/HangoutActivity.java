@@ -47,8 +47,6 @@ public class HangoutActivity extends AppCompatActivity  {
     private OkHttpClient client;
     String resp;
     private List<User> usersFound = new ArrayList<>();
-    getUsersFromDB getuser = new getUsersFromDB();
-
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu){
@@ -85,14 +83,15 @@ public class HangoutActivity extends AppCompatActivity  {
             finish();
             return;
         }
-        generateYou();
 
         leave_Button = (Button) findViewById(R.id.leave_Button);
-
-
-        getuser.execute() ;
         populateList();
         populateListView();
+
+        generateYou();
+        new GetUsersFromDB().execute() ;
+
+
     }
 
     public void goToActivity(Class c) {
@@ -112,6 +111,13 @@ public class HangoutActivity extends AppCompatActivity  {
     }
 
     private void populateList() {
+        /*users.add(new User("0", "user 1", "0"));
+        users.add(new User("1", "user 2", "0"));
+        users.add(new User("2", "user 3", "1"));
+        users.add(new User("3", "user 4", "0"));
+        users.add(new User("4", "user 5", "0"));
+        users.add(new User("5", "user 6", "1"));*/
+
         users = usersFound;
     }
 
@@ -156,9 +162,8 @@ public class HangoutActivity extends AppCompatActivity  {
     }
 
 
-
     // ----- Asynchronous Task Classes -----
-    class getUsersFromDB extends AsyncTask<Void, Void, String> {
+    class GetUsersFromDB extends AsyncTask<Void, Void, String> {
 
         /**
          * Task to perform in the background
@@ -175,7 +180,7 @@ public class HangoutActivity extends AppCompatActivity  {
             // params must be in a particular order.
             try {
                 Request request = new Request.Builder()
-                        .url("http://www.3volution.io:4001/api/Users?filter={\"where\":{\"hangoutStatus\":\""+0+"\"}}")
+                        .url("http://www.3volution.io:4001/api/Users?filter={\"where\":{\"userName\":\""+"Bob"+"\"}}")
                         .get()
                         .addHeader("x-ibm-client-id", "default")
                         .addHeader("x-ibm-client-secret", "SECRET")
@@ -217,6 +222,10 @@ public class HangoutActivity extends AppCompatActivity  {
                                 o.getDouble("latitude"),
                                 o.getDouble("longitude")));
                     }
+
+                    populateList();
+                    populateListView();
+
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
