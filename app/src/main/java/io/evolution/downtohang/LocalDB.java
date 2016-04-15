@@ -142,6 +142,7 @@ public class LocalDB {
     }
 
     public boolean addFriend(User user) {
+        this.openReadableDB();
         ContentValues cv = new ContentValues();
         cv.put(UUID,user.getUUID());
         cv.put(USERNAME,user.getUsername());
@@ -156,6 +157,7 @@ public class LocalDB {
     }
 
     public boolean removeFriend(User user) {
+        this.openReadableDB();
         String uuid = user.getUUID();
         String where = UUID + "= ?";
         String[] whereArgs = { uuid };
@@ -174,6 +176,7 @@ public class LocalDB {
     }
 
     public boolean updateFriend(User user) {
+        this.openReadableDB();
         // WHERE
         String uuid = user.getUUID();
         String where = UUID + "=" + uuid;
@@ -185,6 +188,7 @@ public class LocalDB {
         cv.put(LATITUDE,user.getLat());
         cv.put(LONGITUDE,user.getLong());
         db.update(FRIENDS_TABLE,cv,where,null);
+        this.closeDB();
         return true;
     }
 }
