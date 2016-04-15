@@ -70,10 +70,10 @@ public class CreateHangoutLayout extends AppCompatActivity{
         db = new LocalDB(context);
         hangoutButton = (Button) findViewById(R.id.hangoutButton);
         client = new OkHttpClient();
-        savedValues = getSharedPreferences("Shared Values", MODE_PRIVATE);
+        savedValues = getSharedPreferences("Saved Values", MODE_PRIVATE);
 
         generateYou();
-        uuidLeader = you.getHangStatus();
+        uuidLeader = you.getUUID();
 
         //populates list of users
         populateUsers();
@@ -86,7 +86,7 @@ public class CreateHangoutLayout extends AppCompatActivity{
     public void generateYou() {
         String uuid = savedValues.getString("yourUUID",null);
         String username = savedValues.getString("yourName",null);
-        int status = savedValues.getInt("yourStatus",-1);
+        int status = savedValues.getInt("yourStatus", -1);
         String hangoutStatus = savedValues.getString("yourHangoutStatus",null);
         String latitude = savedValues.getString("yourLat",null);
         String longitude = savedValues.getString("yourLong",null);
@@ -94,19 +94,17 @@ public class CreateHangoutLayout extends AppCompatActivity{
     }
 
     private void setOnClickListener() {
+
+        /* change leader hangoutStatus to leader's own uuid */
+        you.setHangStatus(uuidLeader);
+        you.setStatus(0);
+                /* update you (leader) in online database */
+        selectedUuid = you.getUUID();
+
         hangoutButton.setOnClickListener(new View.OnClickListener() {
+
             @Override
             public void onClick(View v) {
-                /* must refresh local database and yourself, first thing */
-                db.updateFriends(onlineUsers); //updates friends to current
-
-                /* change leader hangoutStatus to leader's own uuid */
-                you.setHangStatus(uuidLeader);
-                you.setStatus(0);
-                /* update you (leader) in online database */
-                selectedUuid = you.getUUID();
-                new UpdateUserHangStatus().execute();
-
                 ArrayList<User> selectedUsers = new ArrayList<User>();
                 for(User u: onlineUsers){
                     boolean selected = u.isSelected();
@@ -114,16 +112,34 @@ public class CreateHangoutLayout extends AppCompatActivity{
                         selectedUsers.add(u);
                     }//end if
                 }//end for
-
                 /* change members' hangoutStatus to leader's uuid and set status to 0 */
                 for (User x: selectedUsers){
-                    selectedUuid = x.getUUID();
                     //updates local database
                     x.setStatus(0);
                     x.setHangStatus(uuidLeader);
-                    //updates online database
-                    new  UpdateUserHangStatus().execute();
                 }
+
+                /* must refresh local database and yourself, first thing */
+                db.updateFriends(onlineUsers); //updates friends to current
+
+                //updates online database
+                for(User user: selectedUsers) {
+                    selectedUuid = user.getUUID();
+                    new UpdateUserHangStatus().execute();
+                }
+
+
+
+
+//                /* change members' hangoutStatus to leader's uuid and set status to 0 */
+//                for (User x: selectedUsers){
+//                    selectedUuid = x.getUUID();
+//                    //updates local database
+//                    x.setStatus(0);
+//                    x.setHangStatus(uuidLeader);
+//                    //updates online database
+//                    new  UpdateUserHangStatus().execute();
+//                }
             }//end onClick
         });
     }
@@ -203,7 +219,7 @@ public class CreateHangoutLayout extends AppCompatActivity{
             try {
                 MediaType mediaType = MediaType.parse("application/json");
                 RequestBody body = RequestBody.create(mediaType, "{"+
-                                    "\"hangoutStatus\":" + uuidLeader +
+                                    "\"hangoutStatus\":" + "\"" + uuidLeader + "\"" +
                                     ",\"status\":0}");
                 Request request = new Request.Builder()
                         .url("http://www.3volution.io:4001/api/Users/update?where={\"uuid\": \"" + selectedUuid + "\"}")
