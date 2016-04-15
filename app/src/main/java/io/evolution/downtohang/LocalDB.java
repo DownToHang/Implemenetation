@@ -66,6 +66,9 @@ public class LocalDB {
             db.execSQL("INSERT INTO friends VALUES (\"000-00\",\"SuperPieGuy\",\"1\",\"0\",80,-180)");
             db.execSQL("INSERT INTO friends VALUES (\"111-1\",\"RWeedle\",\"0\",\"0\",0,0)");
             db.execSQL("INSERT INTO friends VALUES (\"222-22\",\"Yoonix\",\"0\",\"Mike\",1,0)");
+            db.execSQL("INSERT INTO friends VALUES (\"22-22\",\"Pat\",\"2\",\"0\",1,0)");
+            db.execSQL("INSERT INTO friends VALUES (\"2-22\",\"Cake\",\"-1\",\"0\",1,0)");
+            db.execSQL("INSERT INTO friends VALUES (\"-22\",\")(&*#)%\",\"-3\",\"Mike\",1,0)");
         }
 
         @Override
@@ -146,7 +149,7 @@ public class LocalDB {
         cv.put(HANGOUT_STATUS,user.getHangStatus());
         Location userLocation = user.getLocation();
         cv.put(LATITUDE,userLocation.getLatitude());
-        cv.put(LONGITUDE,userLocation.getLongitude());
+        cv.put(LONGITUDE, userLocation.getLongitude());
         this.openWriteableDB();
         db.insert(FRIENDS_TABLE, null,cv);
         this.closeDB();

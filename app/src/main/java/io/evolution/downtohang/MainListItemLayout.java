@@ -22,8 +22,11 @@ public class MainListItemLayout extends RelativeLayout implements OnClickListene
 
     private User you;
 
-    private final String BUSY = "0",NO_HANGOUT = "0";
-    private final String AVAILABLE = "1";
+    private final String NO_HANGOUT = "0";
+    private final int AVAILABLE = 1;
+    private final int BUSY = 0;
+    private final int PENDING_FRIEND_REQUEST = 2;
+    private final int OFFLINE = -1;
 
     // Collapsed View
     private RelativeLayout mainListItemExpandedView;
@@ -67,7 +70,13 @@ public class MainListItemLayout extends RelativeLayout implements OnClickListene
         usernameLabel.setOnClickListener(this);
 
         userStatusImageView = (ImageView) findViewById(R.id.userStatusImageView);
-        if(!user.getHangStatus().equals(NO_HANGOUT)) {
+        if(user.getStatus() < -1 || user.getStatus() > 2) {
+            userStatusImageView.setImageResource(R.mipmap.gray_circle_question_icone_6920_128);
+        }
+        else if(user.getStatus() == 2) {
+            userStatusImageView.setImageResource(R.mipmap.blue_circle_icone_5480_128);
+        }
+        else if(!user.getHangStatus().equals(NO_HANGOUT)) {
             userStatusImageView.setImageResource(R.mipmap.orange_circle_icone_6032_128);
         }
         else if(user.getStatus().equals(AVAILABLE)) {
@@ -76,12 +85,10 @@ public class MainListItemLayout extends RelativeLayout implements OnClickListene
         else if(user.getStatus().equals(BUSY)) {
             userStatusImageView.setImageResource(R.mipmap.red_circle_icone_5751_128);
         }
-        /*else if(pending friend use blue) {
-
-        }*/
-        else {
+        else{
             userStatusImageView.setImageResource(R.mipmap.gray_circle_icone_6920_128);
         }
+
 
         acceptImageButton = (ImageButton) findViewById(R.id.acceptImageButton);
         rejectImageButton = (ImageButton) findViewById(R.id.rejectImageButton);
@@ -98,7 +105,13 @@ public class MainListItemLayout extends RelativeLayout implements OnClickListene
         expandedUsernameLabel.setOnClickListener(this);
 
         userIconImageView = (ImageView) findViewById(R.id.userIconImageView);
-        if(!user.getHangStatus().equals(NO_HANGOUT)) {
+        if(user.getStatus() < -1 || user.getStatus() > 2) {
+            userIconImageView.setImageResource(R.mipmap.gray_circle_question_trans);
+        }
+        else if(user.getStatus() == 2) {
+            userIconImageView.setImageResource(R.mipmap.blue_trans);
+        }
+        else if(!user.getHangStatus().equals(NO_HANGOUT)) {
             userIconImageView.setImageResource(R.mipmap.orange_trans);
         }
         else if(user.getStatus().equals(AVAILABLE)) {
@@ -107,11 +120,8 @@ public class MainListItemLayout extends RelativeLayout implements OnClickListene
         else if(user.getStatus().equals(BUSY)) {
             userIconImageView.setImageResource(R.mipmap.red_trans);
         }
-        /*else if(pending friend use blue) {
-
-        }*/
         else {
-            userIconImageView.setImageResource(R.mipmap.gray_circle_question_icone_6920_128);
+            userIconImageView.setImageResource(R.mipmap.grey_trans);
         }
         userIconImageView.setBackgroundResource(R.mipmap.default_profile_icon);
 

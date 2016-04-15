@@ -56,7 +56,7 @@ public class CreateAccountActivity extends AppCompatActivity
 
     private String uuid;
     private String username;
-    private String status;
+    private int status;
     private String hangoutStatus;
     private String latitude;
     private String longitude;
@@ -158,7 +158,7 @@ public class CreateAccountActivity extends AppCompatActivity
         SharedPreferences.Editor editor = savedValues.edit();
         editor.putString("yourUUID",uuid);
         editor.putString("yourName",username);
-        editor.putString("yourStatus",status);
+        editor.putInt("yourStatus",status);
         editor.putString("yourHangoutStatus",hangoutStatus);
         editor.putString("yourLat",latitude);
         editor.putString("yourLong",longitude);
@@ -187,7 +187,7 @@ public class CreateAccountActivity extends AppCompatActivity
                 setErrorMessage("ERROR - No internet connection.");
             }
             uuid = UUID.randomUUID().toString();
-            status = "0";
+            status = 0;
             hangoutStatus = "0";
             Location currentLocation = locationListener.getLocation();
             if(currentLocation != null) {
