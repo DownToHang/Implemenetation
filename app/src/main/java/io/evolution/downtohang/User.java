@@ -71,11 +71,11 @@ public class User {
     }
 
     public User(String id, String username, String hangoutStatus,
-                String availability) {
+                Integer status) {
         this.uuid = id;
         this.username = username;
         this.hangoutStatus = hangoutStatus;
-        this.status = availability;
+        this.status = status;
     }
 
     //setters
@@ -91,7 +91,7 @@ public class User {
     public void setLocation(Location location){
         this.location = location;
     }
-    public void setAvailability(String availability){
+    public void setStatus(Integer availability){
         this.status = availability;
     }
 
