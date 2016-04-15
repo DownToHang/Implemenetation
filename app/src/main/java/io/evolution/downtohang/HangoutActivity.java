@@ -27,7 +27,10 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import okhttp3.MediaType;
+import okhttp3.OkHttpClient;
 import okhttp3.Request;
+import okhttp3.RequestBody;
 import okhttp3.Response;
 
 /**
@@ -41,6 +44,9 @@ public class HangoutActivity extends AppCompatActivity  {
     private Context context;
     private User you;
     private SharedPreferences savedValues;
+    private OkHttpClient client;
+    String resp;
+    private List<User> usersFound = new ArrayList<>();
 
 
     @Override
@@ -83,6 +89,7 @@ public class HangoutActivity extends AppCompatActivity  {
         leave_Button = (Button) findViewById(R.id.leave_Button);
         populateList();
         populateListView();
+
     }
 
     public void goToActivity(Class c) {
@@ -149,5 +156,85 @@ public class HangoutActivity extends AppCompatActivity  {
             return itemView;
         }
     }
+
+
+
+    // ----- Asynchronous Task Classes -----
+    class getUsersFromDB extends AsyncTask<Void, Void, String> {
+
+        /**
+         * Task to perform in the background
+         * @param params a list of void parameters
+         * @return Three possible types of strings:
+         *          "200" if the request went through.
+         *          The message of the response if the HTTP code was not 200.
+         *          "failed" if the request failed.
+         */
+        Response response;
+
+        @Override
+        protected String doInBackground(Void... params ) {
+            // params must be in a particular order.
+            try {
+                Request request = new Request.Builder()
+                        .url("http://www.3volution.io:4001/api/Users?filter={\"where\":{\"hangoutStatus\":\""+0+"\"}}")
+                        .get()
+                        .addHeader("x-ibm-client-id", "default")
+                        .addHeader("x-ibm-client-secret", "SECRET")
+                        .addHeader("content-type", "application/json")
+                        .addHeader("accept", "application/json")
+                        .build();
+
+                this.response = client.newCall(request).execute();
+                if(response.code() == 200) {
+                    resp = response.body().string();
+                    return "200";
+                }
+                else {
+                    return response.message();
+                }
+            }
+            catch (IOException e) {
+                System.err.println(e);
+                return "failed";
+            }
+        }
+
+        /**
+         * Actions to perform after the asynchronous request
+         * @param message the message returned by the request
+         */
+        @Override
+        protected void onPostExecute(String message) {
+            if(message.equals("200")) {
+                // success, do what you need to.
+                try {
+                    JSONArray userJSONArray = new JSONArray(resp);
+                    for (int i = 0; i < userJSONArray.length(); i++) {
+                        JSONObject o = userJSONArray.getJSONObject(i);
+                        usersFound.add(new User(o.getString("uuid"),
+                                o.getString("userName"),
+                                o.getInt("status"),
+                                o.getString("hangoutStatus"),
+                                o.getDouble("latitude"),
+                                o.getDouble("longitude")));
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+//
+            }
+            else if(message.equals("failed")) {
+
+            }
+            else {
+                // HTTP Error Message
+
+            }
+            System.out.println("done");
+        }
+    }
+
+
 
 }
