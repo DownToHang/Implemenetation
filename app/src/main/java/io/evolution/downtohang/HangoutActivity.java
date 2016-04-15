@@ -47,6 +47,7 @@ public class HangoutActivity extends AppCompatActivity  {
     private OkHttpClient client;
     String resp;
     private List<User> usersFound = new ArrayList<>();
+    getUsersFromDB getuser = new getUsersFromDB();
 
 
     @Override
@@ -87,9 +88,11 @@ public class HangoutActivity extends AppCompatActivity  {
         generateYou();
 
         leave_Button = (Button) findViewById(R.id.leave_Button);
+
+
+        getuser.execute() ;
         populateList();
         populateListView();
-
     }
 
     public void goToActivity(Class c) {
@@ -109,12 +112,7 @@ public class HangoutActivity extends AppCompatActivity  {
     }
 
     private void populateList() {
-        users.add(new User("0", "user 1", "0"));
-        users.add(new User("1", "user 2", "0"));
-        users.add(new User("2", "user 3", "1"));
-        users.add(new User("3", "user 4", "0"));
-        users.add(new User("4", "user 5", "0"));
-        users.add(new User("5", "user 6", "1"));
+        users = usersFound;
     }
 
     public void populateListView(){

@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -31,13 +32,14 @@ import okhttp3.Response;
 /**
  * Created by Patrick on 4/2/2016.
  */
-public class ManageContactsActivity extends AppCompatActivity {
+public class ManageContactsActivity extends AppCompatActivity implements View.OnClickListener{
 
     private OkHttpClient client;
     private TextView manageContactsSearchUserLabel;
     private EditText manageContactsSearchUserEditText;
     private ImageView manageContactsSearchIconImageView;
     private ListView manageContactsSearchedUsersListView;
+    private Button manageContactsSearchButton;
     private List<User> usersFound = new ArrayList<>();
     private String userToSearch;
     String resp;
@@ -66,11 +68,15 @@ public class ManageContactsActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.manage_contacts);
         resp = "";
+
         //Get references to widgets
         manageContactsSearchUserLabel = (TextView) findViewById(R.id.manageContactsSearchUserLabel);
         manageContactsSearchUserEditText = (EditText) findViewById(R.id.manageContactsSearchUserEditText);
         manageContactsSearchIconImageView = (ImageView) findViewById(R.id.manageContactsSearchIconImageView);
         manageContactsSearchedUsersListView = (ListView) findViewById(R.id.manageContactsSearchedUsersListView);
+        manageContactsSearchButton = (Button) findViewById(R.id.manageContactsSearchButton);
+        manageContactsSearchButton.setOnClickListener(this);
+
         client = new OkHttpClient();
         usersFound = new ArrayList<>();
         populateList();
@@ -81,6 +87,15 @@ public class ManageContactsActivity extends AppCompatActivity {
     public void onResume(){
         super.onResume();
         //do stuff
+    }
+
+    @Override
+    public void onClick(View v){
+        switch (v.getId()) {
+            case R.id.manageContactsSearchButton:
+                Toast.makeText(this, "Search Button", Toast.LENGTH_SHORT).show();
+                break;
+        }
     }
 
 
@@ -152,7 +167,7 @@ public class ManageContactsActivity extends AppCompatActivity {
             // params must be in a particular order.
             try {
                 Request request = new Request.Builder()
-                        .url("http://www.3volution.io:4001/api/Users?filter={\"where\":{\"userName\":\"bob\"}}")
+                        .url("http://www.3volution.io:4001/api/Users?filter={\"where\":{\"userName\":\""+userToSearch+"\"}}")
                         .get()
                         .addHeader("x-ibm-client-id", "default")
                         .addHeader("x-ibm-client-secret", "SECRET")
