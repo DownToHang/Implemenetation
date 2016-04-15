@@ -2,6 +2,7 @@ package io.evolution.downtohang;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.location.Location;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
@@ -76,12 +77,17 @@ public class MainActivity extends AppCompatActivity implements OnClickListener {
 
     public void generateYou() {
         String uuid = savedValues.getString("yourUUID",null);
-        String username = savedValues.getString("yourName",null);
-        int status = savedValues.getInt("yourStatus",-1);
-        String hangoutStatus = savedValues.getString("yourHangoutStatus",null);
+        String username = savedValues.getString("yourName", null);
+        int status = savedValues.getInt("yourStatus", -1);
+        String hangoutStatus = savedValues.getString("yourHangoutStatus", null);
         String latitude = savedValues.getString("yourLat",null);
         String longitude = savedValues.getString("yourLong",null);
-        you = new User(uuid,username,hangoutStatus,status);
+
+//        Location location  =  new Location("");
+//        location.setLatitude(Double.parseDouble(latitude));
+//        location.setLongitude(Double.parseDouble(longitude));
+
+        you = new User(uuid,username,status,hangoutStatus, Double.parseDouble(latitude), Double.parseDouble(longitude));
     }
 
     /**
