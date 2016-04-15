@@ -154,7 +154,7 @@ public class MainActivity extends AppCompatActivity implements OnClickListener {
             User currentUser = users.get(position);
             MainListItemLayout mainListItemLayout = null;
             if(convertView == null) {
-                mainListItemLayout = new MainListItemLayout(getContext(),currentUser,false);
+                mainListItemLayout = new MainListItemLayout(getContext(),currentUser,false, you);
             }
             else {
                 mainListItemLayout = (MainListItemLayout) convertView;
