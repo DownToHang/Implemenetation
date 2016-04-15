@@ -147,9 +147,8 @@ public class LocalDB {
         cv.put(USERNAME,user.getUsername());
         cv.put(STATUS,user.getStatus());
         cv.put(HANGOUT_STATUS,user.getHangStatus());
-        Location userLocation = user.getLocation();
-        cv.put(LATITUDE,userLocation.getLatitude());
-        cv.put(LONGITUDE, userLocation.getLongitude());
+        cv.put(LATITUDE,user.getLat());
+        cv.put(LONGITUDE, user.getLong());
         this.openWriteableDB();
         db.insert(FRIENDS_TABLE, null,cv);
         this.closeDB();
@@ -184,9 +183,8 @@ public class LocalDB {
         cv.put(USERNAME,user.getUsername());
         cv.put(STATUS,user.getStatus());
         cv.put(HANGOUT_STATUS,user.getHangStatus());
-        Location userLocation = user.getLocation();
-        cv.put(LATITUDE,userLocation.getLatitude());
-        cv.put(LONGITUDE,userLocation.getLongitude());
+        cv.put(LATITUDE,user.getLat());
+        cv.put(LONGITUDE,user.getLong());
         db.update(FRIENDS_TABLE,cv,where,whereArgs);
         return true;
     }

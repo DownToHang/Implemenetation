@@ -138,7 +138,7 @@ public class MainListItemLayout extends RelativeLayout implements OnClickListene
 
         StringBuilder locationStringBuilder = new StringBuilder();
 
-        Location youLocation = you.getLocation();
+        Location youLocation = new Location("");
 
         Location userLocation = user.getLocation();
 
