@@ -5,25 +5,19 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
-import android.graphics.Bitmap;
-import android.location.Criteria;
 import android.location.Location;
 import android.location.LocationManager;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
-import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.provider.MediaStore;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import java.io.IOException;
 import java.util.UUID;
@@ -33,20 +27,16 @@ import okhttp3.*;
 
 /**
  * The create account activity. Users create an account and are added to
- * the database.
+ * the database if they have a valid username. Valid user names can be up
+ * to 30 characters and consist of characters and numbers separated by spaces.
  */
 public class CreateAccountActivity extends AppCompatActivity
     implements View.OnClickListener {
 
     private final int REQUEST_LOCATION_PERMISSION_UPDATE_LOCATION = 1;
 
-    private static final int PICK_PROFILE_ICON_IMAGE = 100;
-
-    private TextView usernameLabel;
     private EditText editUsername;
     private TextView errorLabel;
-    private TextView profileIconLabel;
-    private ImageView profileIcon;
 
     private Button createAccountButton;
 
@@ -72,40 +62,27 @@ public class CreateAccountActivity extends AppCompatActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.create_account);
 
+        // Create location manager and listener
         locationManager = (LocationManager)getSystemService(Context.LOCATION_SERVICE);
         locationListener = new AppLocationListener();
-        String bestProvider = locationManager.getBestProvider(new Criteria(),true);
-        System.out.println(bestProvider);
 
+        // OkHttpClient for database requests
         client = new OkHttpClient();
 
         // get references to each widget
-        usernameLabel = (TextView) findViewById(R.id.createAccountUsernameLabel);
         editUsername = (EditText) findViewById(R.id.createAccountEditUsername);
         errorLabel = (TextView) findViewById(R.id.createAccountErrorLabel);
-        profileIcon = (ImageView) findViewById(R.id.createAccountProfileIcon);
         createAccountButton = (Button) findViewById(R.id.createAccountCreateAccountButton);
 
         // set click listeners
         createAccountButton.setOnClickListener(this);
 
-        if(ContextCompat.checkSelfPermission(this,Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_DENIED) {
-            ActivityCompat.requestPermissions(this,
-                    new String[]{Manifest.permission.ACCESS_FINE_LOCATION,Manifest.permission.ACCESS_COARSE_LOCATION},
-                    REQUEST_LOCATION_PERMISSION_UPDATE_LOCATION);
-        }
-        else {
-            locationManager.requestLocationUpdates(locationManager.GPS_PROVIDER, 200, 1,
-                    locationListener);
-            //testLocationListener();
-        }
+        handleLocationPermission();
     }
 
-    @Override
-    protected void onResume() {
-        super.onResume();
-    }
-
+    /**
+     * Pause the Activity
+     */
     @Override
     protected void onPause() {
         super.onPause();
@@ -113,24 +90,9 @@ public class CreateAccountActivity extends AppCompatActivity
             locationManager.removeUpdates(locationListener);
         }
         catch(SecurityException se) {
-            System.err.print("No permissions to remove!");
+            System.err.println(se);
         }
 
-    }
-
-    /**
-     * Testing for location listener set up
-     */
-    public void testLocationListener() {
-        String lat = "No location available";
-        String lon = "No location available";
-        Location current = locationListener.getLocation();
-        if(current != null) {
-            lat = Double.toString(current.getLatitude());
-            lon = Double.toString(current.getLongitude());
-        }
-        String toastMsg = "Lat: " + lat+ " Long: " + lon;
-        Toast.makeText(getApplicationContext(),toastMsg,Toast.LENGTH_LONG).show();
     }
 
     /**
@@ -145,57 +107,23 @@ public class CreateAccountActivity extends AppCompatActivity
     }
 
     /**
-     * Go to the main activity.
+     * Determine if the user has location services enabled or disabled. If
+     * disabled, request to enable them.
      */
-    public void goToMainActivity() {
-        savedValues = getSharedPreferences("Saved Values",MODE_PRIVATE);
-        SharedPreferences.Editor editor = savedValues.edit();
-        editor.putString("yourUUID",uuid);
-        editor.putString("yourName",username);
-        editor.putInt("yourStatus",status);
-        editor.putString("yourHangoutStatus",hangoutStatus);
-        editor.putString("yourLat",latitude);
-        editor.putString("yourLong",longitude);
-        editor.commit();
-        Intent intent = new Intent(getApplicationContext(), MainActivity.class);
-        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        getApplicationContext().startActivity(intent);
-        finish();
-    }
-
-    /**
-     * Set the text of the error label.
-     * @param message the error message.
-     */
-    private void setErrorMessage(String message) {
-        errorLabel.setText(message != null ? message:"");
-    }
-
-    /**
-     * Creates an account by adding it to the server database.
-     */
-    public void createAccount() {
-        username = editUsername.getText().toString();
-        if(validateUsername()) {
-            if (!isNetworkAvailable()) {
-                setErrorMessage("ERROR - No internet connection.");
-            }
-            uuid = UUID.randomUUID().toString();
-            status = 0;
-            hangoutStatus = "0";
-            Location currentLocation = locationListener.getLocation();
-            if(currentLocation != null) {
-                latitude = Double.toString(currentLocation.getLatitude());
-                longitude =  Double.toString(currentLocation.getLongitude());
-            }
-            else {
-                latitude = "39.7104";
-                longitude = "-75.1202";
-            }
-            new AddUserToServerDB().execute();
+    public void handleLocationPermission() {
+        if(ContextCompat.checkSelfPermission(this,Manifest.permission.ACCESS_FINE_LOCATION)
+                == PackageManager.PERMISSION_DENIED) {
+            // request permission
+            ActivityCompat.requestPermissions(this,
+                    new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
+                    REQUEST_LOCATION_PERMISSION_UPDATE_LOCATION);
+        }
+        else {
+            // already have permission
+            locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 200, 1,
+                    locationListener);
         }
     }
-
 
     /**
      * Perform some action after the user has denied or accepted
@@ -214,13 +142,67 @@ public class CreateAccountActivity extends AppCompatActivity
                 if (grantResults.length > 0
                         && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                     if(ContextCompat.checkSelfPermission(this,Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
-                        locationManager.requestLocationUpdates(locationManager.GPS_PROVIDER, 200, 1,
+                        locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 200, 1,
                                 locationListener);
                     }
                 }
-                //testLocationListener();
-                return;
+                break;
             }
+        }
+    }
+
+    /**
+     * Go to the a specified activity
+     * @param c the activity class
+     */
+    private void goToActivity(Class c) {
+        savedValues = getSharedPreferences("Saved Values",MODE_PRIVATE);
+        SharedPreferences.Editor editor = savedValues.edit();
+        editor.putString("yourUUID",uuid);
+        editor.putString("yourName",username);
+        editor.putInt("yourStatus",status);
+        editor.putString("yourHangoutStatus",hangoutStatus);
+        editor.putString("yourLat",latitude);
+        editor.putString("yourLong",longitude);
+        editor.commit();
+        Intent intent = new Intent(getApplicationContext(), c);
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        getApplicationContext().startActivity(intent);
+        finish();
+    }
+
+    /**
+     * Set the text of the error label.
+     * @param message the error message.
+     */
+    private void setErrorMessage(String message) {
+        errorLabel.setText(message != null ? message:"");
+    }
+
+    /**
+     * Creates an account by adding it to the server database.
+     */
+    private void createAccount() {
+        username = editUsername.getText().toString();
+        if(validateUsername()) {
+            if (!isNetworkAvailable()) {
+                setErrorMessage(getString(R.string.create_account_no_connection_error));
+            }
+
+            // generate uuid and set default values
+            uuid = UUID.randomUUID().toString();
+            status = 0;
+            hangoutStatus = "0";
+            Location currentLocation = locationListener.getLocation();
+            if(currentLocation != null) {
+                latitude = Double.toString(currentLocation.getLatitude());
+                longitude =  Double.toString(currentLocation.getLongitude());
+            }
+            else {
+                latitude = getString(R.string.default_lat);
+                longitude = getString(R.string.default_long);
+            }
+            new AddNewUserToServerDB().execute();
         }
     }
 
@@ -230,17 +212,17 @@ public class CreateAccountActivity extends AppCompatActivity
      */
     public boolean validateUsername() {
         if(username.length() <= 0) {
-            setErrorMessage("Enter a username!");
+            setErrorMessage(getString(R.string.create_account_no_username_error));
             return false;
         }
-        String regExp = "^[A-Z,a-z][ A-Z,a-z,0-9,_]*$";
+        String regExp = "^[A-Za-z][ A-Za-z0-9_]*$";
         Pattern pattern = Pattern.compile(regExp);
         Matcher matcher = pattern.matcher(username);
         if(matcher.find()) {
             return true;
         }
         else {
-            setErrorMessage("Invalid username!");
+            setErrorMessage(getString(R.string.create_account_invalid_username_error));
             return false;
         }
     }
@@ -255,58 +237,18 @@ public class CreateAccountActivity extends AppCompatActivity
         return netInfo != null && netInfo.isConnectedOrConnecting();
     }
 
-    /**
-     * Go to gallery via an intent.
-     */
-    public void goToImageSelect() {
-        testLocationListener();
-        /*Intent intent = new Intent();
-        intent.setType("image/*");
-        intent.setAction(Intent.ACTION_GET_CONTENT);
-        startActivityForResult(Intent.createChooser(intent, "Select Picture"),
-                PICK_PROFILE_ICON_IMAGE);*/
-    }
-
-    /**
-     * Handle data sent back from another intent
-     * @param requestCode the request code, specified by user.
-     * @param resultCode the result code, determines if everything went okay.
-     * @param data the data from the intent.
-     */
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if (resultCode == RESULT_OK) {
-            switch(requestCode) {
-                case PICK_PROFILE_ICON_IMAGE:
-                    Uri newProfileIconImage = data.getData();
-                    try {
-                        Bitmap bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(),
-                                newProfileIconImage);
-                        profileIcon.setImageBitmap(bitmap);
-                    }
-                    catch(IOException ie) {
-                        System.out.println("ISSUE!");
-                    }
-                    break;
-            }
-        }
-    }
-
     // ----- Asynchronous Task Classes -----
-    class AddUserToServerDB extends AsyncTask<Void, Void, String> {
-
+    class AddNewUserToServerDB extends AsyncTask<Void, Void, String> {
         /**
          * Task to perform in the background
          * @param params a list of void parameters
-         * @return Three possible types of strings:
-         *          "200" if the request went through.
-         *          The message of the response if the HTTP code was not 200.
-         *          "failed" if the request failed.
+         * @return Three types of strings:
+         *          1. "200" response code is 200 (successful)
+         *          2. The message of the response if the HTTP response code was not 200.
+         *          3. "failed" if the request failed.
          */
         @Override
         protected String doInBackground(Void... params ) {
-            // params must be in a particular order.
             try {
                 MediaType mediaType = MediaType.parse("application/json");
                 RequestBody body = RequestBody.create(mediaType, "{" +
@@ -334,7 +276,6 @@ public class CreateAccountActivity extends AppCompatActivity
                 }
             }
             catch (IOException e) {
-                System.err.println(e);
                 return "failed";
             }
         }
@@ -345,16 +286,17 @@ public class CreateAccountActivity extends AppCompatActivity
          */
         @Override
         protected void onPostExecute(String message) {
-            if(message.equals("200")) {
-                // success, do what you need to.
-                goToMainActivity();
-            }
-            else if(message.equals("failed")) {
-                setErrorMessage("Error Occurred.");
-            }
-            else {
-                // HTTP Error Message
-                setErrorMessage(message);
+            switch(message) {
+                case "200":
+                    // success, do what you need to.
+                    goToActivity(MainActivity.class);
+                    break;
+                case "failed":
+                    setErrorMessage("Error Occurred.");
+                    break;
+                default:
+                    setErrorMessage(message);
+                    break;
             }
         }
     }

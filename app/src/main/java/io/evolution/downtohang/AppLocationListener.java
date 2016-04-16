@@ -4,6 +4,10 @@ import android.location.Location;
 import android.location.LocationListener;
 import android.os.Bundle;
 
+
+/**
+ * The location listener for the entire app.
+ */
 class AppLocationListener implements LocationListener {
 
     private Location location;
@@ -12,6 +16,10 @@ class AppLocationListener implements LocationListener {
         return location;
     }
 
+    /**
+     * When the location is changed, update this location if it's not null.
+     * @param location the new location.
+     */
     @Override
     public void onLocationChanged(Location location) {
         if(location != null) {
@@ -21,17 +29,16 @@ class AppLocationListener implements LocationListener {
 
     @Override
     public void onStatusChanged(String provider, int status, Bundle extras) {
-
+        // do nothing
     }
 
     @Override
     public void onProviderEnabled(String provider) {
-        System.out.println("AppLocationListener Enabled!");
+        // do nothing
     }
 
     @Override
     public void onProviderDisabled(String provider) {
-        System.out.println("AppLocationListener Disabled!");
+        // do nothing
     }
-
 }
