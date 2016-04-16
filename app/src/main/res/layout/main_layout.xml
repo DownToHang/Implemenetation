@@ -2,12 +2,13 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
               android:layout_width="match_parent"
               android:layout_height="match_parent"
-              android:orientation="vertical">
+              android:orientation="vertical"
+              android:weightSum="1">
     <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
                     android:layout_width="match_parent" android:layout_height="457dp"
                     android:layout_marginLeft="0dp"
                     android:layout_marginRight="0dp"
-        >
+                    android:layout_weight="1.02">
 
         <ImageButton
             android:layout_width="150dp"
@@ -45,16 +46,15 @@
                   android:gravity="center"
                   android:textColor="#d0c6c6"
                   android:textSize="54sp"
-                  android:text="No Recent Users"
+                  android:text="@string/main_no_recent_users"
                   android:paddingTop="100dp"
-            />
+                  android:layout_alignParentBottom="true"/>
 
     </RelativeLayout>
 
     <Button
-        android:layout_width="391dp"
-        android:layout_height="fill_parent"
-        android:text="HANGOUT"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
         android:id="@+id/mainHangoutButton"
         android:textSize="24dp"
         android:layout_alignParentRight="true"
@@ -66,7 +66,8 @@
         android:layout_marginRight="0dp"
         android:layout_marginTop="0dp"
         android:layout_marginBottom="0dp"
-        android:layout_gravity="center_horizontal"
         android:background="#706bef"
-        android:textColor="#ffffff" />
+        android:textColor="#ffffff"
+        android:text="@string/main_hangout_button_text"
+        android:gravity="center_vertical|center_horizontal"/>
 </LinearLayout>

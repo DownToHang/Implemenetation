@@ -6,6 +6,9 @@
     <string name= "default_lat">39.7104</string>
     <string name= "default_long">-75.1202</string>
 
+    <!-- Menu -->
+    <string name="menu_refresh">Refresh</string>
+
     <!-- Create Account Strings -->
     <string name="create_account_title">Create Account</string>
     <string name="create_account_username_label">Username:</string>
@@ -18,11 +21,13 @@
     <string name="create_account_app_name_all_caps">DOWN2HANG</string>
 
 
+    <!-- Main Activity Strings -->
+    <string name="main_hangout_button_text">HANGOUT</string>
+    <string name="main_no_recent_users">No Recent Users</string>
+
 
 
     <string name="leave_button">Leave</string>
     <string name="manage_contacts_search_user_label">Search User:</string>
-    <string name="menu_settings">Settings</string>
-    <string name="menu_refresh">Refresh</string>
-    <string name="menu_add">Add</string>
+
     </resources>

@@ -1,8 +1,6 @@
 package io.evolution.downtohang;
 
-import android.app.Activity;
 import android.content.Context;
-import android.content.Intent;
 import android.location.Location;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -14,17 +12,16 @@ import android.widget.TextView;
 import java.text.DecimalFormat;
 
 /**
- * Created by Bill Ezekiel on 3/7/2016.
+ * A MainListItemLayout, class representing a main list item. These list items
+ * have an expanded and collapsed view which are switched between when the user
+ * taps the list item.
  */
 public class MainListItemLayout extends RelativeLayout implements OnClickListener {
-
-
     private User you;
 
     private final String NO_HANGOUT = "0";
     private final int AVAILABLE = 1;
     private final int BUSY = 0;
-    private final int PENDING_FRIEND_REQUEST = 2;
     private final int OFFLINE = -1;
 
     // Collapsed View
@@ -39,16 +36,20 @@ public class MainListItemLayout extends RelativeLayout implements OnClickListene
     private TextView expandedLocationLabel;
 
 
-    private Context context;
     private boolean expanded;
     private User user;
-    private boolean changing;
 
+    /**
+     * Constructor for a MainListItemLayout
+     * @param context a context
+     * @param user a user
+     * @param expanded whether or not the view is expanded
+     * @param appUser the current user of this app.
+     */
     public MainListItemLayout(Context context, User user, boolean expanded, User appUser) {
         super(context);
         this.user = user;
         this.expanded = expanded;
-        changing = false;
 
         this.you = appUser;
 
@@ -62,14 +63,10 @@ public class MainListItemLayout extends RelativeLayout implements OnClickListene
 
         usernameLabel = (TextView) findViewById(R.id.usernameLabel);
         usernameLabel.setText(user.getUsername());
-        usernameLabel.setOnClickListener(this);
 
         userStatusImageView = (ImageView) findViewById(R.id.userStatusImageView);
-        if(user.getStatus() < -1 || user.getStatus() > 2) {
+        if(user.getStatus() < OFFLINE || user.getStatus() > AVAILABLE) {
             userStatusImageView.setImageResource(R.mipmap.gray_circle_question_icone_6920_128);
-        }
-        else if(user.getStatus() == 2) {
-            userStatusImageView.setImageResource(R.mipmap.blue_circle_icone_5480_128);
         }
         else if(!user.getHangoutStatus().equals(NO_HANGOUT)) {
             userStatusImageView.setImageResource(R.mipmap.orange_circle_icone_6032_128);
@@ -90,7 +87,6 @@ public class MainListItemLayout extends RelativeLayout implements OnClickListene
 
         expandedUsernameLabel = (TextView) findViewById(R.id.expandedUsernameLabel);
         expandedUsernameLabel.setText(user.getUsername());
-        expandedUsernameLabel.setOnClickListener(this);
 
         userIconImageView = (ImageView) findViewById(R.id.userIconImageView);
         if(user.getStatus() < -1 || user.getStatus() > 2) {
@@ -117,13 +113,9 @@ public class MainListItemLayout extends RelativeLayout implements OnClickListene
 
         StringBuilder locationStringBuilder = new StringBuilder();
 
-        Location youLocation = new Location("");
-
-        Location userLocation = user.getLocation();
-
         float[] resultArray = new float[1];
 
-        youLocation.distanceBetween(you.getLatitude(), you.getLongitude(), user.getLatitude(), user.getLongitude(), resultArray);
+        Location.distanceBetween(you.getLatitude(), you.getLongitude(), user.getLatitude(), user.getLongitude(), resultArray);
 
         double distanceFeet = resultArray[0] * 3.28084;
 
@@ -144,13 +136,6 @@ public class MainListItemLayout extends RelativeLayout implements OnClickListene
                     .append("\n");
         }
 
-
-        //Location userLocation = user.getLocation();
-
-
-
-//        locationStringBuilder.append("Lat: ").append(userLocation.getLatitude()).append("\n")
-//                .append("Long: ").append(userLocation.getLongitude());
         expandedLocationLabel.setText(locationStringBuilder.toString());
 
         if (expanded) {
@@ -162,36 +147,33 @@ public class MainListItemLayout extends RelativeLayout implements OnClickListene
     }
 
 
+    /**
+     * Expand the layout
+     */
     public void expand() {
         expanded = true;
-        changing = true;
         mainListItemCollapsedView.setVisibility(View.GONE);
         mainListItemExpandedView.setVisibility(VISIBLE);
     }
 
+    /**
+     * Collapse the layout
+     */
     public void collapse() {
         expanded = false;
-        changing = true;
         mainListItemCollapsedView.setVisibility(VISIBLE);
         mainListItemExpandedView.setVisibility(View.GONE);
     }
 
-    public void collapseWithAnimation() {
-        collapse();
-        // animation
-    }
-
+    /**
+     * Given a view, perform the appropriate action when the view is clicked.
+     * @param v a view
+     */
     @Override
     public void onClick(View v) {
         switch(v.getId()) {
-            case R.id.usernameLabel:
-                expand();
-                break;
-            case R.id.expandedUsernameLabel:
-                collapse();
-                break;
             case R.id.mainListItemExpandedView:
-                collapseWithAnimation();
+                collapse();
                 break;
             case R.id.mainListItemCollapsedView:
                 expand();
@@ -199,14 +181,5 @@ public class MainListItemLayout extends RelativeLayout implements OnClickListene
             default:
                 break;
         }
-    }
-
-    // refresh after a delete
-    private void refresh() {
-        Activity activity = (Activity) context;
-        activity.finish();
-        Intent intent = new Intent(context, MainActivity.class);
-        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        context.startActivity(intent);
     }
 }
