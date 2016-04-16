@@ -62,10 +62,6 @@ public class CreateAccountActivity extends AppCompatActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.create_account);
 
-        // Create location manager and listener
-        locationManager = (LocationManager)getSystemService(Context.LOCATION_SERVICE);
-        locationListener = new AppLocationListener();
-
         // OkHttpClient for database requests
         client = new OkHttpClient();
 
@@ -77,6 +73,16 @@ public class CreateAccountActivity extends AppCompatActivity
         // set click listeners
         createAccountButton.setOnClickListener(this);
 
+        handleLocationPermission();
+    }
+
+
+    /**
+     * Resume the activity
+     */
+    @Override
+    protected void onResume() {
+        super.onResume();
         handleLocationPermission();
     }
 
@@ -111,6 +117,13 @@ public class CreateAccountActivity extends AppCompatActivity
      * disabled, request to enable them.
      */
     public void handleLocationPermission() {
+        // Create location manager and listener
+        if(locationManager == null) {
+            locationManager = (LocationManager)getSystemService(Context.LOCATION_SERVICE);
+        }
+        if(locationManager == null) {
+            locationListener = new AppLocationListener();
+        }
         if(ContextCompat.checkSelfPermission(this,Manifest.permission.ACCESS_FINE_LOCATION)
                 == PackageManager.PERMISSION_DENIED) {
             // request permission
