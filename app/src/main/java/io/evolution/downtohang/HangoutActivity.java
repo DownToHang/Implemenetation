@@ -148,9 +148,10 @@ public class HangoutActivity extends AppCompatActivity  {
             usernameView.setText(currentUser.getUsername());
             //status
             ImageView statusView = (ImageView) itemView.findViewById(R.id.status_ImageView);
-            if(!currentUser.getHangStatus().equals("0")) {
+            if(currentUser.getHangStatus().equals(you.getHangStatus())) {
                 statusView.setImageResource(R.mipmap.android_check);
             }else{
+
                 statusView.setImageResource(R.mipmap.android_block);
             }
 
