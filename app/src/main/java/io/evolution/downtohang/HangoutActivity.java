@@ -127,7 +127,8 @@ public class HangoutActivity extends AppCompatActivity implements View.OnClickLi
         String hangoutStatus = savedValues.getString("yourHangoutStatus",null);
         String latitude = savedValues.getString("yourLat",null);
         String longitude = savedValues.getString("yourLong",null);
-        you = new User(uuid,username,hangoutStatus,status);
+        you = new User(uuid,username,status,hangoutStatus,Double.parseDouble(latitude),
+                Double.parseDouble(longitude));
     }
 
 

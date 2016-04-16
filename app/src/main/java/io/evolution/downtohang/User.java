@@ -36,7 +36,7 @@ public class User {
      * @param latitude the user's latitude coordinate
      * @param longitude the user's longitude coordinate
      */
-    public User(String uuid, String username, Integer status, String hangoutStatus, double latitude,
+    public User(String uuid, String username, int status, String hangoutStatus, double latitude,
                 double longitude) {
         this.uuid = uuid;
         this.username = username;
