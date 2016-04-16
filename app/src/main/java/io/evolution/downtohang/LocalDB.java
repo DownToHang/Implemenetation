@@ -62,13 +62,7 @@ public class LocalDB {
         @Override
         public void onCreate(SQLiteDatabase db) {
             db.execSQL(CREATE_FRIENDS_TABLE);
-
-            //db.execSQL("INSERT INTO friends VALUES (\"000-00\",\"SuperPieGuy\",\"1\",\"0\",80,-180)");
-            //db.execSQL("INSERT INTO friends VALUES (\"111-1\",\"RWeedle\",\"0\",\"0\",0,0)");
-            //db.execSQL("INSERT INTO friends VALUES (\"222-22\",\"Yoonix\",\"0\",\"Mike\",1,0)");
-            //db.execSQL("INSERT INTO friends VALUES (\"22-22\",\"Pat\",\"2\",\"0\",1,0)");
-            //db.execSQL("INSERT INTO friends VALUES (\"2-22\",\"Cake\",\"-1\",\"0\",1,0)");
-            //db.execSQL("INSERT INTO friends VALUES (\"-22\",\")(&*#)%\",\"-3\",\"Mike\",1,0)");
+            db.execSQL("INSERT INTO recent_hangout_users VALUES (\"06bb9301-5a1f-40a8-807c-92ef60ba6154\",\"sup\",0,\"0\",10,50)");
         }
 
         @Override

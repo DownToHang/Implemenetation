@@ -23,6 +23,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 
 import okhttp3.*;
@@ -54,6 +55,7 @@ public class MainActivity extends AppCompatActivity implements OnClickListener {
                 return true;
             case R.id.menu_refresh:
                 Toast.makeText(this, "Refresh Button", Toast.LENGTH_SHORT).show();
+                refresh();
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
@@ -115,6 +117,10 @@ public class MainActivity extends AppCompatActivity implements OnClickListener {
         if(you != null) {
             updateYou(0,you.getHangStatus(),you.getLat(),you.getLong());
         }
+    }
+
+    public void refresh() {
+        new RefreshRecentUsersFromDB().execute();
     }
 
     public void generateYou() {
@@ -304,8 +310,9 @@ public class MainActivity extends AppCompatActivity implements OnClickListener {
     }
 
     // ----- Asynchronous Task Classes -----
-    class getUsersFromDB extends AsyncTask<Void, Void, String> {
-
+    class RefreshRecentUsersFromDB extends AsyncTask<String, Void, String> {
+        Response response;
+        ArrayList<User> updatedUsers;
         /**
          * Task to perform in the background
          * @param params a list of void parameters
@@ -314,44 +321,33 @@ public class MainActivity extends AppCompatActivity implements OnClickListener {
          *          The message of the response if the HTTP code was not 200.
          *          "failed" if the request failed.
          */
-        Response response;
-
         @Override
-        protected String doInBackground(Void... params ) {
-            // params must be in a particular order.
-            try {
-                Request request = new Request.Builder()
-                        .url("http://www.3volution.io:4001/api/Users")
-                        .get()
-                        .addHeader("x-ibm-client-id", "default")
-                        .addHeader("x-ibm-client-secret", "SECRET")
-                        .addHeader("content-type", "application/json")
-                        .addHeader("accept", "application/json")
-                        .build();
+        protected String doInBackground(String... params ) {
+            updatedUsers = new ArrayList();
+            for(User user: users) {
+                String uuid = user.getUUID();
+                try {
+                    Request request = new Request.Builder()
+                            .url("http://www.3volution.io:4001/api/Users?filter={\"where\":{\"uuid\":\""+uuid+"\"}}")
+                            .get()
+                            .addHeader("x-ibm-client-id", "default")
+                            .addHeader("x-ibm-client-secret", "SECRET")
+                            .addHeader("content-type", "application/json")
+                            .addHeader("accept", "application/json")
+                            .build();
 
-                this.response = client.newCall(request).execute();
-                if(response.code() == 200) {
-                    resp = response.body().string();
-                    return "200";
+                    this.response = client.newCall(request).execute();
+                    if(response.code() == 200) {
+                        resp = response.body().string();
+                    }
+                    else {
+                        return response.message();
+                    }
                 }
-                else {
-                    return response.message();
+                catch (IOException e) {
+                    System.err.println(e);
+                    return "failed";
                 }
-            }
-            catch (IOException e) {
-                System.err.println(e);
-                return "failed";
-            }
-        }
-
-        /**
-         * Actions to perform after the asynchronous request
-         * @param message the message returned by the request
-         */
-        @Override
-        protected void onPostExecute(String message) {
-            if(message.equals("200")) {
-                // success, do what you need to.
                 try {
                     JSONArray userJSONArray = new JSONArray(resp);
                     for (int i = 0; i < userJSONArray.length(); i++) {
@@ -362,20 +358,25 @@ public class MainActivity extends AppCompatActivity implements OnClickListener {
                                 o.getString("hangoutStatus"),
                                 o.getDouble("latitude"),
                                 o.getDouble("longitude"));
-                        allUsers.add(u);
-                        db.addFriend(u);
+                        updatedUsers.add(u);
                     }
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
-//
             }
-            else if(message.equals("failed")) {
+            return "200";
+        }
 
-            }
-            else {
-                // HTTP Error Message
-
+        /**
+         * Actions to perform after the asynchronous request
+         * @param message the message returned by the request
+         */
+        @Override
+        protected void onPostExecute(String message) {
+            if(message.equals("200")) {
+                // success, do what you need to.
+                db.updateFriends(updatedUsers);
+                populateListView();
             }
             System.out.println("done");
         }
