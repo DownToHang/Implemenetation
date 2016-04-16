@@ -1,6 +1,7 @@
 package io.evolution.downtohang;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -11,6 +12,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ListView;
@@ -25,8 +27,10 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import okhttp3.MediaType;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
+import okhttp3.RequestBody;
 import okhttp3.Response;
 
 /**
@@ -39,10 +43,25 @@ public class ManageContactsActivity extends AppCompatActivity implements View.On
     private EditText manageContactsSearchUserEditText;
     private ImageView manageContactsSearchIconImageView;
     private ListView manageContactsSearchedUsersListView;
+    private CheckBox selectCheckBox;
     private Button manageContactsSearchButton;
     private List<User> usersFound = new ArrayList<>();
     private String userToSearch;
     String resp;
+    private Button manageContactsAdapterActionButton;
+
+    private User you;
+    private String uuidLeader;
+    private String selectedUuid;
+    List<User> onlineUsers = new ArrayList<User>();
+    private LocalDB db;
+    private SharedPreferences savedValues;
+    private Button hangoutButton;
+    private List<User> participants = new ArrayList<User>();
+    User currentUser;
+
+
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu){
         getMenuInflater().inflate(R.menu.limited_menu, menu);
@@ -75,10 +94,24 @@ public class ManageContactsActivity extends AppCompatActivity implements View.On
         manageContactsSearchIconImageView = (ImageView) findViewById(R.id.manageContactsSearchIconImageView);
         manageContactsSearchedUsersListView = (ListView) findViewById(R.id.manageContactsSearchedUsersListView);
         manageContactsSearchButton = (Button) findViewById(R.id.manageContactsSearchButton);
+        selectCheckBox = (CheckBox) findViewById(R.id.selectCheckBox);
+        manageContactsAdapterActionButton = (Button) findViewById(R.id.manageContactsAdapterActionButton);
         manageContactsSearchButton.setOnClickListener(this);
+
+
+
 
         client = new OkHttpClient();
         usersFound = new ArrayList<>();
+
+
+
+        savedValues = getSharedPreferences("Saved Values", MODE_PRIVATE);
+        generateYou();
+        uuidLeader = you.getUUID();
+        db = new LocalDB(this);
+        hangoutButton = (Button) findViewById(R.id.hangoutButton);
+
         populateList();
         populateListView();
     }
@@ -96,10 +129,16 @@ public class ManageContactsActivity extends AppCompatActivity implements View.On
                 Toast.makeText(this, "Search Button", Toast.LENGTH_SHORT).show();
                 populateList();
                 break;
+            case R.id.manageContactsAdapterActionButton:
+                participants.add(currentUser);
+                String allParts = "Users Invited: ";
+                for(User user : participants){
+                    allParts += user.getUsername() + ", ";
+                }
+                Toast.makeText(this, allParts, Toast.LENGTH_SHORT).show();
+                break;
         }
     }
-
-
 
     private void populateList() {
         userToSearch = manageContactsSearchUserEditText.getText().toString();
@@ -115,11 +154,71 @@ public class ManageContactsActivity extends AppCompatActivity implements View.On
         manageContactsSearchedUsersListView.setAdapter(adapter);
     }
 
-    private class MyListAdapter extends ArrayAdapter<User>{
+    private void setOnClickListener() {
+
+        /* change leader hangoutStatus to leader's own uuid */
+        you.setHangStatus(uuidLeader);
+        you.setStatus(0);
+                /* update you (leader) in online database */
+        selectedUuid = you.getUUID();
+
+        hangoutButton.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View v) {
+                ArrayList<User> selectedUsers = new ArrayList<User>();
+                for (User u : onlineUsers) {
+                    boolean selected = u.isSelected();
+                    if (selected) {
+                        selectedUsers.add(u);
+                    }//end if
+                }//end for
+                /* change members' hangoutStatus to leader's uuid and set status to 0 */
+                for (User x : selectedUsers) {
+                    //updates local database
+                    x.setStatus(0);
+                    x.setHangStatus(uuidLeader);
+                }
+
+                /* must refresh local database and yourself, first thing */
+                db.updateFriends(onlineUsers); //updates friends to current
+
+                //updates online database
+                for (User user : selectedUsers) {
+                    selectedUuid = user.getUUID();
+                    new UpdateUserHangStatus().execute();
+                }
+
+
+//                /* change members' hangoutStatus to leader's uuid and set status to 0 */
+//                for (User x: selectedUsers){
+//                    selectedUuid = x.getUUID();
+//                    //updates local database
+//                    x.setStatus(0);
+//                    x.setHangStatus(uuidLeader);
+//                    //updates online database
+//                    new  UpdateUserHangStatus().execute();
+//                }
+            }//end onClick
+        });
+    }
+
+    public void generateYou() {
+        String uuid = savedValues.getString("yourUUID",null);
+        String username = savedValues.getString("yourName",null);
+        int status = savedValues.getInt("yourStatus", -1);
+        String hangoutStatus = savedValues.getString("yourHangoutStatus",null);
+        String latitude = savedValues.getString("yourLat",null);
+        String longitude = savedValues.getString("yourLong",null);
+        you = new User(uuid,username,hangoutStatus,status);
+    }
+
+    private class MyListAdapter extends ArrayAdapter<User> implements View.OnClickListener{
 
         public MyListAdapter() {
             super(ManageContactsActivity.this, R.layout.manage_contacts_adapter, usersFound);
         }
+
         @Override
         public View getView(int position, View convertView, ViewGroup parent){
             View itemView = convertView;
@@ -129,10 +228,15 @@ public class ManageContactsActivity extends AppCompatActivity implements View.On
             }
 
             //get the user from list
-            User currentUser = usersFound.get(position);
+            currentUser = usersFound.get(position);
             //username
             TextView usernameView = (TextView) itemView.findViewById(R.id.manageContactsAdapterUserNameLabel);
             usernameView.setText(currentUser.getUsername());
+
+            Button manageContactsAdapterActionButton = (Button) itemView.findViewById(R.id.manageContactsAdapterActionButton);
+            manageContactsAdapterActionButton.setOnClickListener(this);
+
+
 
             /*Button checks user status and displays cooresponding button text:
             User is a friend:       Button text = "Remove"
@@ -140,16 +244,45 @@ public class ManageContactsActivity extends AppCompatActivity implements View.On
             User has received invite but has not acted: Button text = "Pending"
              */
 
-            Button button = (Button) itemView.findViewById(R.id.manageContactsAdapterActionButton);
+            /*Button button = (Button) itemView.findViewById(R.id.manageContactsAdapterActionButton);
             if(!currentUser.getHangStatus().equals("0")) {
                 button.setText("ADD");
             }else{
                 button.setText("REMOVE");
-            }
+            }*/
             return itemView;
         }
 
+        @Override
+        public void onClick(View v){
+            switch (v.getId()) {
+                case R.id.manageContactsAdapterActionButton:
+                    participants.add(currentUser);
+                    String allParts = "Users Invited: ";
+                    for(User user : participants){
+                        allParts += user.getUsername() + ", ";
+                    }
+                    Toast.makeText(getContext(), allParts, Toast.LENGTH_SHORT).show();
+                    break;
+            }
+        }
     }
+
+    /**
+     * Go to the main activity.
+     */
+    public void goToMainActivity() {
+        savedValues = getSharedPreferences("Saved Values", MODE_PRIVATE);
+        SharedPreferences.Editor editor = savedValues.edit();
+        editor.putInt("yourStatus", 0);
+        editor.putString("yourHangoutStatus", uuidLeader);
+        editor.commit();
+        Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        getApplicationContext().startActivity(intent);
+        finish();
+    }
+
     // ----- Asynchronous Task Classes -----
     class getUsersFromDB extends AsyncTask<Void, Void, String> {
 
@@ -223,6 +356,62 @@ public class ManageContactsActivity extends AppCompatActivity implements View.On
 
             }
             System.out.println("done");
+        }
+    }
+
+
+    /*-----------------------------Asynchronus Task-----------------------------*/
+    class UpdateUserHangStatus extends AsyncTask<Void, Void, String>{
+
+        @Override
+        protected String doInBackground(Void... params) {
+            try {
+                MediaType mediaType = MediaType.parse("application/json");
+                RequestBody body = RequestBody.create(mediaType, "{"+
+                        "\"hangoutStatus\":" + "\"" + uuidLeader + "\"" +
+                        ",\"status\":0}");
+                Request request = new Request.Builder()
+                        .url("http://www.3volution.io:4001/api/Users/update?where={\"uuid\": \"" + selectedUuid + "\"}")
+                        .post(body)
+                        .addHeader("x-ibm-client-id", "default")
+                        .addHeader("x-ibm-client-secret", "SECRET")
+                        .addHeader("content-type", "application/json")
+                        .addHeader("accept", "application/json")
+                        .build();
+
+                Response response = client.newCall(request).execute();
+                if(response.code() == 200) {
+                    return "200";
+                }
+                else {
+                    return response.message();
+                }
+            }catch (IOException e) {
+                System.err.println(e);
+                return "failed";
+            }
+
+        }
+
+        /**
+         * Actions to perform after the asynchronous request
+         * @param message the message returned by the request
+         */
+        @Override
+        protected void onPostExecute(String message) {
+            if(message.equals("200")) {
+                // success, do what you need to.
+                goToMainActivity();
+                System.out.println("Success");
+            }
+            else if(message.equals("failed")) {
+                //error
+                System.err.println("error");
+            }
+            else {
+                // HTTP Error Message
+                System.err.println("HTTP Error Message");
+            }
         }
     }
 
