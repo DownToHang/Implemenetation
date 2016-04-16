@@ -1,7 +1,6 @@
 package io.evolution.downtohang;
 
 import android.location.Location;
-import android.media.Image;
 
 /**
  *

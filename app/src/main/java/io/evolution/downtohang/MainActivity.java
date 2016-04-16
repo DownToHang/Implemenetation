@@ -381,7 +381,7 @@ public class MainActivity extends AppCompatActivity implements OnClickListener {
         protected void onPostExecute(String message) {
             if(message.equals("200")) {
                 // success, do what you need to.
-                db.updateFriends(updatedUsers);
+                db.updateRecentUsers(updatedUsers);
                 populateListView();
             }
             System.out.println("done");

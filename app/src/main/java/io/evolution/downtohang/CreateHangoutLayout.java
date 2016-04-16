@@ -120,7 +120,7 @@ public class CreateHangoutLayout extends AppCompatActivity{
                 }
 
                 /* must refresh local database and yourself, first thing */
-               // db.updateFriends(onlineUsers); //updates friends to current
+               // db.updateRecentUsers(onlineUsers); //updates friends to current
 
                 //updates online database
                 for(User user: selectedUsers) {
