@@ -21,16 +21,16 @@
         </activity>
 
         <activity android:name=".CreateAccountActivity"
-                  android:label="DownToHang">
+                  android:label="Down2Hang">
         </activity>
         <activity android:name=".HangoutActivity"
-                  android:label="DownToHang">
+                  android:label="Down2Hang">
         </activity>
         <activity android:name=".CreateHangoutLayout"
-                  android:label="DownToHang">
+                  android:label="Down2Hang">
         </activity>
         <activity android:name=".ManageContactsActivity"
-                  android:label="DownToHang">
+                  android:label="Down2Hang">
         </activity>
     </application>
 

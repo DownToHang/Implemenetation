@@ -15,6 +15,7 @@ import android.widget.Button;
 import android.widget.ImageButton;
 import android.view.View.OnClickListener;
 import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import org.json.JSONArray;
@@ -84,7 +85,7 @@ public class MainActivity extends AppCompatActivity implements OnClickListener {
         mainHangoutButton.setOnClickListener(this);
         db = new LocalDB(this);
         allUsers = new ArrayList<>();
-        new getUsersFromDB().execute();
+        //new getUsersFromDB().execute();
         populateListView();
     }
 
@@ -130,9 +131,12 @@ public class MainActivity extends AppCompatActivity implements OnClickListener {
      * Populate the list view with users who are friends.
      */
     private void populateListView() {
+        usersListView.setEmptyView(findViewById(R.id.emptyListView));
         users = db.getAllUsers();
-        ArrayAdapter<User> adapter = new MainListAdapter();
-        usersListView.setAdapter(adapter);
+        if(users.size() > 0) {
+            ArrayAdapter<User> adapter = new MainListAdapter();
+            usersListView.setAdapter(adapter);
+        }
     }
 
     public void onClick(View v) {
@@ -298,6 +302,7 @@ public class MainActivity extends AppCompatActivity implements OnClickListener {
             }
         }
     }
+
     // ----- Asynchronous Task Classes -----
     class getUsersFromDB extends AsyncTask<Void, Void, String> {
 

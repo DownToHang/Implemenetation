@@ -67,6 +67,16 @@ public class User {
         return l;
     }
 
+    public boolean equals(Object o) {
+        if(o instanceof User) {
+            User u = (User) o;
+            if(u.getUUID().equals(uuid)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     //Constructor for Hangout Activity
     public User(String id, String username, String hangoutStatus){
         this.uuid             = id;

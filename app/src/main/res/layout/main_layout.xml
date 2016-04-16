@@ -5,8 +5,9 @@
               android:orientation="vertical">
     <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
                     android:layout_width="match_parent" android:layout_height="457dp"
-        android:layout_marginLeft="0dp"
-        android:layout_marginRight="0dp">
+                    android:layout_marginLeft="0dp"
+                    android:layout_marginRight="0dp"
+        >
 
         <ImageButton
             android:layout_width="150dp"
@@ -18,7 +19,16 @@
             android:scaleType="fitXY"
             android:layout_alignParentTop="true"
             android:layout_centerHorizontal="true"
-            android:paddingTop="5dp" />
+            android:layout_marginTop="10dp"
+            android:layout_marginBottom="10dp"
+            />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:id="@+id/mainDivideStatusButtonAndListView"
+            android:layout_below="@+id/changeStatusImageButton"
+            android:background="@android:color/darker_gray"/>
 
         <ListView
             android:layout_width="wrap_content"
@@ -26,8 +36,18 @@
             android:id="@+id/usersListView"
             android:layout_alignParentLeft="true"
             android:layout_alignParentStart="true"
-            android:layout_below="@+id/changeStatusImageButton"
-            android:layout_alignParentBottom="true" />
+            android:layout_below="@+id/mainDivideStatusButtonAndListView"
+            android:layout_alignParentBottom="true"/>
+
+        <TextView android:id="@+id/emptyListView"
+                  android:layout_width="fill_parent"
+                  android:layout_height="fill_parent"
+                  android:gravity="center"
+                  android:textColor="#d0c6c6"
+                  android:textSize="54sp"
+                  android:text="No Recent Users"
+                  android:paddingTop="100dp"
+            />
 
     </RelativeLayout>
 

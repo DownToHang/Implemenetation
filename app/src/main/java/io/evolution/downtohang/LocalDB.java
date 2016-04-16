@@ -21,7 +21,7 @@ public class LocalDB {
     public static final int DB_VERSION = 1;
 
     // list table constants
-    public static final String FRIENDS_TABLE = "friends";
+    public static final String RECENTS_TABLE = "recent_hangout_users";
 
     public static final String UUID = "uuid";
     public static final int UUID_COL = 0;
@@ -43,7 +43,7 @@ public class LocalDB {
 
 
     public static final String CREATE_FRIENDS_TABLE =
-            "CREATE TABLE " + FRIENDS_TABLE + " (" +
+            "CREATE TABLE " + RECENTS_TABLE + " (" +
                      UUID + TEXT_TYPE + UNIQUE + COMMA_SEP +
                     USERNAME + TEXT_TYPE + COMMA_SEP +
                     STATUS + TEXT_TYPE + COMMA_SEP +
@@ -52,7 +52,7 @@ public class LocalDB {
                     LONGITUDE + REAL_TYPE +
                     ");";
 
-    public static final String DROP_FRIENDS_TABLE = "DROP TABLE IF EXISTS " + FRIENDS_TABLE;
+    public static final String DROP_FRIENDS_TABLE = "DROP TABLE IF EXISTS " + RECENTS_TABLE;
 
     private static class DBHelper extends SQLiteOpenHelper {
         public DBHelper(Context context, String name, SQLiteDatabase.CursorFactory factory, int version) {
@@ -63,12 +63,12 @@ public class LocalDB {
         public void onCreate(SQLiteDatabase db) {
             db.execSQL(CREATE_FRIENDS_TABLE);
 
-            db.execSQL("INSERT INTO friends VALUES (\"000-00\",\"SuperPieGuy\",\"1\",\"0\",80,-180)");
-            db.execSQL("INSERT INTO friends VALUES (\"111-1\",\"RWeedle\",\"0\",\"0\",0,0)");
-            db.execSQL("INSERT INTO friends VALUES (\"222-22\",\"Yoonix\",\"0\",\"Mike\",1,0)");
-            db.execSQL("INSERT INTO friends VALUES (\"22-22\",\"Pat\",\"2\",\"0\",1,0)");
-            db.execSQL("INSERT INTO friends VALUES (\"2-22\",\"Cake\",\"-1\",\"0\",1,0)");
-            db.execSQL("INSERT INTO friends VALUES (\"-22\",\")(&*#)%\",\"-3\",\"Mike\",1,0)");
+            //db.execSQL("INSERT INTO friends VALUES (\"000-00\",\"SuperPieGuy\",\"1\",\"0\",80,-180)");
+            //db.execSQL("INSERT INTO friends VALUES (\"111-1\",\"RWeedle\",\"0\",\"0\",0,0)");
+            //db.execSQL("INSERT INTO friends VALUES (\"222-22\",\"Yoonix\",\"0\",\"Mike\",1,0)");
+            //db.execSQL("INSERT INTO friends VALUES (\"22-22\",\"Pat\",\"2\",\"0\",1,0)");
+            //db.execSQL("INSERT INTO friends VALUES (\"2-22\",\"Cake\",\"-1\",\"0\",1,0)");
+            //db.execSQL("INSERT INTO friends VALUES (\"-22\",\")(&*#)%\",\"-3\",\"Mike\",1,0)");
         }
 
         @Override
@@ -106,7 +106,7 @@ public class LocalDB {
 
     public ArrayList<User> getAllUsers() {
         this.openReadableDB();
-        Cursor cursor = db.query(FRIENDS_TABLE,null,null,null,null,null,null);
+        Cursor cursor = db.query(RECENTS_TABLE,null,null,null,null,null,null);
         ArrayList<User> friends = new ArrayList<User>();
         while(cursor.moveToNext()) {
             friends.add(getUserFromCursor(cursor));
@@ -151,7 +151,7 @@ public class LocalDB {
         cv.put(LATITUDE,user.getLat());
         cv.put(LONGITUDE, user.getLong());
         this.openWriteableDB();
-        db.insert(FRIENDS_TABLE, null,cv);
+        db.insert(RECENTS_TABLE, null,cv);
         this.closeDB();
         return true;
     }
@@ -162,7 +162,7 @@ public class LocalDB {
         String where = UUID + "= ?";
         String[] whereArgs = { uuid };
         this.openWriteableDB();
-        db.delete(FRIENDS_TABLE, where, whereArgs);
+        db.delete(RECENTS_TABLE, where, whereArgs);
         this.closeDB();
         return true;
     }
@@ -176,20 +176,26 @@ public class LocalDB {
     }
 
     public boolean updateFriend(User user) {
-        this.openReadableDB();
-        // WHERE
-        String uuid = user.getUUID();
-        String where = UUID + "=?";
-        String[] whereArgs = {uuid};
-        // SET
-        ContentValues cv = new ContentValues();
-        cv.put(USERNAME,user.getUsername());
-        cv.put(STATUS,user.getStatus());
-        cv.put(HANGOUT_STATUS,user.getHangStatus());
-        cv.put(LATITUDE,user.getLat());
-        cv.put(LONGITUDE,user.getLong());
-        db.update(FRIENDS_TABLE,cv,where,whereArgs);
-        this.closeDB();
+        List<User> allUsers = getAllUsers();
+        if(!allUsers.contains(user)) {
+            return addFriend(user);
+        }
+        else {
+            this.openReadableDB();
+            // WHERE
+            String uuid = user.getUUID();
+            String where = UUID + "=?";
+            String[] whereArgs = {uuid};
+            // SET
+            ContentValues cv = new ContentValues();
+            cv.put(USERNAME,user.getUsername());
+            cv.put(STATUS,user.getStatus());
+            cv.put(HANGOUT_STATUS,user.getHangStatus());
+            cv.put(LATITUDE,user.getLat());
+            cv.put(LONGITUDE,user.getLong());
+            db.update(RECENTS_TABLE,cv,where,whereArgs);
+            this.closeDB();
+        }
         return true;
     }
 }

@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">DownToHang</string>
+    <string name="app_name">Down2Hang</string>
     <string name="action_settings">Settings</string>
     <string name="create_account_title">Create Account</string>
     <string name="create_account_username_label">Username:</string>
