@@ -76,7 +76,7 @@ public class CreateHangoutLayout extends AppCompatActivity{
         uuidLeader = you.getUUID();
 
         //populates list of users
-        populateUsers();
+        //populateUsers();
         //populates the listView with items
         populateListView();
         //sets the onClickListener for the "Lets Hang!" button
@@ -120,7 +120,7 @@ public class CreateHangoutLayout extends AppCompatActivity{
                 }
 
                 /* must refresh local database and yourself, first thing */
-                db.updateFriends(onlineUsers); //updates friends to current
+               // db.updateFriends(onlineUsers); //updates friends to current
 
                 //updates online database
                 for(User user: selectedUsers) {
@@ -144,14 +144,14 @@ public class CreateHangoutLayout extends AppCompatActivity{
         });
     }
 
-    private void populateUsers() {
+    /*private void populateUsers() {
         ArrayList<User> users = db.getAllUsers();
         for(User u: users){
             if(u.getStatus() == 1){
                 onlineUsers.add(u);
             }//end if
         }//end for
-    }
+    }*/
 
     private void populateListView() {
         //Build Adapter

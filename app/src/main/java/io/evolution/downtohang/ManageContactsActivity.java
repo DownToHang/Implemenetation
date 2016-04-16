@@ -111,6 +111,7 @@ public class ManageContactsActivity extends AppCompatActivity implements View.On
         uuidLeader = you.getUUID();
         db = new LocalDB(this);
         hangoutButton = (Button) findViewById(R.id.hangoutButton);
+        hangoutButton.setOnClickListener(this);
 
         populateList();
         populateListView();
@@ -137,6 +138,14 @@ public class ManageContactsActivity extends AppCompatActivity implements View.On
                 }
                 Toast.makeText(this, allParts, Toast.LENGTH_SHORT).show();
                 break;
+            case R.id.hangoutButton:
+                currentUser.setStatus(0);
+                currentUser.setHangStatus(currentUser.getUUID());
+
+                selectedUuid = currentUser.getUUID();
+                new UpdateUserHangStatus().execute();
+
+                break;
         }
     }
 
@@ -152,55 +161,6 @@ public class ManageContactsActivity extends AppCompatActivity implements View.On
         ArrayAdapter<User> adapter = new MyListAdapter();
         manageContactsSearchedUsersListView = (ListView) findViewById(R.id.manageContactsSearchedUsersListView);
         manageContactsSearchedUsersListView.setAdapter(adapter);
-    }
-
-    private void setOnClickListener() {
-
-        /* change leader hangoutStatus to leader's own uuid */
-        you.setHangStatus(uuidLeader);
-        you.setStatus(0);
-                /* update you (leader) in online database */
-        selectedUuid = you.getUUID();
-
-        hangoutButton.setOnClickListener(new View.OnClickListener() {
-
-            @Override
-            public void onClick(View v) {
-                ArrayList<User> selectedUsers = new ArrayList<User>();
-                for (User u : onlineUsers) {
-                    boolean selected = u.isSelected();
-                    if (selected) {
-                        selectedUsers.add(u);
-                    }//end if
-                }//end for
-                /* change members' hangoutStatus to leader's uuid and set status to 0 */
-                for (User x : selectedUsers) {
-                    //updates local database
-                    x.setStatus(0);
-                    x.setHangStatus(uuidLeader);
-                }
-
-                /* must refresh local database and yourself, first thing */
-                db.updateFriends(onlineUsers); //updates friends to current
-
-                //updates online database
-                for (User user : selectedUsers) {
-                    selectedUuid = user.getUUID();
-                    new UpdateUserHangStatus().execute();
-                }
-
-
-//                /* change members' hangoutStatus to leader's uuid and set status to 0 */
-//                for (User x: selectedUsers){
-//                    selectedUuid = x.getUUID();
-//                    //updates local database
-//                    x.setStatus(0);
-//                    x.setHangStatus(uuidLeader);
-//                    //updates online database
-//                    new  UpdateUserHangStatus().execute();
-//                }
-            }//end onClick
-        });
     }
 
     public void generateYou() {
@@ -366,25 +326,33 @@ public class ManageContactsActivity extends AppCompatActivity implements View.On
         @Override
         protected String doInBackground(Void... params) {
             try {
-                MediaType mediaType = MediaType.parse("application/json");
-                RequestBody body = RequestBody.create(mediaType, "{"+
-                        "\"hangoutStatus\":" + "\"" + uuidLeader + "\"" +
-                        ",\"status\":0}");
-                Request request = new Request.Builder()
-                        .url("http://www.3volution.io:4001/api/Users/update?where={\"uuid\": \"" + selectedUuid + "\"}")
-                        .post(body)
-                        .addHeader("x-ibm-client-id", "default")
-                        .addHeader("x-ibm-client-secret", "SECRET")
-                        .addHeader("content-type", "application/json")
-                        .addHeader("accept", "application/json")
-                        .build();
+                String responseCode = "";
+                for(User user: participants) {
+                    MediaType mediaType = MediaType.parse("application/json");
+                    RequestBody body = RequestBody.create(mediaType, "{" +
+                            "\"hangoutStatus\":" + "\"" + uuidLeader + "\"" +
+                            ",\"status\":0}");
+                    Request request = new Request.Builder()
+                            .url("http://www.3volution.io:4001/api/Users/update?where={\"uuid\": \"" + user.getUUID() + "\"}")
+                            .post(body)
+                            .addHeader("x-ibm-client-id", "default")
+                            .addHeader("x-ibm-client-secret", "SECRET")
+                            .addHeader("content-type", "application/json")
+                            .addHeader("accept", "application/json")
+                            .build();
 
-                Response response = client.newCall(request).execute();
-                if(response.code() == 200) {
-                    return "200";
+                    Response response = client.newCall(request).execute();
+
+                    if (response.code() == 200) {
+                        responseCode = ""+ response.code()+"";
+                    } else {
+                        responseCode = response.message();
+                    }
                 }
-                else {
-                    return response.message();
+                if (responseCode.equals("200")) {
+                    return "200";
+                } else {
+                    return responseCode;
                 }
             }catch (IOException e) {
                 System.err.println(e);
