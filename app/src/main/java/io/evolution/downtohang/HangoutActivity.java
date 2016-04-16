@@ -108,13 +108,10 @@ public class HangoutActivity extends AppCompatActivity implements View.OnClickLi
         switch(v.getId()) {
             case R.id.leave_Button:
                 users = new ArrayList();
-                you.setHangStatus("0");
                 users.add(you);
-                editor.putString("yourHangoutStatus", "0");
                 new LeaveHangout().execute();
                 break;
             case R.id.leaderHangoutDisbandButton:
-                editor.putString("yourHangoutStatus", "0");
                 new LeaveHangout().execute();
                 break;
         }
@@ -165,6 +162,19 @@ public class HangoutActivity extends AppCompatActivity implements View.OnClickLi
             usernameView.setText(currentUser.getUsername());
             return itemView;
         }
+    }
+
+
+    public void goToMainActivity() {
+        savedValues = getSharedPreferences("Saved Values", MODE_PRIVATE);
+        SharedPreferences.Editor editor = savedValues.edit();
+        editor.putInt("yourStatus", 1);
+        editor.putString("yourHangoutStatus", "0");
+        editor.commit();
+        Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        getApplicationContext().startActivity(intent);
+        finish();
     }
 
 
@@ -312,7 +322,7 @@ public class HangoutActivity extends AppCompatActivity implements View.OnClickLi
         @Override
         protected void onPostExecute(String message) {
             if(message.equals("200")) {
-
+                goToMainActivity();
             }
             else if(message.equals("failed")) {
 

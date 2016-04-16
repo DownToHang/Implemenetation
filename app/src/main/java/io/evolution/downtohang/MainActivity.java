@@ -158,7 +158,7 @@ public class MainActivity extends AppCompatActivity implements OnClickListener {
     }
 
     public void decideHangoutView() {
-        if(you.getUUID().equals("0")) {
+        if(you.getHangStatus().equals("0")) {
             goToActivity(ManageContactsActivity.class);
         }
         else {
