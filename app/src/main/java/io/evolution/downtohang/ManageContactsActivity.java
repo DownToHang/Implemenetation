@@ -5,7 +5,6 @@ import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -140,7 +139,7 @@ public class ManageContactsActivity extends AppCompatActivity implements View.On
                 break;
             case R.id.hangoutButton:
                 currentUser.setStatus(0);
-                currentUser.setHangStatus(currentUser.getUUID());
+                currentUser.setHangoutStatus(currentUser.getUUID());
 
                 selectedUuid = currentUser.getUUID();
                 new UpdateUserHangStatus().execute();
@@ -205,7 +204,7 @@ public class ManageContactsActivity extends AppCompatActivity implements View.On
              */
 
             /*Button button = (Button) itemView.findViewById(R.id.manageContactsAdapterActionButton);
-            if(!currentUser.getHangStatus().equals("0")) {
+            if(!currentUser.getHangoutStatus().equals("0")) {
                 button.setText("ADD");
             }else{
                 button.setText("REMOVE");

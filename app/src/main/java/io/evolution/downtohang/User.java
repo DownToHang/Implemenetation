@@ -4,34 +4,39 @@ import android.location.Location;
 import android.media.Image;
 
 /**
- * Created by Yoonix on 4/2/2016.
  *
  * This is the User object, contains information on an individual user.
  * It will contain the following:
  *
- * ID number
+ * UUID number
  * Username
- * Hangout status
- * Location
- * Availability
- *
- * - Jyoon
+ * Status (Availability)
+ * Hangout Status
+ * Latitude
+ * Longitude
  */
 public class User {
 
-    private String   uuid ;        // id# of user
-    private String   username;   // self explanatory
-    private String   hangoutStatus; //name for a hangout if they are in one
-    private Integer   status;// available, not available, in a hangout, busy etc.
-    private boolean  isSelected;
-
+    // unique id of user
+    private String uuid ;
+    private String username;
+    // String is either 0 or the UUID of the leader of the hangout they are in
+    private String hangoutStatus;
+    // available, not available, in a hangout, busy etc.
+    private int status;
     private double latitude;
     private double longitude;
+    private boolean isSelected;
 
-    public User(){
-        //constructor
-    }
-
+    /**
+     * Creates a user object
+     * @param uuid the user's uuid
+     * @param username the user's name
+     * @param status the user's status
+     * @param hangoutStatus the user's hangout status
+     * @param latitude the user's latitude coordinate
+     * @param longitude the user's longitude coordinate
+     */
     public User(String uuid, String username, Integer status, String hangoutStatus, double latitude,
                 double longitude) {
         this.uuid = uuid;
@@ -42,24 +47,58 @@ public class User {
         this.longitude = longitude;
     }
 
-    //returns latitude
-    public double getLat() {
+    /**
+     * @return this user's uuid
+     */
+    public String getUUID(){
+        return uuid;
+    }
+
+    /**
+     * @return this user's name
+     */
+    public String getUsername(){
+        return username;
+    }
+
+    /**
+     * @return this user's hangout status
+     */
+    public String getHangoutStatus(){
+        return hangoutStatus;
+    }
+
+    /**
+     * @return this user's status
+     */
+    public Integer getStatus(){
+        return status;
+    }
+
+    /**
+     * @return the user's latitude coordinate
+     */
+    public double getLatitude() {
         return latitude;
     }
 
-    //returns longitude
-    public double getLong() {
+    /**
+     * @return the user's longitude coordinate
+     */
+    public double getLongitude() {
         return longitude;
     }
 
-    public void setLatitude(double l) {
-        latitude = l;
+    /**
+     * @return true if the user is selected in the create hangout screen.
+     */
+    public boolean isSelected() {
+        return isSelected;
     }
 
-    public void setLongitude(double l) {
-        longitude = l;
-    }
-
+    /**
+     * @return an android location object based on this user's latitude and longitude coordinates
+     */
     public Location getLocation() {
         Location l = new Location("");
         l.setLatitude(latitude);
@@ -67,6 +106,12 @@ public class User {
         return l;
     }
 
+    /**
+     * Check if one user is equal to another user. Two users are considered
+     * equal if they have the same UUID.
+     * @param o an object
+     * @return true if the given object is equal to this user.
+     */
     public boolean equals(Object o) {
         if(o instanceof User) {
             User u = (User) o;
@@ -77,69 +122,60 @@ public class User {
         return false;
     }
 
-    //Constructor for Hangout Activity
-    public User(String id, String username, String hangoutStatus){
-        this.uuid             = id;
-        this.username       = username;
-        this.hangoutStatus  = hangoutStatus;
-        isSelected = false;
-    }
 
-    //check if the user is selected
-    public boolean isSelected() {
-        return isSelected;
-    }
-
-    //setting if the user is selected or not
-    public void setIsSelected(boolean isSelected) {
-        this.isSelected = isSelected;
-    }
-
-    //Constuctor for Create Hangout Activity
-    public User(String username){
-        this.username = username;
-    }
-
-    //Contructor for Manage Contacts
-    public User(String id, String username, Image profilePic){
-        this.uuid = id;
-        this.username = username;
-    }
-
-    public User(String id, String username, String hangoutStatus,
-                Integer status) {
-        this.uuid = id;
-        this.username = username;
-        this.hangoutStatus = hangoutStatus;
-        this.status = status;
-    }
-
-    //setters
+    /**
+     * Set the user's uuid
+     * @param id the new uuid
+     */
     public void setId(String id){
         this.uuid = id;
     }
+
+    /**
+     * Set the user's username
+     * @param username the new username
+     */
     public void setUsername(String username){
         this.username = username;
     }
-    public void setHangStatus(String hangStatus){
-        this.hangoutStatus = hangStatus;
-    }
-    public void setStatus(Integer availability){
-        this.status = availability;
+
+    /**
+     * Set the user's hangout status
+     * @param hangoutStatus the new hangout status
+     */
+    public void setHangoutStatus(String hangoutStatus){
+        this.hangoutStatus = hangoutStatus;
     }
 
-    //getters
-    public String getUUID(){
-        return uuid;
-    }
-    public String getUsername(){
-        return username;
-    }
-    public String getHangStatus(){
-        return hangoutStatus;
-    }
-    public Integer getStatus(){
-        return status;
+    /**
+     * Set the user's status
+     * @param status the new status
+     */
+    public void setStatus(int status){
+        this.status = status;
     }
 
+    /**
+     * Set the user's latitude coordinate
+     * @param latitude the new latitude coordinate
+     */
+    public void setLatitude(double latitude) {
+        this.latitude = latitude;
+    }
+
+    /**
+     * Set the user's longitude coordinate
+     * @param longitude the new longitude coordinate
+     */
+    public void setLongitude(double longitude) {
+        this.longitude = longitude;
+    }
+
+    /**
+     * Set whether or not this user is selected
+     * @param isSelected the new selected status
+     */
+    public void setIsSelected(boolean isSelected) {
+        this.isSelected = isSelected;
+    }
 }

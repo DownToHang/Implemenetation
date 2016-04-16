@@ -1,10 +1,8 @@
 package io.evolution.downtohang;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.location.Location;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -14,7 +12,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
-import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -88,7 +85,7 @@ public class HangoutActivity extends AppCompatActivity implements View.OnClickLi
 
 
         generateYou();
-        if(you.getHangStatus().equals(you.getUUID())) {
+        if(you.getHangoutStatus().equals(you.getUUID())) {
             //leader mode
             leave_button.setVisibility(View.GONE);
         }
@@ -196,7 +193,7 @@ public class HangoutActivity extends AppCompatActivity implements View.OnClickLi
             // params must be in a particular order.
             try {
                 Request request = new Request.Builder()
-                        .url("http://www.3volution.io:4001/api/Users?filter={\"where\":{\"hangoutStatus\":\""+you.getHangStatus()+"\"}}")
+                        .url("http://www.3volution.io:4001/api/Users?filter={\"where\":{\"hangoutStatus\":\""+you.getHangoutStatus()+"\"}}")
                         .get()
                         .addHeader("x-ibm-client-id", "default")
                         .addHeader("x-ibm-client-secret", "SECRET")

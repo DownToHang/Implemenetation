@@ -6,7 +6,6 @@ import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.support.v7.widget.RecyclerView;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -18,7 +17,6 @@ import android.widget.Toast;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.List;
 
 import okhttp3.MediaType;
 import okhttp3.OkHttpClient;
@@ -98,7 +96,7 @@ public class CreateHangoutLayout extends AppCompatActivity{
     private void setOnClickListener() {
 
         /* change leader hangoutStatus to leader's own uuid */
-        you.setHangStatus(uuidLeader);
+        you.setHangoutStatus(uuidLeader);
         you.setStatus(0);
                 /* update you (leader) in online database */
         selectedUuid = you.getUUID();
@@ -118,7 +116,7 @@ public class CreateHangoutLayout extends AppCompatActivity{
                 for (User x: selectedUsers){
                     //updates local database
                     x.setStatus(0);
-                    x.setHangStatus(uuidLeader);
+                    x.setHangoutStatus(uuidLeader);
                 }
 
                 /* must refresh local database and yourself, first thing */

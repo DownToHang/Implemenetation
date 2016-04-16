@@ -2,7 +2,6 @@ package io.evolution.downtohang;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.location.Location;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -15,7 +14,6 @@ import android.widget.Button;
 import android.widget.ImageButton;
 import android.view.View.OnClickListener;
 import android.widget.ListView;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import org.json.JSONArray;
@@ -23,7 +21,6 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 
 import okhttp3.*;
@@ -107,14 +104,14 @@ public class MainActivity extends AppCompatActivity implements OnClickListener {
     protected void onStop() {
         super.onStop();
         if(you != null) {
-            updateYou(you.getStatus(),you.getHangStatus(),you.getLat(),you.getLong());
+            updateYou(you.getStatus(),you.getHangoutStatus(),you.getLatitude(),you.getLongitude());
         }
     }
     @Override
     protected void onDestroy() {
         super.onDestroy();
         if(you != null) {
-            updateYou(0,you.getHangStatus(),you.getLat(),you.getLong());
+            updateYou(0,you.getHangoutStatus(),you.getLatitude(),you.getLongitude());
         }
     }
 
@@ -158,7 +155,7 @@ public class MainActivity extends AppCompatActivity implements OnClickListener {
     }
 
     public void decideHangoutView() {
-        if(you.getHangStatus().equals("0")) {
+        if(you.getHangoutStatus().equals("0")) {
             goToActivity(ManageContactsActivity.class);
             new GetYourUpdatedData().execute(you.getUUID());
         }
@@ -183,19 +180,19 @@ public class MainActivity extends AppCompatActivity implements OnClickListener {
             changeStatusImageButton.setImageResource(R.mipmap.green_circle_icone_4156_128);
             newStatus = 1;
         }
-        updateYou(newStatus,you.getHangStatus(),you.getLat(),you.getLong());
+        updateYou(newStatus,you.getHangoutStatus(),you.getLatitude(),you.getLongitude());
     }
 
     private void updateYou(int newStatus, String newHangoutStatus, double latitude, double longitude) {
         // you object
         you.setStatus(newStatus);
-        you.setHangStatus(newHangoutStatus);
+        you.setHangoutStatus(newHangoutStatus);
         you.setLatitude(latitude);
         you.setLongitude(longitude);
 
         // shared preferences
-        String latString = Double.toString(you.getLat());
-        String longString = Double.toString(you.getLong());
+        String latString = Double.toString(you.getLatitude());
+        String longString = Double.toString(you.getLongitude());
         SharedPreferences.Editor editor = savedValues.edit();
         editor.putInt("yourStatus", newStatus);
         editor.putString("yourHangoutStatus", newHangoutStatus);

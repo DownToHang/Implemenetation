@@ -3,14 +3,11 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
-import android.database.sqlite.SQLiteDatabase.CursorFactory;
 import android.database.sqlite.SQLiteOpenHelper;
-import android.location.Location;
 import android.util.Log;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
 
 /**
  * Created by Bill Ezekiel on 3/1/2016.
@@ -141,9 +138,9 @@ public class LocalDB {
         cv.put(UUID,user.getUUID());
         cv.put(USERNAME,user.getUsername());
         cv.put(STATUS,user.getStatus());
-        cv.put(HANGOUT_STATUS,user.getHangStatus());
-        cv.put(LATITUDE,user.getLat());
-        cv.put(LONGITUDE, user.getLong());
+        cv.put(HANGOUT_STATUS,user.getHangoutStatus());
+        cv.put(LATITUDE,user.getLatitude());
+        cv.put(LONGITUDE, user.getLongitude());
         this.openWriteableDB();
         db.insert(RECENTS_TABLE, null,cv);
         this.closeDB();
@@ -184,9 +181,9 @@ public class LocalDB {
             ContentValues cv = new ContentValues();
             cv.put(USERNAME,user.getUsername());
             cv.put(STATUS,user.getStatus());
-            cv.put(HANGOUT_STATUS,user.getHangStatus());
-            cv.put(LATITUDE,user.getLat());
-            cv.put(LONGITUDE,user.getLong());
+            cv.put(HANGOUT_STATUS,user.getHangoutStatus());
+            cv.put(LATITUDE,user.getLatitude());
+            cv.put(LONGITUDE,user.getLongitude());
             db.update(RECENTS_TABLE,cv,where,whereArgs);
             this.closeDB();
         }

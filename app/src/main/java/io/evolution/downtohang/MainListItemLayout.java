@@ -7,7 +7,6 @@ import android.location.Location;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -72,7 +71,7 @@ public class MainListItemLayout extends RelativeLayout implements OnClickListene
         else if(user.getStatus() == 2) {
             userStatusImageView.setImageResource(R.mipmap.blue_circle_icone_5480_128);
         }
-        else if(!user.getHangStatus().equals(NO_HANGOUT)) {
+        else if(!user.getHangoutStatus().equals(NO_HANGOUT)) {
             userStatusImageView.setImageResource(R.mipmap.orange_circle_icone_6032_128);
         }
         else if(user.getStatus().equals(AVAILABLE)) {
@@ -100,7 +99,7 @@ public class MainListItemLayout extends RelativeLayout implements OnClickListene
         else if(user.getStatus() == 2) {
             userIconImageView.setImageResource(R.mipmap.blue_trans);
         }
-        else if(!user.getHangStatus().equals(NO_HANGOUT)) {
+        else if(!user.getHangoutStatus().equals(NO_HANGOUT)) {
             userIconImageView.setImageResource(R.mipmap.orange_trans);
         }
         else if(user.getStatus().equals(AVAILABLE)) {
@@ -124,7 +123,7 @@ public class MainListItemLayout extends RelativeLayout implements OnClickListene
 
         float[] resultArray = new float[1];
 
-        youLocation.distanceBetween(you.getLat(), you.getLong(), user.getLat(), user.getLong(), resultArray);
+        youLocation.distanceBetween(you.getLatitude(), you.getLongitude(), user.getLatitude(), user.getLongitude(), resultArray);
 
         double distanceFeet = resultArray[0] * 3.28084;
 
