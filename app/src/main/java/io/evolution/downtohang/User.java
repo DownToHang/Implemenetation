@@ -121,6 +121,13 @@ public class User {
         return false;
     }
 
+    /**
+     * @return the hash code of this user (the uuid's hash code)
+     */
+    public int hashCode() {
+        return uuid.hashCode();
+    }
+
 
     /**
      * Set the user's uuid

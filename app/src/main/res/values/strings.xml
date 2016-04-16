@@ -22,8 +22,9 @@
 
 
     <!-- Main Activity Strings -->
-    <string name="main_hangout_button_text">HANGOUT</string>
+    <string name="main_hangout_button_text_create">CREATE HANGOUT</string>
     <string name="main_no_recent_users">No Recent Users</string>
+    <string name="main_hangout_button_text_your">YOUR HANGOUT</string>
 
 
 

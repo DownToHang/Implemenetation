@@ -31,6 +31,7 @@
         android:textSize="24dp"
         android:textAlignment="center"
         android:longClickable="false"
+        android:focusable="false"
         android:layout_alignParentTop="true" />
 
     <ImageView

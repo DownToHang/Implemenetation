@@ -183,6 +183,18 @@ public class MainActivity extends AppCompatActivity implements OnClickListener {
         }
     }
 
+    /**
+     * Set hangout button text
+     */
+    public void setHangoutButtonText() {
+        if(you.getHangoutStatus().equals(NO_HANGOUT)) {
+            mainHangoutButton.setText(getString(R.string.main_hangout_button_text_create));
+        }
+        else {
+            mainHangoutButton.setText(getString(R.string.main_hangout_button_text_your));
+        }
+    }
+
 
     /**
      * Determine if the user has location services enabled or disabled. If
@@ -522,7 +534,10 @@ public class MainActivity extends AppCompatActivity implements OnClickListener {
             else {
                 System.out.println("Async Task RefreshRecentUserDB failed!");
             }
-
+            setStatusButtonImage();
+            setHangoutButtonText();
+            changeStatusImageButton.setEnabled(you.getHangoutStatus().equals(NO_HANGOUT));
+            mainHangoutButton.setEnabled(true);
         }
     }
 
@@ -693,8 +708,13 @@ public class MainActivity extends AppCompatActivity implements OnClickListener {
             if(message.equals("200")) {
                 switch(calledFrom) {
                     case DECIDE_VIEW:
+                        setStatusButtonImage();
+                        setHangoutButtonText();
+                        changeStatusImageButton.setEnabled(you.getHangoutStatus()
+                                .equals(NO_HANGOUT));
+                        mainHangoutButton.setEnabled(true);
                         if(you.getHangoutStatus().equals(NO_HANGOUT)) {
-                            goToActivity(ManageContactsActivity.class);
+                            goToActivity(CreateHangoutActivity.class);
                         }
                         else {
                             goToActivity(HangoutActivity.class);
@@ -723,11 +743,12 @@ public class MainActivity extends AppCompatActivity implements OnClickListener {
                 }
             }
             else {
+                setStatusButtonImage();
+                changeStatusImageButton.setEnabled(you.getHangoutStatus().equals(NO_HANGOUT));
+                setHangoutButtonText();
+                mainHangoutButton.setEnabled(true);
                 System.out.println("Async Task GetYourUpdatedData failed");
             }
-            setStatusButtonImage();
-            changeStatusImageButton.setEnabled(you.getHangoutStatus().equals(NO_HANGOUT));
-            mainHangoutButton.setEnabled(true);
         }
     }
 }

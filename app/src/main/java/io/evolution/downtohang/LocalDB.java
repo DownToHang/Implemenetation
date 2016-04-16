@@ -123,12 +123,12 @@ public class LocalDB {
     public boolean hasUserWithUUID(String uuid) {
         String where = UUID + "=?";
         String[] whereArgs = {uuid};
+        openReadableDB();
         Cursor cursor = db.query(RECENTS_TABLE,null,where,whereArgs,null,null,null);
-        return cursor.moveToFirst(); // returns true if something is inside
+        boolean empty = !cursor.moveToFirst();
+        closeDB();
+        return empty;
     }
-
-
-
 
     /**
      * Add a list of recent users

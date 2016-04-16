@@ -1,14 +1,15 @@
 package io.evolution.downtohang;
-
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.EditorInfo;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
@@ -24,7 +25,9 @@ import org.json.JSONObject;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import okhttp3.MediaType;
 import okhttp3.OkHttpClient;
@@ -35,7 +38,8 @@ import okhttp3.Response;
 /**
  * Created by Patrick on 4/2/2016.
  */
-public class ManageContactsActivity extends AppCompatActivity implements View.OnClickListener{
+public class CreateHangoutActivity extends AppCompatActivity implements View.OnClickListener,
+        TextView.OnEditorActionListener{
 
     private OkHttpClient client;
     private TextView manageContactsSearchUserLabel;
@@ -44,7 +48,8 @@ public class ManageContactsActivity extends AppCompatActivity implements View.On
     private ListView manageContactsSearchedUsersListView;
     private CheckBox selectCheckBox;
     private Button manageContactsSearchButton;
-    private List<User> usersFound = new ArrayList<>();
+    private Set<User> usersFound;
+    private List<User> usersFoundList;
     private String userToSearch;
     String resp;
     private Button manageContactsAdapterActionButton;
@@ -52,18 +57,51 @@ public class ManageContactsActivity extends AppCompatActivity implements View.On
     private User you;
     private String uuidLeader;
     private String selectedUuid;
-    List<User> onlineUsers = new ArrayList<User>();
     private LocalDB db;
     private SharedPreferences savedValues;
     private Button hangoutButton;
-    private List<User> participants = new ArrayList<User>();
+    private Set<User> participants = new HashSet();
     User currentUser;
 
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.manage_contacts);
+        resp = "";
 
+        //Get references to widgets
+        manageContactsSearchUserLabel = (TextView) findViewById(R.id.manageContactsSearchUserLabel);
+        manageContactsSearchUserEditText = (EditText) findViewById(R.id.manageContactsSearchUserEditText);
+        manageContactsSearchUserEditText.setOnEditorActionListener(this);
+        manageContactsSearchIconImageView = (ImageView) findViewById(R.id.manageContactsSearchIconImageView);
+        manageContactsSearchedUsersListView = (ListView) findViewById(R.id.manageContactsSearchedUsersListView);
+        manageContactsSearchButton = (Button) findViewById(R.id.manageContactsSearchButton);
+        selectCheckBox = (CheckBox) findViewById(R.id.selectCheckBox);
+        manageContactsAdapterActionButton = (Button) findViewById(R.id.manageContactsAdapterActionButton);
+        manageContactsSearchButton.setOnClickListener(this);
+
+        client = new OkHttpClient();
+        usersFound = new HashSet();
+        usersFoundList = new ArrayList(usersFound);
+
+        savedValues = getSharedPreferences("Saved Values", MODE_PRIVATE);
+        generateYou();
+
+        uuidLeader = you.getUUID();
+        db = new LocalDB(this);
+        hangoutButton = (Button) findViewById(R.id.hangoutButton);
+        hangoutButton.setOnClickListener(this);
+    }
+
+    @Override
+    public void onResume(){
+        super.onResume();
+        //do stuff
+    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu){
-        getMenuInflater().inflate(R.menu.limited_menu, menu);
+        getMenuInflater().inflate(R.menu.zero_menu, menu);
         return true;
     }
 
@@ -82,47 +120,6 @@ public class ManageContactsActivity extends AppCompatActivity implements View.On
     }
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.manage_contacts);
-        resp = "";
-
-        //Get references to widgets
-        manageContactsSearchUserLabel = (TextView) findViewById(R.id.manageContactsSearchUserLabel);
-        manageContactsSearchUserEditText = (EditText) findViewById(R.id.manageContactsSearchUserEditText);
-        manageContactsSearchIconImageView = (ImageView) findViewById(R.id.manageContactsSearchIconImageView);
-        manageContactsSearchedUsersListView = (ListView) findViewById(R.id.manageContactsSearchedUsersListView);
-        manageContactsSearchButton = (Button) findViewById(R.id.manageContactsSearchButton);
-        selectCheckBox = (CheckBox) findViewById(R.id.selectCheckBox);
-        manageContactsAdapterActionButton = (Button) findViewById(R.id.manageContactsAdapterActionButton);
-        manageContactsSearchButton.setOnClickListener(this);
-
-
-
-
-        client = new OkHttpClient();
-        usersFound = new ArrayList<>();
-
-
-
-        savedValues = getSharedPreferences("Saved Values", MODE_PRIVATE);
-        generateYou();
-        uuidLeader = you.getUUID();
-        db = new LocalDB(this);
-        hangoutButton = (Button) findViewById(R.id.hangoutButton);
-        hangoutButton.setOnClickListener(this);
-
-        populateList();
-        populateListView();
-    }
-
-    @Override
-    public void onResume(){
-        super.onResume();
-        //do stuff
-    }
-
-    @Override
     public void onClick(View v){
         switch (v.getId()) {
             case R.id.manageContactsSearchButton:
@@ -138,25 +135,37 @@ public class ManageContactsActivity extends AppCompatActivity implements View.On
                 Toast.makeText(this, allParts, Toast.LENGTH_SHORT).show();
                 break;
             case R.id.hangoutButton:
+                if(participants.size() > 0) {
                 currentUser.setStatus(0);
                 currentUser.setHangoutStatus(currentUser.getUUID());
 
                 selectedUuid = currentUser.getUUID();
-                new UpdateUserHangStatus().execute();
 
+                    new CreateHangout().execute();
+                }
                 break;
         }
     }
 
+    @Override
+    public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+        int keyCode = -1;
+        if (event != null) {
+            keyCode = event.getKeyCode();
+        }
+        if (actionId == EditorInfo.IME_ACTION_DONE ||
+                actionId == EditorInfo.IME_ACTION_UNSPECIFIED) {
+            populateList();
+        }
+        return false;
+    }
+
     private void populateList() {
         userToSearch = manageContactsSearchUserEditText.getText().toString();
-        new getUsersFromDB().execute();
-        System.out.println("done");
-        //populateListView();
+        new GetUsersWithName().execute();
     }
 
     public void populateListView(){
-        //pull from database -- TBA
         ArrayAdapter<User> adapter = new MyListAdapter();
         manageContactsSearchedUsersListView = (ListView) findViewById(R.id.manageContactsSearchedUsersListView);
         manageContactsSearchedUsersListView.setAdapter(adapter);
@@ -176,7 +185,7 @@ public class ManageContactsActivity extends AppCompatActivity implements View.On
     private class MyListAdapter extends ArrayAdapter<User> implements View.OnClickListener{
 
         public MyListAdapter() {
-            super(ManageContactsActivity.this, R.layout.manage_contacts_adapter, usersFound);
+            super(CreateHangoutActivity.this, R.layout.manage_contacts_adapter, usersFoundList);
         }
 
         @Override
@@ -188,28 +197,14 @@ public class ManageContactsActivity extends AppCompatActivity implements View.On
             }
 
             //get the user from list
-            currentUser = usersFound.get(position);
+            currentUser = usersFoundList.get(position);
+
             //username
             TextView usernameView = (TextView) itemView.findViewById(R.id.manageContactsAdapterUserNameLabel);
             usernameView.setText(currentUser.getUsername());
 
             Button manageContactsAdapterActionButton = (Button) itemView.findViewById(R.id.manageContactsAdapterActionButton);
             manageContactsAdapterActionButton.setOnClickListener(this);
-
-
-
-            /*Button checks user status and displays cooresponding button text:
-            User is a friend:       Button text = "Remove"
-            User is not a friend:   Button text = "Add"
-            User has received invite but has not acted: Button text = "Pending"
-             */
-
-            /*Button button = (Button) itemView.findViewById(R.id.manageContactsAdapterActionButton);
-            if(!currentUser.getHangoutStatus().equals("0")) {
-                button.setText("ADD");
-            }else{
-                button.setText("REMOVE");
-            }*/
             return itemView;
         }
 
@@ -244,7 +239,7 @@ public class ManageContactsActivity extends AppCompatActivity implements View.On
     }
 
     // ----- Asynchronous Task Classes -----
-    class getUsersFromDB extends AsyncTask<Void, Void, String> {
+    class GetUsersWithName extends AsyncTask<Void, Void, String> {
 
         /**
          * Task to perform in the background
@@ -259,6 +254,7 @@ public class ManageContactsActivity extends AppCompatActivity implements View.On
         @Override
         protected String doInBackground(Void... params ) {
             // params must be in a particular order.
+            usersFound.clear();
             try {
                 Request request = new Request.Builder()
                         .url("http://www.3volution.io:4001/api/Users?filter={\"where\":{\"userName\":\""+userToSearch+"\"}}")
@@ -306,28 +302,26 @@ public class ManageContactsActivity extends AppCompatActivity implements View.On
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
-//
-            }
-            else if(message.equals("failed")) {
-
+                usersFoundList = new ArrayList(usersFound);
+                populateListView();
+                System.out.println("Search Complete!");
             }
             else {
-                // HTTP Error Message
-
+                System.out.println("Async Task CreateHangout Failed");
             }
-            System.out.println("done");
         }
     }
 
-
-    /*-----------------------------Asynchronus Task-----------------------------*/
-    class UpdateUserHangStatus extends AsyncTask<Void, Void, String>{
+    class CreateHangout extends AsyncTask<Void, Void, String>{
 
         @Override
         protected String doInBackground(Void... params) {
             try {
                 String responseCode = "";
-                for(User user: participants) {
+                you.setHangoutStatus(uuidLeader);
+                Set<User> allParticipants = new HashSet(participants);
+                allParticipants.add(you);
+                for(User user: allParticipants) {
                     MediaType mediaType = MediaType.parse("application/json");
                     RequestBody body = RequestBody.create(mediaType, "{" +
                             "\"hangoutStatus\":" + "\"" + uuidLeader + "\"" +
@@ -368,19 +362,13 @@ public class ManageContactsActivity extends AppCompatActivity implements View.On
         @Override
         protected void onPostExecute(String message) {
             if(message.equals("200")) {
-                // success, do what you need to.
+                db.addRecentUsers(new ArrayList(participants));
                 goToMainActivity();
-                System.out.println("Success");
-            }
-            else if(message.equals("failed")) {
-                //error
-                System.err.println("error");
+                System.out.println("Hangout Created with " + participants.toString());
             }
             else {
-                // HTTP Error Message
-                System.err.println("HTTP Error Message");
+                System.out.println("Async Task CreateHangout Failed");
             }
         }
     }
-
 }
