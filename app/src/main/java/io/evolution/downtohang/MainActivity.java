@@ -160,6 +160,7 @@ public class MainActivity extends AppCompatActivity implements OnClickListener {
     public void decideHangoutView() {
         if(you.getHangStatus().equals("0")) {
             goToActivity(ManageContactsActivity.class);
+            new GetYourUpdatedData().execute(you.getUUID());
         }
         else {
             goToActivity(HangoutActivity.class);
@@ -203,7 +204,7 @@ public class MainActivity extends AppCompatActivity implements OnClickListener {
         editor.commit();
 
         // server database
-        Toast.makeText(getApplicationContext(),you.getUsername() + " " + you.getUUID() + " " + you.getStatus(),Toast.LENGTH_SHORT).show();
+        //Toast.makeText(getApplicationContext(),you.getUsername() + " " + you.getUUID() + " " + you.getStatus(),Toast.LENGTH_SHORT).show();
         new UpdateDB().execute(you.getUUID(), you.getUsername(), Integer.toString(newStatus),
                 newHangoutStatus, latString, longString);
     }
@@ -385,6 +386,68 @@ public class MainActivity extends AppCompatActivity implements OnClickListener {
                 // success, do what you need to.
                 db.updateFriends(updatedUsers);
                 populateListView();
+            }
+            System.out.println("done");
+        }
+    }
+
+    class GetYourUpdatedData extends AsyncTask<String, Void, String> {
+        /**
+         * Task to perform in the background
+         * @param params a list of void parameters
+         * @return Three possible types of strings:
+         *          "200" if the request went through.
+         *          The message of the response if the HTTP code was not 200.
+         *          "failed" if the request failed.
+         */
+        @Override
+        protected String doInBackground(String... params ) {
+            String uuid = params[0];
+            try {
+                Request request = new Request.Builder()
+                        .url("http://www.3volution.io:4001/api/Users?filter={\"where\":{\"uuid\":\""+uuid+"\"}}")
+                        .get()
+                        .addHeader("x-ibm-client-id", "default")
+                        .addHeader("x-ibm-client-secret", "SECRET")
+                        .addHeader("content-type", "application/json")
+                        .addHeader("accept", "application/json")
+                        .build();
+
+                Response response = client.newCall(request).execute();
+                if(response.code() == 200) {
+                    resp = response.body().string();
+                    try {
+                        JSONArray userJSONArray = new JSONArray(resp);
+                        for (int i = 0; i < 1; i++) {
+                            JSONObject o = userJSONArray.getJSONObject(i);
+                            updateYou(o.getInt("status"),
+                                    o.getString("hangoutStatus"),
+                                    o.getDouble("latitude"),
+                                    o.getDouble("longitude"));
+                        }
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                    return "200";
+                }
+                else {
+                    return response.message();
+                }
+            }
+            catch (IOException e) {
+                System.err.println(e);
+                return "failed";
+            }
+        }
+
+        /**
+         * Actions to perform after the asynchronous request
+         * @param message the message returned by the request
+         */
+        @Override
+        protected void onPostExecute(String message) {
+            if(message.equals("200")) {
+                // success, do what you need to.
             }
             System.out.println("done");
         }
