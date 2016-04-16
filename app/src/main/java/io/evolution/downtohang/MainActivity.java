@@ -51,7 +51,6 @@ public class MainActivity extends AppCompatActivity implements OnClickListener {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.menu_add:
-                goToActivity(ManageContactsActivity.class);
                 return true;
             case R.id.menu_refresh:
                 Toast.makeText(this, "Refresh Button", Toast.LENGTH_SHORT).show();
@@ -151,10 +150,19 @@ public class MainActivity extends AppCompatActivity implements OnClickListener {
                 changeStatus();
                 break;
             case R.id.mainHangoutButton:
-                goToActivity(CreateHangoutLayout.class);
+                decideHangoutView();
                 break;
             default:
                 break;
+        }
+    }
+
+    public void decideHangoutView() {
+        if(you.getUUID().equals("0")) {
+            goToActivity(ManageContactsActivity.class);
+        }
+        else {
+            goToActivity(HangoutActivity.class);
         }
     }
 

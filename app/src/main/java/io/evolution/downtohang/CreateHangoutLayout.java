@@ -28,7 +28,6 @@ import okhttp3.Response;
 
 public class CreateHangoutLayout extends AppCompatActivity{
 
-    List<User> onlineUsers = new ArrayList<User>();
     private LocalDB db;
     private ListView lv;
     private Context context;
@@ -38,6 +37,7 @@ public class CreateHangoutLayout extends AppCompatActivity{
 
     private String uuidLeader;
     private String selectedUuid;
+    ArrayList<User> onlineUsers;
 
     private SharedPreferences savedValues;
     private User you;
@@ -65,6 +65,7 @@ public class CreateHangoutLayout extends AppCompatActivity{
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_create_hangout_layout);
 
+        onlineUsers= new ArrayList<User>();
         lv = (ListView) findViewById(R.id.createHangoutListView);
         context = this;
         db = new LocalDB(context);
@@ -77,6 +78,7 @@ public class CreateHangoutLayout extends AppCompatActivity{
 
         //populates list of users
         //populateUsers();
+
         //populates the listView with items
         populateListView();
         //sets the onClickListener for the "Lets Hang!" button
@@ -127,31 +129,9 @@ public class CreateHangoutLayout extends AppCompatActivity{
                     selectedUuid = user.getUUID();
                     new UpdateUserHangStatus().execute();
                 }
-
-
-
-
-//                /* change members' hangoutStatus to leader's uuid and set status to 0 */
-//                for (User x: selectedUsers){
-//                    selectedUuid = x.getUUID();
-//                    //updates local database
-//                    x.setStatus(0);
-//                    x.setHangStatus(uuidLeader);
-//                    //updates online database
-//                    new  UpdateUserHangStatus().execute();
-//                }
             }//end onClick
         });
     }
-
-    /*private void populateUsers() {
-        ArrayList<User> users = db.getAllUsers();
-        for(User u: users){
-            if(u.getStatus() == 1){
-                onlineUsers.add(u);
-            }//end if
-        }//end for
-    }*/
 
     private void populateListView() {
         //Build Adapter

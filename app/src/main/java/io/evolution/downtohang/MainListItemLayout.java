@@ -33,15 +33,11 @@ public class MainListItemLayout extends RelativeLayout implements OnClickListene
     private RelativeLayout mainListItemCollapsedView;
     private ImageView userStatusImageView;
     private TextView usernameLabel;
-    private ImageButton acceptImageButton;
-    private ImageButton rejectImageButton;
 
     // Expanded View
     private ImageView userIconImageView;
     private TextView expandedUsernameLabel;
     private TextView expandedLocationLabel;
-    private ImageButton expandedAcceptImageButton;
-    private ImageButton expandedRejectImageButton;
 
 
     private Context context;
@@ -89,13 +85,6 @@ public class MainListItemLayout extends RelativeLayout implements OnClickListene
             userStatusImageView.setImageResource(R.mipmap.gray_circle_icone_6920_128);
         }
 
-
-        acceptImageButton = (ImageButton) findViewById(R.id.acceptImageButton);
-        rejectImageButton = (ImageButton) findViewById(R.id.rejectImageButton);
-        acceptImageButton.setOnClickListener(this);
-        rejectImageButton.setOnClickListener(this);
-
-
         // Expanded View
         mainListItemExpandedView = (RelativeLayout) findViewById(R.id.mainListItemExpandedView);
         mainListItemExpandedView.setOnClickListener(this);
@@ -126,15 +115,6 @@ public class MainListItemLayout extends RelativeLayout implements OnClickListene
         userIconImageView.setBackgroundResource(R.mipmap.default_profile_icon);
 
         expandedLocationLabel = (TextView) findViewById(R.id.expandedLocationLabel);
-        expandedAcceptImageButton = (ImageButton) findViewById(R.id.expandedAcceptImageButton);
-        expandedAcceptImageButton.setBackgroundColor(0);
-        expandedAcceptImageButton.setOnClickListener(this);
-
-        expandedRejectImageButton = (ImageButton) findViewById(R.id.expandedRejectImageButton);
-        expandedRejectImageButton.setBackgroundColor(0);
-        expandedRejectImageButton.setOnClickListener(this);
-
-
 
         StringBuilder locationStringBuilder = new StringBuilder();
 
@@ -210,18 +190,6 @@ public class MainListItemLayout extends RelativeLayout implements OnClickListene
                 break;
             case R.id.expandedUsernameLabel:
                 collapse();
-                break;
-            case R.id.acceptImageButton:
-                System.out.println("Clicked acceptImageButton");
-                break;
-            case R.id.rejectImageButton:
-                System.out.println("Clicked rejectImageButton");
-                break;
-            case R.id.expandedAcceptImageButton:
-                System.out.println("Clicked expandedAcceptImageButton");
-                break;
-            case R.id.expandedRejectImageButton:
-                System.out.println("Clicked expandedRejectImageButton");
                 break;
             case R.id.mainListItemExpandedView:
                 collapseWithAnimation();

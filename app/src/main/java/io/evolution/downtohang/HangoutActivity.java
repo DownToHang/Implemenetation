@@ -36,8 +36,10 @@ import okhttp3.Response;
 /**
  * Created by eliakah on 4/2/2016.
  */
-public class HangoutActivity extends AppCompatActivity  {
-    private Button leave_Button;
+public class HangoutActivity extends AppCompatActivity implements View.OnClickListener  {
+    private Button leave_button;
+    private Button leaderHangoutDisbandButton;
+
     private ListView hangout_ListView;
     private List<User> users = new ArrayList<User>();
     private LocalDB db;
@@ -65,9 +67,6 @@ public class HangoutActivity extends AppCompatActivity  {
         }
     }
 
-
-
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -75,7 +74,6 @@ public class HangoutActivity extends AppCompatActivity  {
         context = this;
         db = new LocalDB(context);
         client = new OkHttpClient();
-
 
         savedValues = getSharedPreferences("Saved Values",MODE_PRIVATE);
         if(savedValues.getString("yourName",null) == null) {
@@ -85,12 +83,41 @@ public class HangoutActivity extends AppCompatActivity  {
             return;
         }
 
-        leave_Button = (Button) findViewById(R.id.leave_Button);
+        leave_button = (Button) findViewById(R.id.leave_Button);
+        leaderHangoutDisbandButton = (Button) findViewById(R.id.leaderHangoutDisbandButton);
+
 
         generateYou();
+        if(you.getHangStatus().equals(you.getUUID())) {
+            //leader mode
+            leave_button.setVisibility(View.GONE);
+        }
+        else {
+            // member
+            leaderHangoutDisbandButton.setVisibility(View.GONE);
+        }
+
+        leave_button.setOnClickListener(this);
+        leaderHangoutDisbandButton.setOnClickListener(this);
+
         new GetUsersFromDB().execute() ;
+    }
 
-
+    public void onClick(View v) {
+        SharedPreferences.Editor editor = savedValues.edit();
+        switch(v.getId()) {
+            case R.id.leave_Button:
+                users = new ArrayList();
+                you.setHangStatus("0");
+                users.add(you);
+                editor.putString("yourHangoutStatus", "0");
+                new LeaveHangout().execute();
+                break;
+            case R.id.leaderHangoutDisbandButton:
+                editor.putString("yourHangoutStatus", "0");
+                new LeaveHangout().execute();
+                break;
+        }
     }
 
     public void goToActivity(Class c) {
@@ -136,17 +163,6 @@ public class HangoutActivity extends AppCompatActivity  {
             //username
             TextView usernameView = (TextView) itemView.findViewById(R.id.username_TextView);
             usernameView.setText(currentUser.getUsername());
-            //status
-            ImageView statusView = (ImageView) itemView.findViewById(R.id.status_ImageView);
-            if(currentUser.getHangStatus().equals(you.getHangStatus())) {
-                statusView.setImageResource(R.mipmap.android_check);
-            }else{
-
-                statusView.setImageResource(R.mipmap.android_block);
-            }
-
-
-
             return itemView;
         }
     }
@@ -231,6 +247,82 @@ public class HangoutActivity extends AppCompatActivity  {
         }
     }
 
+    class LeaveHangout extends AsyncTask<Void, Void, String> {
+
+        /**
+         * Task to perform in the background
+         * @param params a list of void parameters
+         * @return Three possible types of strings:
+         *          "200" if the request went through.
+         *          The message of the response if the HTTP code was not 200.
+         *          "failed" if the request failed.
+         */
+        Response response;
+
+        @Override
+        protected String doInBackground(Void... params ) {
+            for(User user: users) {
+                String uuid = user.getUUID();
+
+                String esc_quote = "\"";
+
+                StringBuilder requestBody = new StringBuilder();
+                requestBody.append("{")
+                        .append(esc_quote).append("hangoutStatus").append(esc_quote).append(":")
+                        .append(esc_quote).append("0").append(esc_quote).append("}");
+
+                StringBuilder url = new StringBuilder();
+                url.append("http://www.3volution.io:4001/api/Users/update?where={")
+                        .append(esc_quote).append("uuid").append(esc_quote).append(":")
+                        .append(esc_quote).append(uuid).append(esc_quote).append("}");
+
+                try {
+                    MediaType mediaType = MediaType.parse("application/json");
+                    RequestBody body = RequestBody.create(mediaType, requestBody.toString());
+
+                    Request request = new Request.Builder()
+                            .url(url.toString())
+                            .post(body)
+                            .addHeader("x-ibm-client-id", "default")
+                            .addHeader("x-ibm-client-secret", "SECRET")
+                            .addHeader("content-type", "application/json")
+                            .addHeader("accept", "application/json")
+                            .build();
+
+                    this.response = client.newCall(request).execute();
+                    if(response.code() == 200) {
+                        resp = response.body().string();
+                    }
+                    else {
+                        return response.message();
+                    }
+                }
+                catch (IOException e) {
+                    System.err.println(e);
+                    return "failed";
+                }
+            }
+            return "200";
+        }
+
+        /**
+         * Actions to perform after the asynchronous request
+         * @param message the message returned by the request
+         */
+        @Override
+        protected void onPostExecute(String message) {
+            if(message.equals("200")) {
+
+            }
+            else if(message.equals("failed")) {
+
+            }
+            else {
+                // HTTP Error Message
+            }
+            System.out.println(message);
+        }
+    }
 
 
 }
