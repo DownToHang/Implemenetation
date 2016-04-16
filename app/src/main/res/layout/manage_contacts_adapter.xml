@@ -23,7 +23,7 @@
     <Button
         android:layout_width="135dp"
         android:layout_height="wrap_content"
-        android:text="Remove"
+        android:text="Add"
         android:id="@+id/manageContactsAdapterActionButton"
         android:layout_alignBottom="@+id/manageContactsAdapterUserNameLabel"
         android:layout_alignParentRight="true"

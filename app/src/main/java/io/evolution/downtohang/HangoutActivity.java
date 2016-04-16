@@ -109,16 +109,6 @@ public class HangoutActivity extends AppCompatActivity  {
         you = new User(uuid,username,hangoutStatus,status);
     }
 
-    private void populateList() {
-        /*users.add(new User("0", "user 1", "0"));
-        users.add(new User("1", "user 2", "0"));
-        users.add(new User("2", "user 3", "1"));
-        users.add(new User("3", "user 4", "0"));
-        users.add(new User("4", "user 5", "0"));
-        users.add(new User("5", "user 6", "1"));*/
-
-        users = usersFound;
-    }
 
     public void populateListView(){
         //pull from database -- TBA
@@ -148,9 +138,10 @@ public class HangoutActivity extends AppCompatActivity  {
             usernameView.setText(currentUser.getUsername());
             //status
             ImageView statusView = (ImageView) itemView.findViewById(R.id.status_ImageView);
-            if(!currentUser.getHangStatus().equals("0")) {
+            if(currentUser.getHangStatus().equals(you.getHangStatus())) {
                 statusView.setImageResource(R.mipmap.android_check);
             }else{
+
                 statusView.setImageResource(R.mipmap.android_block);
             }
 
@@ -222,7 +213,6 @@ public class HangoutActivity extends AppCompatActivity  {
                                 o.getDouble("longitude")));
                     }
 
-                    //populateList();
                     populateListView();
 
                 } catch (JSONException e) {
