@@ -74,7 +74,6 @@ public class MainActivity extends AppCompatActivity implements OnClickListener {
             finish();
             return;
         }
-        generateYou();
 
         setContentView(R.layout.main_layout);
         client = new OkHttpClient();
@@ -87,39 +86,17 @@ public class MainActivity extends AppCompatActivity implements OnClickListener {
         mainHangoutButton.setOnClickListener(this);
         db = new LocalDB(this);
         users = db.getAllUsers();
-        handleLocationPermission();
     }
 
     /**
      * Resume the main activity
+     * Refreshes the recent users list and asks for permissions.
      */
     @Override
     protected void onResume() {
         super.onResume();
         generateYou();
         handleLocationPermission();
-    }
-
-    /**
-     * Stop the main activity
-     */
-    @Override
-    protected void onStop() {
-        super.onStop();
-        if(you != null) {
-            updateYouAll(you.getStatus(),you.getHangoutStatus(),you.getLatitude(),you.getLongitude());
-        }
-    }
-
-    /**
-     * Destroy the main activity
-     */
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        if(you != null) {
-            updateYouAll(0,"0",you.getLatitude(),you.getLongitude());
-        }
     }
 
     /**
@@ -161,40 +138,6 @@ public class MainActivity extends AppCompatActivity implements OnClickListener {
                 return super.onOptionsItemSelected(item);
         }
     }
-
-
-    /**
-     * Set the image and text of the status button.
-     */
-    public void setStatusButtonImage() {
-        if(you.getHangoutStatus().equals(NO_HANGOUT)) {
-            if(you.getStatus() == 1) {
-                // green
-                changeStatusImageButton.setImageResource(R.mipmap.green_circle_icone_4156_128);
-            }
-            else {
-                // red
-                changeStatusImageButton.setImageResource(R.mipmap.red_circle_icone_5751_128);
-            }
-        }
-        else {
-            // orange
-            changeStatusImageButton.setImageResource(R.mipmap.orange_circle_icone_6032_128);
-        }
-    }
-
-    /**
-     * Set hangout button text
-     */
-    public void setHangoutButtonText() {
-        if(you.getHangoutStatus().equals(NO_HANGOUT)) {
-            mainHangoutButton.setText(getString(R.string.main_hangout_button_text_create));
-        }
-        else {
-            mainHangoutButton.setText(getString(R.string.main_hangout_button_text_your));
-        }
-    }
-
 
     /**
      * Determine if the user has location services enabled or disabled. If
@@ -320,8 +263,6 @@ public class MainActivity extends AppCompatActivity implements OnClickListener {
         updateYouServer(newStatus,null,you.getLatitude(),you.getLongitude(), STATUS);
     }
 
-
-
     /**
      * Update the you object.
      * @param newStatus update status
@@ -400,6 +341,38 @@ public class MainActivity extends AppCompatActivity implements OnClickListener {
     private void setButtonsEnabled(boolean enabled) {
         changeStatusImageButton.setEnabled(enabled);
         mainHangoutButton.setEnabled(enabled);
+    }
+
+    /**
+     * Set the image and text of the status button.
+     */
+    public void setStatusButtonImage() {
+        if(you.getHangoutStatus().equals(NO_HANGOUT)) {
+            if(you.getStatus() == 1) {
+                // green
+                changeStatusImageButton.setImageResource(R.mipmap.green_circle_icone_4156_128);
+            }
+            else {
+                // red
+                changeStatusImageButton.setImageResource(R.mipmap.red_circle_icone_5751_128);
+            }
+        }
+        else {
+            // orange
+            changeStatusImageButton.setImageResource(R.mipmap.orange_circle_icone_6032_128);
+        }
+    }
+
+    /**
+     * Set hangout button text
+     */
+    public void setHangoutButtonText() {
+        if(you.getHangoutStatus().equals(NO_HANGOUT)) {
+            mainHangoutButton.setText(getString(R.string.main_hangout_button_text_create));
+        }
+        else {
+            mainHangoutButton.setText(getString(R.string.main_hangout_button_text_your));
+        }
     }
 
     // ----- List Adapter -----
