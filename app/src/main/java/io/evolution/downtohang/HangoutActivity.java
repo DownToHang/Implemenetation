@@ -14,7 +14,6 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -31,7 +30,8 @@ import okhttp3.RequestBody;
 import okhttp3.Response;
 
 /**
- * Created by eliakah on 4/2/2016.
+ * Activity for managing already established hangouts. Has
+ * a leader and a member version.
  */
 public class HangoutActivity extends AppCompatActivity implements View.OnClickListener  {
     private Button leave_button;
@@ -46,23 +46,6 @@ public class HangoutActivity extends AppCompatActivity implements View.OnClickLi
     private OkHttpClient client;
     String resp;
     private List<User> usersFound = new ArrayList<>();
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu){
-        getMenuInflater().inflate(R.menu.limited_menu, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item){
-        switch(item.getItemId()){
-            case R.id.menu_refresh:
-                new GetUsersFromDB().execute();
-                return true;
-            default:
-                return super.onOptionsItemSelected(item);
-        }
-    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -100,6 +83,38 @@ public class HangoutActivity extends AppCompatActivity implements View.OnClickLi
         new GetUsersFromDB().execute() ;
     }
 
+
+    /**
+     * Create the options menu.
+     * @param menu a menu
+     * @return true if successful
+     */
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu){
+        getMenuInflater().inflate(R.menu.limited_menu, menu);
+        return true;
+    }
+
+    /**
+     * Perform an action when a given menu item is tapped.
+     * @param item a menu item
+     * @return true or false
+     */
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item){
+        switch(item.getItemId()){
+            case R.id.menu_refresh:
+                new GetUsersFromDB().execute();
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+    }
+
+    /**
+     * Handle a button press (tap or click event) for a given view
+     * @param v the view
+     */
     public void onClick(View v) {
         SharedPreferences.Editor editor = savedValues.edit();
         switch(v.getId()) {
@@ -114,12 +129,34 @@ public class HangoutActivity extends AppCompatActivity implements View.OnClickLi
         }
     }
 
+    /**
+     * Go to the specified activity
+     * @param c the class of the specified activity.
+     */
     public void goToActivity(Class c) {
         Intent intent = new Intent(getApplicationContext(), c);
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         getApplicationContext().startActivity(intent);
     }
 
+    /**
+     * Set shared preference values and go to the main activity.
+     */
+    public void goToMainActivity() {
+        savedValues = getSharedPreferences("Saved Values", MODE_PRIVATE);
+        SharedPreferences.Editor editor = savedValues.edit();
+        editor.putInt("yourStatus", 1);
+        editor.putString("yourHangoutStatus", "0");
+        editor.commit();
+        Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        getApplicationContext().startActivity(intent);
+        finish();
+    }
+
+    /**
+     * Generate the object for you, the user.
+     */
     public void generateYou() {
         String uuid = savedValues.getString("yourUUID",null);
         String username = savedValues.getString("yourName",null);
@@ -132,6 +169,9 @@ public class HangoutActivity extends AppCompatActivity implements View.OnClickLi
     }
 
 
+    /**
+     * Generate the adapter for the list view
+     */
     public void populateListView(){
         ArrayAdapter<User> adapter = new MyListAdapter();
         hangout_ListView = (ListView) findViewById(R.id.hangout_ListView);
@@ -139,11 +179,25 @@ public class HangoutActivity extends AppCompatActivity implements View.OnClickLi
 
     }
 
+    /**
+     * The list adapter for the hangout activity.
+     */
     private class MyListAdapter extends ArrayAdapter<User>{
 
+        /**
+         * Create the list adapter
+         */
         public MyListAdapter() {
             super(HangoutActivity.this, R.layout.hangout_adapter, users);
         }
+
+        /**
+         * Get a view in the list adapter
+         * @param position the position
+         * @param convertView a view
+         * @param parent a view group
+         * @return the view
+         */
         @Override
         public View getView(int position, View convertView, ViewGroup parent){
             View itemView = convertView;
@@ -161,21 +215,11 @@ public class HangoutActivity extends AppCompatActivity implements View.OnClickLi
         }
     }
 
-
-    public void goToMainActivity() {
-        savedValues = getSharedPreferences("Saved Values", MODE_PRIVATE);
-        SharedPreferences.Editor editor = savedValues.edit();
-        editor.putInt("yourStatus", 1);
-        editor.putString("yourHangoutStatus", "0");
-        editor.commit();
-        Intent intent = new Intent(getApplicationContext(), MainActivity.class);
-        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        getApplicationContext().startActivity(intent);
-        finish();
-    }
-
-
     // ----- Asynchronous Task Classes -----
+
+    /**
+     * Get users information from the database. The users are only those in the hangout
+     */
     class GetUsersFromDB extends AsyncTask<Void, Void, String> {
 
         /**
@@ -255,6 +299,10 @@ public class HangoutActivity extends AppCompatActivity implements View.OnClickLi
         }
     }
 
+    /**
+     * Leave the hangout, if in the leader view, forces everyone in the hangout to leave.
+     * If in the member view, only you leave.
+     */
     class LeaveHangout extends AsyncTask<Void, Void, String> {
 
         /**
@@ -335,6 +383,4 @@ public class HangoutActivity extends AppCompatActivity implements View.OnClickLi
             System.out.println(message);
         }
     }
-
-
 }

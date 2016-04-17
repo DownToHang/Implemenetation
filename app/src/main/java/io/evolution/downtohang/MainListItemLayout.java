@@ -92,9 +92,6 @@ public class MainListItemLayout extends RelativeLayout implements OnClickListene
         if(user.getStatus() < -1 || user.getStatus() > 2) {
             userIconImageView.setImageResource(R.mipmap.gray_circle_question_trans);
         }
-        else if(user.getStatus() == 2) {
-            userIconImageView.setImageResource(R.mipmap.blue_trans);
-        }
         else if(!user.getHangoutStatus().equals(NO_HANGOUT)) {
             userIconImageView.setImageResource(R.mipmap.orange_trans);
         }
