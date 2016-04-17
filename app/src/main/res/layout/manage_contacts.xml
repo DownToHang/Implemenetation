@@ -46,7 +46,7 @@
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Search"
+        android:text="@string/create_hangout_search"
         android:id="@+id/manageContactsSearchButton"
         android:layout_below="@+id/manageContactsSearchUserEditText"
         android:focusable="false"
@@ -56,7 +56,7 @@
         android:layout_width="270dp"
         android:layout_height="60dp"
         android:background="@drawable/lets_hang_buttonshape"
-        android:text="LET'S HANG!"
+        android:text="@string/create_hangout_lets_hang"
         android:id="@+id/hangoutButton"
         android:focusable="false"
         android:textStyle="bold"

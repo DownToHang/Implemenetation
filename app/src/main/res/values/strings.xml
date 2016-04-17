@@ -26,6 +26,11 @@
     <string name="main_no_recent_users">No Recent Users</string>
     <string name="main_hangout_button_text_your">YOUR HANGOUT</string>
 
+    <!-- Create Hangout Strings -->
+    <string name="create_hangout_lets_hang">LET'S HANG!</string>
+    <string name="create_hangout_search">Search</string>
+    <string name="create_hangout_add">ADD</string>
+
 
 
     <string name="leave_button">Leave</string>

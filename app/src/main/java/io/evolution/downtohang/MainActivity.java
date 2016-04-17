@@ -86,17 +86,18 @@ public class MainActivity extends AppCompatActivity implements OnClickListener {
         mainHangoutButton.setOnClickListener(this);
         db = new LocalDB(this);
         users = db.getAllUsers();
+        generateYou();
+        handleLocationPermission();
     }
 
     /**
-     * Resume the main activity
-     * Refreshes the recent users list and asks for permissions.
+     * Destroy the activity
+     * User goes offline.
      */
     @Override
-    protected void onResume() {
-        super.onResume();
-        generateYou();
-        handleLocationPermission();
+    protected void onDestroy() {
+        super.onDestroy();
+        updateYouServer(-1,NO_HANGOUT,you.getLatitude(),you.getLongitude(),NOTHING);
     }
 
     /**
@@ -132,7 +133,8 @@ public class MainActivity extends AppCompatActivity implements OnClickListener {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.menu_refresh:
-                refresh();
+                // setup location, then refresh
+                handleLocationPermission();
                 return true;
             default:
                 return super.onOptionsItemSelected(item);

@@ -1,4 +1,5 @@
 package io.evolution.downtohang;
+
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
@@ -6,15 +7,12 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.KeyEvent;
 import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
-import android.widget.CheckBox;
 import android.widget.EditText;
-import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -36,33 +34,35 @@ import okhttp3.RequestBody;
 import okhttp3.Response;
 
 /**
- * Created by Patrick on 4/2/2016.
+ * Activity to create hangouts.
+ * User's search through all available online users and add them
+ * to their hangout.
  */
 public class CreateHangoutActivity extends AppCompatActivity implements View.OnClickListener,
         TextView.OnEditorActionListener{
 
     private OkHttpClient client;
-    private TextView manageContactsSearchUserLabel;
     private EditText manageContactsSearchUserEditText;
-    private ImageView manageContactsSearchIconImageView;
     private ListView manageContactsSearchedUsersListView;
-    private CheckBox selectCheckBox;
     private Button manageContactsSearchButton;
     private Set<User> usersFound;
     private List<User> usersFoundList;
     private String userToSearch;
     String resp;
-    private Button manageContactsAdapterActionButton;
 
     private User you;
     private String uuidLeader;
-    private String selectedUuid;
     private LocalDB db;
     private SharedPreferences savedValues;
     private Button hangoutButton;
     private Set<User> participants = new HashSet();
     User currentUser;
 
+
+    /**
+     * Create the create hangout activity
+     * @param savedInstanceState the applications current saved state.
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -70,15 +70,14 @@ public class CreateHangoutActivity extends AppCompatActivity implements View.OnC
         resp = "";
 
         //Get references to widgets
-        manageContactsSearchUserLabel = (TextView) findViewById(R.id.manageContactsSearchUserLabel);
         manageContactsSearchUserEditText = (EditText) findViewById(R.id.manageContactsSearchUserEditText);
         manageContactsSearchUserEditText.setOnEditorActionListener(this);
-        manageContactsSearchIconImageView = (ImageView) findViewById(R.id.manageContactsSearchIconImageView);
         manageContactsSearchedUsersListView = (ListView) findViewById(R.id.manageContactsSearchedUsersListView);
         manageContactsSearchButton = (Button) findViewById(R.id.manageContactsSearchButton);
-        selectCheckBox = (CheckBox) findViewById(R.id.selectCheckBox);
-        manageContactsAdapterActionButton = (Button) findViewById(R.id.manageContactsAdapterActionButton);
         manageContactsSearchButton.setOnClickListener(this);
+
+        hangoutButton = (Button) findViewById(R.id.hangoutButton);
+        hangoutButton.setOnClickListener(this);
 
         client = new OkHttpClient();
         usersFound = new HashSet();
@@ -89,44 +88,32 @@ public class CreateHangoutActivity extends AppCompatActivity implements View.OnC
 
         uuidLeader = you.getUUID();
         db = new LocalDB(this);
-        hangoutButton = (Button) findViewById(R.id.hangoutButton);
-        hangoutButton.setOnClickListener(this);
     }
 
-    @Override
-    public void onResume(){
-        super.onResume();
-        //do stuff
-    }
-
+    /**
+     * Create the options menu
+     * @param menu a menu object
+     * @return true if successful
+     */
     @Override
     public boolean onCreateOptionsMenu(Menu menu){
         getMenuInflater().inflate(R.menu.zero_menu, menu);
         return true;
     }
 
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item){
-        switch(item.getItemId()){
-            case R.id.menu_refresh:
-                Toast.makeText(this, "Refresh Button", Toast.LENGTH_SHORT).show();
-
-                return true;
-
-
-            default:
-                return super.onOptionsItemSelected(item);
-        }
-    }
-
+    /**
+     * Given a view, take appropriate action when tapped.
+     * @param v a view
+     */
     @Override
     public void onClick(View v){
         switch (v.getId()) {
             case R.id.manageContactsSearchButton:
-                Toast.makeText(this, "Search Button", Toast.LENGTH_SHORT).show();
+                // search button
                 populateList();
                 break;
             case R.id.manageContactsAdapterActionButton:
+                // Add button
                 participants.add(currentUser);
                 String allParts = "Users Invited: ";
                 for(User user : participants){
@@ -135,18 +122,23 @@ public class CreateHangoutActivity extends AppCompatActivity implements View.OnC
                 Toast.makeText(this, allParts, Toast.LENGTH_SHORT).show();
                 break;
             case R.id.hangoutButton:
+                // hangout button
                 if(participants.size() > 0) {
-                currentUser.setStatus(0);
-                currentUser.setHangoutStatus(currentUser.getUUID());
-
-                selectedUuid = currentUser.getUUID();
-
+                    currentUser.setStatus(0);
+                    currentUser.setHangoutStatus(currentUser.getUUID());
                     new RefreshAddedUsers().execute();
                 }
                 break;
         }
     }
 
+    /**
+     * Given a edit text view, deal with edit actions.
+     * @param v a text view
+     * @param actionId an action Id
+     * @param event a Key Event
+     * @return true or false.
+     */
     @Override
     public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
         int keyCode = -1;
@@ -160,17 +152,26 @@ public class CreateHangoutActivity extends AppCompatActivity implements View.OnC
         return false;
     }
 
+    /**
+     * Populate the list of matches
+     */
     private void populateList() {
         userToSearch = manageContactsSearchUserEditText.getText().toString();
         new GetUsersWithName().execute();
     }
 
+    /**
+     * Populate the list view with matches
+     */
     public void populateListView(){
         ArrayAdapter<User> adapter = new MyListAdapter();
         manageContactsSearchedUsersListView = (ListView) findViewById(R.id.manageContactsSearchedUsersListView);
         manageContactsSearchedUsersListView.setAdapter(adapter);
     }
 
+    /**
+     * Generate the object for you, the user
+     */
     public void generateYou() {
         String uuid = savedValues.getString("yourUUID",null);
         String username = savedValues.getString("yourName",null);
@@ -182,12 +183,41 @@ public class CreateHangoutActivity extends AppCompatActivity implements View.OnC
                 Double.parseDouble(longitude));
     }
 
+    /**
+     * Go to the main activity.
+     */
+    public void goToMainActivity() {
+        savedValues = getSharedPreferences("Saved Values", MODE_PRIVATE);
+        SharedPreferences.Editor editor = savedValues.edit();
+        editor.putInt("yourStatus", 0);
+        editor.putString("yourHangoutStatus", uuidLeader);
+        editor.commit();
+        Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        getApplicationContext().startActivity(intent);
+        finish();
+    }
+
+
+    /**
+     * An array adapter for CreateHangoutActivity
+     */
     private class MyListAdapter extends ArrayAdapter<User> implements View.OnClickListener{
 
+        /**
+         * Create the list adapter
+         */
         public MyListAdapter() {
             super(CreateHangoutActivity.this, R.layout.manage_contacts_adapter, usersFoundList);
         }
 
+        /**
+         * Get the view of this list adapter
+         * @param position a position
+         * @param convertView a view
+         * @param parent a view group
+         * @return the view to be shown.
+         */
         @Override
         public View getView(int position, View convertView, ViewGroup parent){
             View itemView = convertView;
@@ -208,6 +238,10 @@ public class CreateHangoutActivity extends AppCompatActivity implements View.OnC
             return itemView;
         }
 
+        /**
+         * Given a view in this item, perform an appropriate action
+         * @param v a view
+         */
         @Override
         public void onClick(View v){
             switch (v.getId()) {
@@ -223,22 +257,12 @@ public class CreateHangoutActivity extends AppCompatActivity implements View.OnC
         }
     }
 
-    /**
-     * Go to the main activity.
-     */
-    public void goToMainActivity() {
-        savedValues = getSharedPreferences("Saved Values", MODE_PRIVATE);
-        SharedPreferences.Editor editor = savedValues.edit();
-        editor.putInt("yourStatus", 0);
-        editor.putString("yourHangoutStatus", uuidLeader);
-        editor.commit();
-        Intent intent = new Intent(getApplicationContext(), MainActivity.class);
-        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        getApplicationContext().startActivity(intent);
-        finish();
-    }
 
     // ----- Asynchronous Task Classes -----
+
+    /**
+     * Get all users with a given name
+     */
     class GetUsersWithName extends AsyncTask<Void, Void, String> {
 
         /**
@@ -267,7 +291,6 @@ public class CreateHangoutActivity extends AppCompatActivity implements View.OnC
 
                 this.response = client.newCall(request).execute();
                 if(response.code() == 200) {
-                    resp = response.body().string();
                     return "200";
                 }
                 else {
@@ -275,7 +298,7 @@ public class CreateHangoutActivity extends AppCompatActivity implements View.OnC
                 }
             }
             catch (IOException e) {
-                System.err.println(e);
+                System.err.println(e.toString());
                 return "failed";
             }
         }
@@ -315,6 +338,9 @@ public class CreateHangoutActivity extends AppCompatActivity implements View.OnC
         }
     }
 
+    /**
+     * Update the server database and local database when a hangout begins
+     */
     class CreateHangout extends AsyncTask<Void, Void, String>{
 
         @Override
@@ -377,6 +403,10 @@ public class CreateHangoutActivity extends AppCompatActivity implements View.OnC
 
     /**
      * Refreshes the recent users list and updates the local database.
+     * Used in this class to prevent the following:
+     *      User A wants to invite User B to hangout.
+     *      As A invites B, B is invited to or creates another hangout.
+     *      A should not be able to invite B, even if B is already added in the list.
      */
     class RefreshAddedUsers extends AsyncTask<String, Void, String> {
         Response response;
