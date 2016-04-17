@@ -97,7 +97,7 @@ public class MainActivity extends AppCompatActivity implements OnClickListener {
     protected void onResume() {
         super.onResume();
         generateYou();
-        new GetYourUpdatedData().execute(you.getUUID(),REFRESH);
+        handleLocationPermission();
     }
 
     /**
@@ -219,6 +219,7 @@ public class MainActivity extends AppCompatActivity implements OnClickListener {
             // already have permission
             locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 200, 1,
                     locationListener);
+            refresh();
         }
     }
 
@@ -262,6 +263,7 @@ public class MainActivity extends AppCompatActivity implements OnClickListener {
      */
     private void populateListView() {
         usersListView.setEmptyView(findViewById(R.id.emptyListView));
+        users = db.getAllUsers();
         if(users.size() > 0) {
             ArrayAdapter<User> adapter = new MainListAdapter();
             usersListView.setAdapter(adapter);

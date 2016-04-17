@@ -57,7 +57,7 @@ public class HangoutActivity extends AppCompatActivity implements View.OnClickLi
     public boolean onOptionsItemSelected(MenuItem item){
         switch(item.getItemId()){
             case R.id.menu_refresh:
-                Toast.makeText(this, "Refresh Button", Toast.LENGTH_SHORT).show();
+                new GetUsersFromDB().execute();
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
@@ -133,7 +133,6 @@ public class HangoutActivity extends AppCompatActivity implements View.OnClickLi
 
 
     public void populateListView(){
-        //pull from database -- TBA
         ArrayAdapter<User> adapter = new MyListAdapter();
         hangout_ListView = (ListView) findViewById(R.id.hangout_ListView);
         hangout_ListView.setAdapter(adapter);
@@ -193,6 +192,7 @@ public class HangoutActivity extends AppCompatActivity implements View.OnClickLi
         protected String doInBackground(Void... params ) {
             // params must be in a particular order.
             try {
+                users.clear();
                 Request request = new Request.Builder()
                         .url("http://www.3volution.io:4001/api/Users?filter={\"where\":{\"hangoutStatus\":\""+you.getHangoutStatus()+"\"}}")
                         .get()
@@ -320,6 +320,10 @@ public class HangoutActivity extends AppCompatActivity implements View.OnClickLi
         @Override
         protected void onPostExecute(String message) {
             if(message.equals("200")) {
+                SharedPreferences.Editor editor = savedValues.edit();
+                editor.putString("yourHangoutStatus", "0");
+                editor.commit();
+                db.updateRecentUsers(users);
                 goToMainActivity();
             }
             else if(message.equals("failed")) {

@@ -141,7 +141,7 @@ public class CreateHangoutActivity extends AppCompatActivity implements View.OnC
 
                 selectedUuid = currentUser.getUUID();
 
-                    new CreateHangout().execute();
+                    new RefreshAddedUsers().execute();
                 }
                 break;
         }
@@ -292,12 +292,15 @@ public class CreateHangoutActivity extends AppCompatActivity implements View.OnC
                     JSONArray userJSONArray = new JSONArray(resp);
                     for (int i = 0; i < userJSONArray.length(); i++) {
                         JSONObject o = userJSONArray.getJSONObject(i);
-                        usersFound.add(new User(o.getString("uuid"),
+                        User u = new User(o.getString("uuid"),
                                 o.getString("userName"),
                                 o.getInt("status"),
                                 o.getString("hangoutStatus"),
                                 o.getDouble("latitude"),
-                                o.getDouble("longitude")));
+                                o.getDouble("longitude"));
+                        if(!u.equals(you) && u.getStatus() == 1) {
+                            usersFound.add(u);
+                        }
                     }
                 } catch (JSONException e) {
                     e.printStackTrace();
@@ -368,6 +371,88 @@ public class CreateHangoutActivity extends AppCompatActivity implements View.OnC
             }
             else {
                 System.out.println("Async Task CreateHangout Failed");
+            }
+        }
+    }
+
+    /**
+     * Refreshes the recent users list and updates the local database.
+     */
+    class RefreshAddedUsers extends AsyncTask<String, Void, String> {
+        Response response;
+        Set<User> updatedParticipants;
+
+        /**
+         * Task to perform in the background
+         * @param params a list of void parameters
+         * @return Three possible types of strings:
+         *          "200" if the request went through.
+         *          The message of the response if the HTTP code was not 200.
+         *          "failed" if the request failed.
+         */
+        @Override
+        protected String doInBackground(String... params ) {
+            updatedParticipants = new HashSet();
+            for(User user: participants) {
+                String uuid = user.getUUID();
+                try {
+                    Request request = new Request.Builder()
+                            .url("http://www.3volution.io:4001/api/Users?filter={\"where\":{\"uuid\":\""+uuid+"\"}}")
+                            .get()
+                            .addHeader("x-ibm-client-id", "default")
+                            .addHeader("x-ibm-client-secret", "SECRET")
+                            .addHeader("content-type", "application/json")
+                            .addHeader("accept", "application/json")
+                            .build();
+
+                    this.response = client.newCall(request).execute();
+                    if(response.code() == 200) {
+                        resp = response.body().string();
+                    }
+                    else {
+                        return response.message();
+                    }
+                }
+                catch (IOException e) {
+                    System.err.println(e.toString());
+                    return "failed";
+                }
+                try {
+                    JSONArray userJSONArray = new JSONArray(resp);
+                    for (int i = 0; i < userJSONArray.length(); i++) {
+                        JSONObject o = userJSONArray.getJSONObject(i);
+                        User u = new User(o.getString("uuid"),
+                                o.getString("userName"),
+                                o.getInt("status"),
+                                o.getString("hangoutStatus"),
+                                o.getDouble("latitude"),
+                                o.getDouble("longitude"));
+                        if(u.getHangoutStatus().equals("0")) {
+                            updatedParticipants.add(u);
+                        }
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+            return "200";
+        }
+
+        /**
+         * Actions to perform after the asynchronous request
+         * @param message the message returned by the request
+         */
+        @Override
+        protected void onPostExecute(String message) {
+            if(message.equals("200")) {
+                participants = updatedParticipants;
+                if(!participants.isEmpty()) {
+                    new CreateHangout().execute();
+                    System.out.println("Updated Users!");
+                }
+            }
+            else {
+                System.out.println("Async Task RefreshAddedUsers failed!");
             }
         }
     }

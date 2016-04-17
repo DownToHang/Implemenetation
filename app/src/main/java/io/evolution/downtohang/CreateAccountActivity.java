@@ -72,8 +72,6 @@ public class CreateAccountActivity extends AppCompatActivity
 
         // set click listeners
         createAccountButton.setOnClickListener(this);
-
-        handleLocationPermission();
     }
 
 
@@ -121,7 +119,7 @@ public class CreateAccountActivity extends AppCompatActivity
         if(locationManager == null) {
             locationManager = (LocationManager)getSystemService(Context.LOCATION_SERVICE);
         }
-        if(locationManager == null) {
+        if(locationListener == null) {
             locationListener = new AppLocationListener();
         }
         if(ContextCompat.checkSelfPermission(this,Manifest.permission.ACCESS_FINE_LOCATION)
