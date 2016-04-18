@@ -97,7 +97,9 @@ public class MainActivity extends AppCompatActivity implements OnClickListener {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        updateYouServer(-1,NO_HANGOUT,you.getLatitude(),you.getLongitude(),NOTHING);
+        if(you != null) {
+            updateYouServer(-1, NO_HANGOUT, you.getLatitude(), you.getLongitude(), NOTHING);
+        }
     }
 
     /**
