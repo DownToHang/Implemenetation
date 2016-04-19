@@ -154,6 +154,12 @@ public class MainActivity extends AppCompatActivity implements OnClickListener {
         }
         if(locationListener == null) {
             locationListener = new AppLocationListener();
+            if(savedValues.getString("yourLat",null) != null) {
+                Location currLoc = new Location("");
+                currLoc.setLatitude(you.getLatitude());
+                currLoc.setLongitude(you.getLongitude());
+                locationListener.setLocation(currLoc);
+            }
         }
         if(ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
                 == PackageManager.PERMISSION_DENIED) {

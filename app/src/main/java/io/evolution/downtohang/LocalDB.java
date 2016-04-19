@@ -263,8 +263,8 @@ public class LocalDB {
         public void onCreate(SQLiteDatabase db) {
             db.execSQL(CREATE_FRIENDS_TABLE);
             // testing refresh on main
-            db.execSQL("INSERT INTO recent_hangout_users VALUES " +
-                    "(\"06bb9301-5a1f-40a8-807c-92ef60ba6154\",\"sup\",0,\"0\",10,50)");
+            //db.execSQL("INSERT INTO recent_hangout_users VALUES " +
+                    //"(\"06bb9301-5a1f-40a8-807c-92ef60ba6154\",\"sup\",0,\"0\",10,50)");
         }
 
         /**

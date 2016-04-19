@@ -12,6 +12,8 @@ class AppLocationListener implements LocationListener {
 
     private Location location;
 
+
+
     public Location getLocation() {
         return location;
     }
@@ -40,5 +42,13 @@ class AppLocationListener implements LocationListener {
     @Override
     public void onProviderDisabled(String provider) {
         // do nothing
+    }
+
+    /**
+     * Set a new location
+     * @param newLoc the new location
+     */
+    public void setLocation(Location newLoc) {
+        this.location = newLoc;
     }
 }
