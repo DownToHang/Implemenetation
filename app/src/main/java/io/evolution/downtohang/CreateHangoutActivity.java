@@ -291,6 +291,7 @@ public class CreateHangoutActivity extends AppCompatActivity implements View.OnC
 
                 this.response = client.newCall(request).execute();
                 if(response.code() == 200) {
+                    resp = response.body().string();
                     return "200";
                 }
                 else {
